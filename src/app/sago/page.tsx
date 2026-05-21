@@ -168,6 +168,7 @@ export default function SagoPage() {
           ) : (
             filtered.map((w) => {
               const def = definitions[w.raw] ?? "";
+              const dictUrl = `https://stdict.korean.go.kr/search/searchResult.do?pageSize=10&searchKeyword=${encodeURIComponent(w.word)}`;
               return (
                 <Card
                   key={w.raw}
@@ -194,6 +195,16 @@ export default function SagoPage() {
                       뜻 준비 중이에요.
                     </p>
                   )}
+                  <div className="pt-0.5">
+                    <a
+                      href={dictUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-fg-subtle hover:text-accent-600 inline-flex items-center gap-0.5"
+                    >
+                      표준국어대사전에서 모든 뜻 보기 →
+                    </a>
+                  </div>
                 </Card>
               );
             })
@@ -201,9 +212,19 @@ export default function SagoPage() {
         </div>
 
         {/* Footer note */}
-        <p className="text-xs text-fg-subtle text-center pt-2">
-          출처: 충청남도교육청 ‘한국어 사고도구어 목록(1,387개)’ / 뜻은
-          표준국어대사전 기준 대표적 풀이.
+        <p className="text-xs text-fg-subtle text-center pt-2 leading-relaxed">
+          단어 출처: 충청남도교육청 ‘한국어 사고도구어 목록(1,387개)’
+          <br />
+          뜻 출처:{" "}
+          <a
+            href="https://stdict.korean.go.kr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-fg-muted"
+          >
+            국립국어원 표준국어대사전
+          </a>
+          {" "}(Open API)
         </p>
 
         <OnthinkingBanner />
