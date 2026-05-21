@@ -25,12 +25,31 @@ export type MBTIType =
 export type Mood = "warm" | "exciting" | "calm" | "deep" | "adventurous";
 export type Pace = "story" | "info" | "mixed";
 
-export interface QuizAnswer {
+/* ----------------------------------------------------------
+ * QuizAnswer — discriminated union across the 3 entry paths.
+ * Stored in sessionStorage as JSON and consumed by /result.
+ * ---------------------------------------------------------- */
+export type QuizMode = "mbti" | "interest" | "career";
+
+export interface MBTIAnswer {
+  mode: "mbti";
   mbti: MBTIType;
   interests: BookCategory[];
   mood: Mood;
   pace: Pace;
 }
+
+export interface InterestAnswer {
+  mode: "interest";
+  topics: string[]; // InterestTopic.key values
+}
+
+export interface CareerAnswer {
+  mode: "career";
+  career: string; // CareerTrack.key value
+}
+
+export type QuizAnswer = MBTIAnswer | InterestAnswer | CareerAnswer;
 
 export interface Recommendation {
   book: Book;

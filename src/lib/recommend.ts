@@ -1,21 +1,25 @@
 import type {
   Book,
   BookCategory,
+  CareerAnswer,
+  InterestAnswer,
+  MBTIAnswer,
   MBTIType,
   Mood,
-  Pace,
   QuizAnswer,
   Recommendation,
 } from "./types";
+import { topicByKey } from "./interests";
+import { careerByKey } from "./careers";
 
 type Temperament = "NF" | "NT" | "SJ" | "SP";
 
 const CATEGORY_WEIGHTS: Record<Temperament, Record<BookCategory, number>> = {
-  // Idealists: care about meaning, people → literature + humanities
+  // Idealists: meaning + people → literature + humanities
   NF: { 문학: 3, 인문: 2, 사회: 1, 과학: 1 },
-  // Analysts: love systems, theory → science + humanities
+  // Analysts: systems + theory → science + humanities
   NT: { 과학: 3, 인문: 2, 사회: 1, 문학: 1 },
-  // Sentinels: rules, community, structure → social + humanities
+  // Sentinels: rules + community → social + humanities
   SJ: { 사회: 3, 인문: 2, 과학: 1, 문학: 1 },
   // Explorers: experience-driven, balanced curiosity
   SP: { 문학: 2, 과학: 2, 사회: 2, 인문: 1 },
@@ -45,117 +49,142 @@ function temperament(type: MBTIType): Temperament {
   return jp === "J" ? "SJ" : "SP";
 }
 
-export interface ScoreBreakdown {
-  mbtiFit: number;
-  interest: number;
-  mood: number;
-  pace: number;
-  total: number;
+interface ScoredEntry {
+  book: Book;
+  score: number;
   reasons: string[];
 }
 
-function scoreBook(book: Book, answers: QuizAnswer): ScoreBreakdown {
+function scoreMBTI(book: Book, a: MBTIAnswer): ScoredEntry {
   const reasons: string[] = [];
-  const weights = CATEGORY_WEIGHTS[temperament(answers.mbti)];
+  const weights = CATEGORY_WEIGHTS[temperament(a.mbti)];
 
-  const mbtiFit = weights[book.category] ?? 0;
-  if (mbtiFit >= 2) {
-    reasons.push(`${answers.mbti} 유형이 끌릴 만한 ${book.category}`);
-  }
+  let score = weights[book.category] ?? 0;
+  if (score >= 2) reasons.push(`${a.mbti} 유형이 끌릴 만한 ${book.category}`);
 
-  let interest = 0;
-  if (answers.interests.includes(book.category)) {
-    interest = 5;
+  if (a.interests.includes(book.category)) {
+    score += 5;
     reasons.push(`관심 분야 ‘${book.category}’`);
   }
 
-  let mood = 0;
-  const kws = MOOD_KEYWORDS[answers.mood];
-  let matchedKw = 0;
-  for (const kw of kws) {
-    if (book.description.includes(kw)) matchedKw++;
-  }
-  if (matchedKw > 0) {
-    mood = Math.min(matchedKw * 1.5, 6);
-    reasons.push(`‘${MOOD_LABEL[answers.mood]}’ 분위기`);
+  const moodKws = MOOD_KEYWORDS[a.mood];
+  let moodMatches = 0;
+  for (const kw of moodKws) if (book.description.includes(kw)) moodMatches++;
+  if (moodMatches > 0) {
+    score += Math.min(moodMatches * 1.5, 6);
+    reasons.push(`‘${MOOD_LABEL[a.mood]}’ 분위기`);
   }
 
-  let pace = 0;
-  if (answers.pace === "story" && book.category === "문학") {
-    pace = 2;
+  if (a.pace === "story" && book.category === "문학") {
+    score += 2;
     reasons.push("이야기 호흡");
-  } else if (
-    answers.pace === "info" &&
-    (book.category === "과학" || book.category === "사회")
-  ) {
-    pace = 2;
+  } else if (a.pace === "info" && (book.category === "과학" || book.category === "사회")) {
+    score += 2;
     reasons.push("정보·지식 호흡");
   }
 
-  return {
-    mbtiFit,
-    interest,
-    mood,
-    pace,
-    total: mbtiFit + interest + mood + pace,
-    reasons,
-  };
+  return { book, score, reasons };
+}
+
+function scoreInterest(book: Book, a: InterestAnswer): ScoredEntry {
+  const reasons: string[] = [];
+  let score = 0;
+  const matchedLabels: string[] = [];
+
+  for (const topicKey of a.topics) {
+    const topic = topicByKey(topicKey);
+    if (!topic) continue;
+    let matches = 0;
+    for (const kw of topic.keywords) {
+      if (book.description.includes(kw)) matches++;
+    }
+    if (matches > 0) {
+      score += Math.min(matches * 1.5, 6);
+      matchedLabels.push(topic.label);
+    }
+  }
+
+  if (matchedLabels.length > 0) {
+    reasons.push(`관심 주제 ‘${matchedLabels.join(", ")}’`);
+  }
+
+  return { book, score, reasons };
+}
+
+function scoreCareer(book: Book, a: CareerAnswer): ScoredEntry {
+  const career = careerByKey(a.career);
+  if (!career) return { book, score: 0, reasons: [] };
+
+  const reasons: string[] = [];
+  let score = 0;
+
+  if (career.preferredCategories.includes(book.category)) {
+    score += 5;
+    reasons.push(`‘${career.label}’과 어울리는 ${book.category}`);
+  }
+
+  let matches = 0;
+  for (const kw of career.keywords) {
+    if (book.description.includes(kw)) matches++;
+  }
+  if (matches > 0) {
+    score += Math.min(matches * 1.5, 6);
+    reasons.push(`‘${career.label}’ 관련 키워드`);
+  }
+
+  return { book, score, reasons };
+}
+
+function dispatchScore(book: Book, answer: QuizAnswer): ScoredEntry {
+  if (answer.mode === "mbti") return scoreMBTI(book, answer);
+  if (answer.mode === "interest") return scoreInterest(book, answer);
+  return scoreCareer(book, answer);
 }
 
 /**
- * Score every book and return top picks, with category diversity.
+ * Score every book and return top picks with category diversity.
  * Deterministic: same answers → same recommendations.
  */
 export function recommend(
   books: Book[],
-  answers: QuizAnswer,
+  answer: QuizAnswer,
   limit = 4
 ): Recommendation[] {
   const scored = books
-    .map((book) => ({ book, breakdown: scoreBook(book, answers) }))
-    .filter((x) => x.breakdown.total > 0)
-    .sort(
-      (a, b) =>
-        b.breakdown.total - a.breakdown.total || a.book.id - b.book.id
-    );
+    .map((book) => dispatchScore(book, answer))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score || a.book.id - b.book.id);
 
   if (scored.length === 0) return [];
 
-  // Phase 1: take the top item.
-  const picked: typeof scored = [];
+  const picked: ScoredEntry[] = [];
   const usedCategories = new Set<BookCategory>();
   const usedIds = new Set<number>();
 
+  // Always take the top item.
   picked.push(scored[0]);
   usedCategories.add(scored[0].book.category);
   usedIds.add(scored[0].book.id);
 
-  // Phase 2: diversify — for the next picks, prefer unseen categories
-  // until we have at least 2 categories represented.
-  for (const candidate of scored) {
+  // Prefer category diversity until 2 categories represented.
+  for (const c of scored) {
     if (picked.length >= limit) break;
-    if (usedIds.has(candidate.book.id)) continue;
-    if (usedCategories.size < 2 && usedCategories.has(candidate.book.category)) {
-      continue; // skip; look for a different category first
-    }
-    picked.push(candidate);
-    usedCategories.add(candidate.book.category);
-    usedIds.add(candidate.book.id);
+    if (usedIds.has(c.book.id)) continue;
+    if (usedCategories.size < 2 && usedCategories.has(c.book.category)) continue;
+    picked.push(c);
+    usedCategories.add(c.book.category);
+    usedIds.add(c.book.id);
   }
 
-  // Phase 3: if still short (couldn't diversify), fill by raw score.
-  for (const candidate of scored) {
+  // Fill remaining by raw score if diversity wasn't possible.
+  for (const c of scored) {
     if (picked.length >= limit) break;
-    if (usedIds.has(candidate.book.id)) continue;
-    picked.push(candidate);
-    usedIds.add(candidate.book.id);
+    if (usedIds.has(c.book.id)) continue;
+    picked.push(c);
+    usedIds.add(c.book.id);
   }
 
-  return picked.map((x) => ({
-    book: x.book,
-    score: x.breakdown.total,
-    reasons: x.breakdown.reasons,
-  }));
+  return picked;
 }
 
-export const __test__ = { scoreBook, temperament };
+export const __test__ = { scoreMBTI, scoreInterest, scoreCareer, temperament };

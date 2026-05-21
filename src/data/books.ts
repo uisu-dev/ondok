@@ -1,4 +1,4 @@
-import type { Book } from "@/lib/types";
+import type { Book, QuizAnswer } from "@/lib/types";
 import { getSupabase } from "./supabase";
 
 let cache: Book[] | null = null;
@@ -46,7 +46,6 @@ export async function getAllBooks(): Promise<Book[]> {
       cache = (data as SupabaseBookRow[]).map(fromRow);
       return cache;
     }
-    // fall through to seed on error
     console.warn("Supabase fetch failed, falling back to seed:", error?.message);
   }
   const seed = (await import("./books-seed.json")).default as Book[];
@@ -54,20 +53,32 @@ export async function getAllBooks(): Promise<Book[]> {
   return cache;
 }
 
-export async function logQuiz(input: {
-  mbti: string;
-  interests: string[];
-  mood: string;
-  pace: string;
-  recommendedBookIds: number[];
-}): Promise<void> {
+/**
+ * Insert an anonymous quiz log into Supabase.
+ * Schema accepts the mode-specific fields and leaves others null.
+ * Silent no-op if Supabase is not configured.
+ */
+export async function logQuiz(
+  answer: QuizAnswer,
+  recommendedBookIds: number[]
+): Promise<void> {
   const supabase = getSupabase();
   if (!supabase) return;
-  await supabase.from("quiz_logs").insert({
-    mbti: input.mbti,
-    interests: input.interests,
-    mood: input.mood,
-    pace: input.pace,
-    recommended_book_ids: input.recommendedBookIds,
-  });
+
+  const row: Record<string, unknown> = {
+    mode: answer.mode,
+    recommended_book_ids: recommendedBookIds,
+  };
+  if (answer.mode === "mbti") {
+    row.mbti = answer.mbti;
+    row.interests = answer.interests;
+    row.mood = answer.mood;
+    row.pace = answer.pace;
+  } else if (answer.mode === "interest") {
+    row.topics = answer.topics;
+  } else {
+    row.career = answer.career;
+  }
+
+  await supabase.from("quiz_logs").insert(row);
 }

@@ -1,55 +1,91 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
-import { buttonClass } from "@/components/ui/Button";
 import { OnthinkingBanner } from "@/components/OnthinkingBanner";
+
+interface PathOption {
+  href: string;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  hint: string;
+}
+
+const PATHS: PathOption[] = [
+  {
+    href: "/quiz/mbti",
+    emoji: "🧠",
+    title: "MBTI로 찾기",
+    subtitle: "성격 유형으로 어울리는 책 추천",
+    hint: "8문항 빠른 진단 · 약 2분",
+  },
+  {
+    href: "/quiz/interest",
+    emoji: "🌱",
+    title: "관심사로 찾기",
+    subtitle: "좋아하는 주제로 책 추천",
+    hint: "우주 · AI · 환경 · 마음 · 모험 …",
+  },
+  {
+    href: "/quiz/career",
+    emoji: "🎓",
+    title: "진로·전공으로 찾기",
+    subtitle: "꿈꾸는 미래에 어울리는 책 추천",
+    hint: "과학 · 의료 · 공학 · 예술 · 교육 …",
+  },
+];
 
 export default function HomePage() {
   return (
     <main className="flex-1 w-full">
       <div className="mx-auto max-w-[720px] px-6 py-10 space-y-6">
-        <Card as="section" className="px-6 py-10 text-center space-y-4">
+        {/* Hero */}
+        <Card as="section" className="px-6 py-9 text-center space-y-3">
           <p className="text-sm font-semibold tracking-wide text-accent-600">
             충남교육청 온독지수 추천도서
           </p>
           <h1 className="text-3xl md:text-4xl font-bold text-fg-strong leading-tight">
-            나에게 어울리는 책,
+            <span className="text-accent-600">온독 플러스</span>가
             <br />
-            <span className="text-accent-600">온독 플러스</span>가 골라줄게요.
+            나에게 어울리는 책을 골라줘요.
           </h1>
-          <p className="text-base text-fg-muted leading-relaxed max-w-[480px] mx-auto">
-            MBTI 8문항과 짧은 취향 질문에 답하면,
+          <p className="text-base text-fg-muted leading-relaxed max-w-[480px] mx-auto pt-1">
+            세 가지 방법 중에서 골라보세요.
             <br />
-            온독지수 추천도서 214권 중 너에게 꼭 맞는 책을 찾아드려요.
+            온독지수 추천도서 214권에서 찾아드려요.
           </p>
-          <div className="pt-2">
-            <Link href="/quiz" className={buttonClass("primary")}>
-              시작하기
-            </Link>
-          </div>
         </Card>
 
-        <Card as="section" className="px-6 py-6 space-y-4">
-          <h2 className="text-lg font-semibold text-fg-strong">
-            어떻게 추천해 주나요?
-          </h2>
-          <ol className="space-y-3">
-            {[
-              ["MBTI 8문항", "성격 유형을 빠르게 진단해요."],
-              ["취향·관심·분위기", "어떤 책을 좋아하는지 확인해요."],
-              ["맞춤 추천", "답변에 어울리는 책 3~5권을 보여드려요."],
-            ].map(([title, desc], i) => (
-              <li key={i} className="flex gap-4">
-                <span className="shrink-0 w-8 h-8 rounded-full bg-accent-50 text-accent-600 flex items-center justify-center text-sm font-bold">
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="font-semibold text-fg-strong">{title}</p>
-                  <p className="text-sm text-fg-muted">{desc}</p>
+        {/* 3 paths */}
+        <div className="space-y-3">
+          {PATHS.map((p) => (
+            <Link
+              key={p.href}
+              href={p.href}
+              className="block group"
+            >
+              <Card
+                interactive
+                className="px-5 py-5 flex items-center gap-4 transition-colors group-hover:border-accent-300 border border-transparent"
+              >
+                <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
+                  {p.emoji}
                 </div>
-              </li>
-            ))}
-          </ol>
-        </Card>
+                <div className="flex-1 min-w-0">
+                  <p className="text-base font-bold text-fg-strong">
+                    {p.title}
+                  </p>
+                  <p className="text-sm text-fg-muted">{p.subtitle}</p>
+                  <p className="text-xs text-fg-subtle mt-1 truncate">
+                    {p.hint}
+                  </p>
+                </div>
+                <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
+                  →
+                </div>
+              </Card>
+            </Link>
+          ))}
+        </div>
 
         <OnthinkingBanner />
 
