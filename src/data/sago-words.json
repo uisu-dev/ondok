@@ -1,0 +1,8323 @@
+{
+  "source": "충청남도교육청 — 한국어 사고도구어 목록(1,387개)",
+  "definition": "사고 및 논리 전개 과정을 담당하는 단어로, 주요 내용을 파악하고 이해하는 언어 능력(의사소통) 신장의 기반이 되는 단어들",
+  "totals": {
+    "1": 43,
+    "2": 291,
+    "3": 584,
+    "4": 466,
+    "all": 1384
+  },
+  "notes": {
+    "grade1": "1급(43개): 구체적 사고를 표상하는 어휘 중심. 구체적 조작기(7~12세) 초반, 초등 1~4학년군.",
+    "grade2": "2급(293개): 추상적 어휘 비중이 늘어남. 구체적 조작기 후반, 초등 5~6학년군.",
+    "grade3": "3급(585개): 추상적 사고도구어가 급증. 추상적 조작기(12세~성인) 초반, 중학교.",
+    "grade4": "4급(466개): 매우 추상적인 사고도구어 중심. 추상적 조작기 안정기, 고등학교군."
+  },
+  "words": [
+    {
+      "grade": 1,
+      "word": "검사",
+      "suffix": 3,
+      "raw": "검사3"
+    },
+    {
+      "grade": 1,
+      "word": "결과",
+      "suffix": 2,
+      "raw": "결과2"
+    },
+    {
+      "grade": 1,
+      "word": "결정",
+      "suffix": 1,
+      "raw": "결정1"
+    },
+    {
+      "grade": 1,
+      "word": "경험",
+      "suffix": null,
+      "raw": "경험"
+    },
+    {
+      "grade": 1,
+      "word": "계획",
+      "suffix": 1,
+      "raw": "계획1"
+    },
+    {
+      "grade": 1,
+      "word": "관계",
+      "suffix": 5,
+      "raw": "관계5"
+    },
+    {
+      "grade": 1,
+      "word": "교환",
+      "suffix": 1,
+      "raw": "교환1"
+    },
+    {
+      "grade": 1,
+      "word": "규칙",
+      "suffix": 2,
+      "raw": "규칙2"
+    },
+    {
+      "grade": 1,
+      "word": "내용",
+      "suffix": 2,
+      "raw": "내용2"
+    },
+    {
+      "grade": 1,
+      "word": "능력",
+      "suffix": 2,
+      "raw": "능력2"
+    },
+    {
+      "grade": 1,
+      "word": "단순",
+      "suffix": 2,
+      "raw": "단순2"
+    },
+    {
+      "grade": 1,
+      "word": "목적",
+      "suffix": 3,
+      "raw": "목적3"
+    },
+    {
+      "grade": 1,
+      "word": "문제",
+      "suffix": 6,
+      "raw": "문제6"
+    },
+    {
+      "grade": 1,
+      "word": "반대",
+      "suffix": 2,
+      "raw": "반대2"
+    },
+    {
+      "grade": 1,
+      "word": "방법",
+      "suffix": null,
+      "raw": "방법"
+    },
+    {
+      "grade": 1,
+      "word": "방향",
+      "suffix": 1,
+      "raw": "방향1"
+    },
+    {
+      "grade": 1,
+      "word": "복잡",
+      "suffix": null,
+      "raw": "복잡"
+    },
+    {
+      "grade": 1,
+      "word": "부분",
+      "suffix": 1,
+      "raw": "부분1"
+    },
+    {
+      "grade": 1,
+      "word": "비교",
+      "suffix": 1,
+      "raw": "비교1"
+    },
+    {
+      "grade": 1,
+      "word": "사실",
+      "suffix": 4,
+      "raw": "사실4"
+    },
+    {
+      "grade": 1,
+      "word": "선택",
+      "suffix": null,
+      "raw": "선택"
+    },
+    {
+      "grade": 1,
+      "word": "설명",
+      "suffix": null,
+      "raw": "설명"
+    },
+    {
+      "grade": 1,
+      "word": "성격",
+      "suffix": 2,
+      "raw": "성격2"
+    },
+    {
+      "grade": 1,
+      "word": "소개",
+      "suffix": 1,
+      "raw": "소개1"
+    },
+    {
+      "grade": 1,
+      "word": "안내",
+      "suffix": 1,
+      "raw": "안내1"
+    },
+    {
+      "grade": 1,
+      "word": "연결",
+      "suffix": 1,
+      "raw": "연결1"
+    },
+    {
+      "grade": 1,
+      "word": "의미",
+      "suffix": 2,
+      "raw": "의미2"
+    },
+    {
+      "grade": 1,
+      "word": "이상",
+      "suffix": 4,
+      "raw": "이상4"
+    },
+    {
+      "grade": 1,
+      "word": "이용",
+      "suffix": 1,
+      "raw": "이용1"
+    },
+    {
+      "grade": 1,
+      "word": "이해",
+      "suffix": 5,
+      "raw": "이해5"
+    },
+    {
+      "grade": 1,
+      "word": "재료",
+      "suffix": 1,
+      "raw": "재료1"
+    },
+    {
+      "grade": 1,
+      "word": "정리",
+      "suffix": 9,
+      "raw": "정리9"
+    },
+    {
+      "grade": 1,
+      "word": "정확",
+      "suffix": 1,
+      "raw": "정확1"
+    },
+    {
+      "grade": 1,
+      "word": "종류",
+      "suffix": null,
+      "raw": "종류"
+    },
+    {
+      "grade": 1,
+      "word": "주변",
+      "suffix": 2,
+      "raw": "주변2"
+    },
+    {
+      "grade": 1,
+      "word": "준비",
+      "suffix": null,
+      "raw": "준비"
+    },
+    {
+      "grade": 1,
+      "word": "중심",
+      "suffix": 1,
+      "raw": "중심1"
+    },
+    {
+      "grade": 1,
+      "word": "중요",
+      "suffix": 2,
+      "raw": "중요2"
+    },
+    {
+      "grade": 1,
+      "word": "지도",
+      "suffix": 9,
+      "raw": "지도9"
+    },
+    {
+      "grade": 1,
+      "word": "직접",
+      "suffix": null,
+      "raw": "직접"
+    },
+    {
+      "grade": 1,
+      "word": "취소",
+      "suffix": 1,
+      "raw": "취소1"
+    },
+    {
+      "grade": 1,
+      "word": "프로그램",
+      "suffix": null,
+      "raw": "프로그램"
+    },
+    {
+      "grade": 1,
+      "word": "행동",
+      "suffix": null,
+      "raw": "행동"
+    },
+    {
+      "grade": 2,
+      "word": "가능",
+      "suffix": null,
+      "raw": "가능"
+    },
+    {
+      "grade": 2,
+      "word": "간결",
+      "suffix": 2,
+      "raw": "간결2"
+    },
+    {
+      "grade": 2,
+      "word": "간략",
+      "suffix": 2,
+      "raw": "간략2"
+    },
+    {
+      "grade": 2,
+      "word": "간접",
+      "suffix": null,
+      "raw": "간접"
+    },
+    {
+      "grade": 2,
+      "word": "감각",
+      "suffix": 2,
+      "raw": "감각2"
+    },
+    {
+      "grade": 2,
+      "word": "강력",
+      "suffix": 2,
+      "raw": "강력2"
+    },
+    {
+      "grade": 2,
+      "word": "강제",
+      "suffix": 1,
+      "raw": "강제1"
+    },
+    {
+      "grade": 2,
+      "word": "강조",
+      "suffix": 2,
+      "raw": "강조2"
+    },
+    {
+      "grade": 2,
+      "word": "개혁",
+      "suffix": null,
+      "raw": "개혁"
+    },
+    {
+      "grade": 2,
+      "word": "거부",
+      "suffix": 2,
+      "raw": "거부2"
+    },
+    {
+      "grade": 2,
+      "word": "검색",
+      "suffix": null,
+      "raw": "검색"
+    },
+    {
+      "grade": 2,
+      "word": "견해",
+      "suffix": 2,
+      "raw": "견해2"
+    },
+    {
+      "grade": 2,
+      "word": "결론",
+      "suffix": 2,
+      "raw": "결론2"
+    },
+    {
+      "grade": 2,
+      "word": "경쟁",
+      "suffix": null,
+      "raw": "경쟁"
+    },
+    {
+      "grade": 2,
+      "word": "고려",
+      "suffix": 1,
+      "raw": "고려1"
+    },
+    {
+      "grade": 2,
+      "word": "고정",
+      "suffix": 5,
+      "raw": "고정5"
+    },
+    {
+      "grade": 2,
+      "word": "공개",
+      "suffix": null,
+      "raw": "공개"
+    },
+    {
+      "grade": 2,
+      "word": "공동",
+      "suffix": 2,
+      "raw": "공동2"
+    },
+    {
+      "grade": 2,
+      "word": "공통",
+      "suffix": null,
+      "raw": "공통"
+    },
+    {
+      "grade": 2,
+      "word": "공평",
+      "suffix": 1,
+      "raw": "공평1"
+    },
+    {
+      "grade": 2,
+      "word": "과장",
+      "suffix": 6,
+      "raw": "과장6"
+    },
+    {
+      "grade": 2,
+      "word": "과정",
+      "suffix": 3,
+      "raw": "과정3"
+    },
+    {
+      "grade": 2,
+      "word": "관련",
+      "suffix": null,
+      "raw": "관련"
+    },
+    {
+      "grade": 2,
+      "word": "관리",
+      "suffix": 4,
+      "raw": "관리4"
+    },
+    {
+      "grade": 2,
+      "word": "관찰",
+      "suffix": 1,
+      "raw": "관찰1"
+    },
+    {
+      "grade": 2,
+      "word": "관측",
+      "suffix": null,
+      "raw": "관측"
+    },
+    {
+      "grade": 2,
+      "word": "구별",
+      "suffix": 2,
+      "raw": "구별2"
+    },
+    {
+      "grade": 2,
+      "word": "구분",
+      "suffix": 6,
+      "raw": "구분6"
+    },
+    {
+      "grade": 2,
+      "word": "권장",
+      "suffix": 2,
+      "raw": "권장2"
+    },
+    {
+      "grade": 2,
+      "word": "균형",
+      "suffix": null,
+      "raw": "균형"
+    },
+    {
+      "grade": 2,
+      "word": "극복",
+      "suffix": 1,
+      "raw": "극복1"
+    },
+    {
+      "grade": 2,
+      "word": "근거",
+      "suffix": null,
+      "raw": "근거"
+    },
+    {
+      "grade": 2,
+      "word": "급격하다",
+      "suffix": 1,
+      "raw": "급격하다1"
+    },
+    {
+      "grade": 2,
+      "word": "긍정",
+      "suffix": null,
+      "raw": "긍정"
+    },
+    {
+      "grade": 2,
+      "word": "기능",
+      "suffix": 1,
+      "raw": "기능1"
+    },
+    {
+      "grade": 2,
+      "word": "기법",
+      "suffix": 1,
+      "raw": "기법1"
+    },
+    {
+      "grade": 2,
+      "word": "기본",
+      "suffix": null,
+      "raw": "기본"
+    },
+    {
+      "grade": 2,
+      "word": "기술",
+      "suffix": 1,
+      "raw": "기술1"
+    },
+    {
+      "grade": 2,
+      "word": "기준",
+      "suffix": 3,
+      "raw": "기준3"
+    },
+    {
+      "grade": 2,
+      "word": "기초",
+      "suffix": 6,
+      "raw": "기초6"
+    },
+    {
+      "grade": 2,
+      "word": "기호",
+      "suffix": 1,
+      "raw": "기호1"
+    },
+    {
+      "grade": 2,
+      "word": "나열",
+      "suffix": 2,
+      "raw": "나열2"
+    },
+    {
+      "grade": 2,
+      "word": "내부",
+      "suffix": 4,
+      "raw": "내부04"
+    },
+    {
+      "grade": 2,
+      "word": "다양",
+      "suffix": null,
+      "raw": "다양"
+    },
+    {
+      "grade": 2,
+      "word": "단계",
+      "suffix": 2,
+      "raw": "단계2"
+    },
+    {
+      "grade": 2,
+      "word": "단정",
+      "suffix": 8,
+      "raw": "단정8"
+    },
+    {
+      "grade": 2,
+      "word": "대강",
+      "suffix": 2,
+      "raw": "대강2"
+    },
+    {
+      "grade": 2,
+      "word": "대비",
+      "suffix": 8,
+      "raw": "대비8"
+    },
+    {
+      "grade": 2,
+      "word": "대조",
+      "suffix": 9,
+      "raw": "대조9"
+    },
+    {
+      "grade": 2,
+      "word": "대책",
+      "suffix": 3,
+      "raw": "대책3"
+    },
+    {
+      "grade": 2,
+      "word": "대칭",
+      "suffix": 2,
+      "raw": "대칭2"
+    },
+    {
+      "grade": 2,
+      "word": "대표",
+      "suffix": null,
+      "raw": "대표"
+    },
+    {
+      "grade": 2,
+      "word": "대항",
+      "suffix": null,
+      "raw": "대항"
+    },
+    {
+      "grade": 2,
+      "word": "도구",
+      "suffix": 8,
+      "raw": "도구8"
+    },
+    {
+      "grade": 2,
+      "word": "도달",
+      "suffix": 1,
+      "raw": "도달1"
+    },
+    {
+      "grade": 2,
+      "word": "독립",
+      "suffix": null,
+      "raw": "독립"
+    },
+    {
+      "grade": 2,
+      "word": "독창",
+      "suffix": 5,
+      "raw": "독창5"
+    },
+    {
+      "grade": 2,
+      "word": "동등",
+      "suffix": 2,
+      "raw": "동등2"
+    },
+    {
+      "grade": 2,
+      "word": "동력",
+      "suffix": 2,
+      "raw": "동력2"
+    },
+    {
+      "grade": 2,
+      "word": "동의",
+      "suffix": 2,
+      "raw": "동의2"
+    },
+    {
+      "grade": 2,
+      "word": "등장",
+      "suffix": 1,
+      "raw": "등장1"
+    },
+    {
+      "grade": 2,
+      "word": "모방",
+      "suffix": 4,
+      "raw": "모방4"
+    },
+    {
+      "grade": 2,
+      "word": "목표",
+      "suffix": null,
+      "raw": "목표"
+    },
+    {
+      "grade": 2,
+      "word": "무시",
+      "suffix": 3,
+      "raw": "무시3"
+    },
+    {
+      "grade": 2,
+      "word": "미만",
+      "suffix": 1,
+      "raw": "미만1"
+    },
+    {
+      "grade": 2,
+      "word": "미세",
+      "suffix": null,
+      "raw": "미세"
+    },
+    {
+      "grade": 2,
+      "word": "밀접",
+      "suffix": null,
+      "raw": "밀접"
+    },
+    {
+      "grade": 2,
+      "word": "반복",
+      "suffix": 1,
+      "raw": "반복1"
+    },
+    {
+      "grade": 2,
+      "word": "발견",
+      "suffix": 1,
+      "raw": "발견1"
+    },
+    {
+      "grade": 2,
+      "word": "발달",
+      "suffix": null,
+      "raw": "발달"
+    },
+    {
+      "grade": 2,
+      "word": "발명",
+      "suffix": 1,
+      "raw": "발명1"
+    },
+    {
+      "grade": 2,
+      "word": "발생",
+      "suffix": null,
+      "raw": "발생"
+    },
+    {
+      "grade": 2,
+      "word": "발전",
+      "suffix": 1,
+      "raw": "발전1"
+    },
+    {
+      "grade": 2,
+      "word": "방대하다",
+      "suffix": null,
+      "raw": "방대하다"
+    },
+    {
+      "grade": 2,
+      "word": "방식",
+      "suffix": 1,
+      "raw": "방식1"
+    },
+    {
+      "grade": 2,
+      "word": "방안",
+      "suffix": 1,
+      "raw": "방안1"
+    },
+    {
+      "grade": 2,
+      "word": "방지",
+      "suffix": 3,
+      "raw": "방지3"
+    },
+    {
+      "grade": 2,
+      "word": "배경",
+      "suffix": 1,
+      "raw": "배경1"
+    },
+    {
+      "grade": 2,
+      "word": "배열",
+      "suffix": 2,
+      "raw": "배열2"
+    },
+    {
+      "grade": 2,
+      "word": "배출",
+      "suffix": 2,
+      "raw": "배출2"
+    },
+    {
+      "grade": 2,
+      "word": "범위",
+      "suffix": null,
+      "raw": "범위"
+    },
+    {
+      "grade": 2,
+      "word": "법칙",
+      "suffix": null,
+      "raw": "법칙"
+    },
+    {
+      "grade": 2,
+      "word": "변경",
+      "suffix": 4,
+      "raw": "변경4"
+    },
+    {
+      "grade": 2,
+      "word": "변천",
+      "suffix": 3,
+      "raw": "변천3"
+    },
+    {
+      "grade": 2,
+      "word": "변화",
+      "suffix": null,
+      "raw": "변화"
+    },
+    {
+      "grade": 2,
+      "word": "보관",
+      "suffix": 1,
+      "raw": "보관1"
+    },
+    {
+      "grade": 2,
+      "word": "보안",
+      "suffix": 1,
+      "raw": "보안1"
+    },
+    {
+      "grade": 2,
+      "word": "보완",
+      "suffix": null,
+      "raw": "보완"
+    },
+    {
+      "grade": 2,
+      "word": "보장",
+      "suffix": 1,
+      "raw": "보장1"
+    },
+    {
+      "grade": 2,
+      "word": "보충",
+      "suffix": null,
+      "raw": "보충"
+    },
+    {
+      "grade": 2,
+      "word": "보호",
+      "suffix": 1,
+      "raw": "보호1"
+    },
+    {
+      "grade": 2,
+      "word": "복사",
+      "suffix": 9,
+      "raw": "복사9"
+    },
+    {
+      "grade": 2,
+      "word": "부정",
+      "suffix": 10,
+      "raw": "부정10"
+    },
+    {
+      "grade": 2,
+      "word": "분류",
+      "suffix": 3,
+      "raw": "분류3"
+    },
+    {
+      "grade": 2,
+      "word": "분리",
+      "suffix": 4,
+      "raw": "분리4"
+    },
+    {
+      "grade": 2,
+      "word": "비율",
+      "suffix": 2,
+      "raw": "비율2"
+    },
+    {
+      "grade": 2,
+      "word": "비판",
+      "suffix": 1,
+      "raw": "비판1"
+    },
+    {
+      "grade": 2,
+      "word": "사고",
+      "suffix": 14,
+      "raw": "사고14"
+    },
+    {
+      "grade": 2,
+      "word": "사례",
+      "suffix": 5,
+      "raw": "사례5"
+    },
+    {
+      "grade": 2,
+      "word": "삭제",
+      "suffix": 1,
+      "raw": "삭제1"
+    },
+    {
+      "grade": 2,
+      "word": "상대",
+      "suffix": 4,
+      "raw": "상대4"
+    },
+    {
+      "grade": 2,
+      "word": "상상",
+      "suffix": 7,
+      "raw": "상상7"
+    },
+    {
+      "grade": 2,
+      "word": "상태",
+      "suffix": 1,
+      "raw": "상태1"
+    },
+    {
+      "grade": 2,
+      "word": "상황",
+      "suffix": 2,
+      "raw": "상황2"
+    },
+    {
+      "grade": 2,
+      "word": "생략",
+      "suffix": null,
+      "raw": "생략"
+    },
+    {
+      "grade": 2,
+      "word": "생산",
+      "suffix": null,
+      "raw": "생산"
+    },
+    {
+      "grade": 2,
+      "word": "설득",
+      "suffix": null,
+      "raw": "설득"
+    },
+    {
+      "grade": 2,
+      "word": "성과",
+      "suffix": 1,
+      "raw": "성과1"
+    },
+    {
+      "grade": 2,
+      "word": "성능",
+      "suffix": null,
+      "raw": "성능"
+    },
+    {
+      "grade": 2,
+      "word": "성장",
+      "suffix": 1,
+      "raw": "성장1"
+    },
+    {
+      "grade": 2,
+      "word": "성질",
+      "suffix": null,
+      "raw": "성질"
+    },
+    {
+      "grade": 2,
+      "word": "세계적",
+      "suffix": null,
+      "raw": "세계적"
+    },
+    {
+      "grade": 2,
+      "word": "세기",
+      "suffix": 3,
+      "raw": "세기3"
+    },
+    {
+      "grade": 2,
+      "word": "소극적",
+      "suffix": null,
+      "raw": "소극적"
+    },
+    {
+      "grade": 2,
+      "word": "소비",
+      "suffix": 4,
+      "raw": "소비4"
+    },
+    {
+      "grade": 2,
+      "word": "소용",
+      "suffix": 5,
+      "raw": "소용5"
+    },
+    {
+      "grade": 2,
+      "word": "소유",
+      "suffix": 2,
+      "raw": "소유2"
+    },
+    {
+      "grade": 2,
+      "word": "소재",
+      "suffix": 5,
+      "raw": "소재5"
+    },
+    {
+      "grade": 2,
+      "word": "소통",
+      "suffix": 2,
+      "raw": "소통2"
+    },
+    {
+      "grade": 2,
+      "word": "수거",
+      "suffix": 3,
+      "raw": "수거3"
+    },
+    {
+      "grade": 2,
+      "word": "수단",
+      "suffix": 1,
+      "raw": "수단1"
+    },
+    {
+      "grade": 2,
+      "word": "수립",
+      "suffix": 2,
+      "raw": "수립2"
+    },
+    {
+      "grade": 2,
+      "word": "수용",
+      "suffix": 6,
+      "raw": "수용6"
+    },
+    {
+      "grade": 2,
+      "word": "수정",
+      "suffix": 8,
+      "raw": "수정8"
+    },
+    {
+      "grade": 2,
+      "word": "수준",
+      "suffix": null,
+      "raw": "수준"
+    },
+    {
+      "grade": 2,
+      "word": "수집",
+      "suffix": 2,
+      "raw": "수집2"
+    },
+    {
+      "grade": 2,
+      "word": "습득",
+      "suffix": 3,
+      "raw": "습득3"
+    },
+    {
+      "grade": 2,
+      "word": "시도",
+      "suffix": 7,
+      "raw": "시도7"
+    },
+    {
+      "grade": 2,
+      "word": "실시",
+      "suffix": 3,
+      "raw": "실시3"
+    },
+    {
+      "grade": 2,
+      "word": "실천",
+      "suffix": 1,
+      "raw": "실천1"
+    },
+    {
+      "grade": 2,
+      "word": "실행",
+      "suffix": 2,
+      "raw": "실행2"
+    },
+    {
+      "grade": 2,
+      "word": "실험",
+      "suffix": null,
+      "raw": "실험"
+    },
+    {
+      "grade": 2,
+      "word": "심각",
+      "suffix": 2,
+      "raw": "심각2"
+    },
+    {
+      "grade": 2,
+      "word": "심사",
+      "suffix": 8,
+      "raw": "심사8"
+    },
+    {
+      "grade": 2,
+      "word": "아이디어",
+      "suffix": null,
+      "raw": "아이디어"
+    },
+    {
+      "grade": 2,
+      "word": "안정",
+      "suffix": 1,
+      "raw": "안정1"
+    },
+    {
+      "grade": 2,
+      "word": "연구",
+      "suffix": 3,
+      "raw": "연구3"
+    },
+    {
+      "grade": 2,
+      "word": "영향",
+      "suffix": 4,
+      "raw": "영향4"
+    },
+    {
+      "grade": 2,
+      "word": "예상",
+      "suffix": 2,
+      "raw": "예상2"
+    },
+    {
+      "grade": 2,
+      "word": "예시",
+      "suffix": 1,
+      "raw": "예시1"
+    },
+    {
+      "grade": 2,
+      "word": "예외",
+      "suffix": null,
+      "raw": "예외"
+    },
+    {
+      "grade": 2,
+      "word": "예정",
+      "suffix": 2,
+      "raw": "예정2"
+    },
+    {
+      "grade": 2,
+      "word": "예측",
+      "suffix": null,
+      "raw": "예측"
+    },
+    {
+      "grade": 2,
+      "word": "오프라인",
+      "suffix": null,
+      "raw": "오프라인"
+    },
+    {
+      "grade": 2,
+      "word": "온라인",
+      "suffix": null,
+      "raw": "온라인"
+    },
+    {
+      "grade": 2,
+      "word": "온전",
+      "suffix": null,
+      "raw": "온전"
+    },
+    {
+      "grade": 2,
+      "word": "완벽",
+      "suffix": null,
+      "raw": "완벽"
+    },
+    {
+      "grade": 2,
+      "word": "완성",
+      "suffix": 1,
+      "raw": "완성1"
+    },
+    {
+      "grade": 2,
+      "word": "완전",
+      "suffix": 1,
+      "raw": "완전1"
+    },
+    {
+      "grade": 2,
+      "word": "외부",
+      "suffix": 2,
+      "raw": "외부02"
+    },
+    {
+      "grade": 2,
+      "word": "요구",
+      "suffix": 1,
+      "raw": "요구1"
+    },
+    {
+      "grade": 2,
+      "word": "요약",
+      "suffix": 2,
+      "raw": "요약2"
+    },
+    {
+      "grade": 2,
+      "word": "요점",
+      "suffix": null,
+      "raw": "요점"
+    },
+    {
+      "grade": 2,
+      "word": "요청",
+      "suffix": null,
+      "raw": "요청"
+    },
+    {
+      "grade": 2,
+      "word": "용도",
+      "suffix": 2,
+      "raw": "용도2"
+    },
+    {
+      "grade": 2,
+      "word": "우수",
+      "suffix": 11,
+      "raw": "우수11"
+    },
+    {
+      "grade": 2,
+      "word": "운영",
+      "suffix": 3,
+      "raw": "운영3"
+    },
+    {
+      "grade": 2,
+      "word": "원격",
+      "suffix": 2,
+      "raw": "원격2"
+    },
+    {
+      "grade": 2,
+      "word": "원인",
+      "suffix": 2,
+      "raw": "원인2"
+    },
+    {
+      "grade": 2,
+      "word": "유래",
+      "suffix": null,
+      "raw": "유래"
+    },
+    {
+      "grade": 2,
+      "word": "유사",
+      "suffix": 18,
+      "raw": "유사18"
+    },
+    {
+      "grade": 2,
+      "word": "유용",
+      "suffix": 1,
+      "raw": "유용1"
+    },
+    {
+      "grade": 2,
+      "word": "유의",
+      "suffix": 4,
+      "raw": "유의4"
+    },
+    {
+      "grade": 2,
+      "word": "유익",
+      "suffix": 1,
+      "raw": "유익1"
+    },
+    {
+      "grade": 2,
+      "word": "유지",
+      "suffix": 8,
+      "raw": "유지8"
+    },
+    {
+      "grade": 2,
+      "word": "유형",
+      "suffix": 7,
+      "raw": "유형7"
+    },
+    {
+      "grade": 2,
+      "word": "의견",
+      "suffix": 1,
+      "raw": "의견1"
+    },
+    {
+      "grade": 2,
+      "word": "의도",
+      "suffix": 2,
+      "raw": "의도2"
+    },
+    {
+      "grade": 2,
+      "word": "의사소통",
+      "suffix": null,
+      "raw": "의사소통"
+    },
+    {
+      "grade": 2,
+      "word": "의의",
+      "suffix": 4,
+      "raw": "의의4"
+    },
+    {
+      "grade": 2,
+      "word": "의존",
+      "suffix": null,
+      "raw": "의존"
+    },
+    {
+      "grade": 2,
+      "word": "의지",
+      "suffix": 6,
+      "raw": "의지6"
+    },
+    {
+      "grade": 2,
+      "word": "이동",
+      "suffix": 3,
+      "raw": "이동3"
+    },
+    {
+      "grade": 2,
+      "word": "이하",
+      "suffix": 2,
+      "raw": "이하2"
+    },
+    {
+      "grade": 2,
+      "word": "인정",
+      "suffix": 7,
+      "raw": "인정7"
+    },
+    {
+      "grade": 2,
+      "word": "자극",
+      "suffix": 1,
+      "raw": "자극1"
+    },
+    {
+      "grade": 2,
+      "word": "자동적",
+      "suffix": null,
+      "raw": "자동적"
+    },
+    {
+      "grade": 2,
+      "word": "자료",
+      "suffix": 3,
+      "raw": "자료3"
+    },
+    {
+      "grade": 2,
+      "word": "자주",
+      "suffix": 3,
+      "raw": "자주3"
+    },
+    {
+      "grade": 2,
+      "word": "작동",
+      "suffix": 1,
+      "raw": "작동1"
+    },
+    {
+      "grade": 2,
+      "word": "적극",
+      "suffix": null,
+      "raw": "적극"
+    },
+    {
+      "grade": 2,
+      "word": "전달",
+      "suffix": 3,
+      "raw": "전달3"
+    },
+    {
+      "grade": 2,
+      "word": "절차",
+      "suffix": 2,
+      "raw": "절차2"
+    },
+    {
+      "grade": 2,
+      "word": "접수",
+      "suffix": 3,
+      "raw": "접수3"
+    },
+    {
+      "grade": 2,
+      "word": "접촉",
+      "suffix": null,
+      "raw": "접촉"
+    },
+    {
+      "grade": 2,
+      "word": "정교하다",
+      "suffix": null,
+      "raw": "정교하다"
+    },
+    {
+      "grade": 2,
+      "word": "정당",
+      "suffix": 4,
+      "raw": "정당4"
+    },
+    {
+      "grade": 2,
+      "word": "정보",
+      "suffix": 6,
+      "raw": "정보6"
+    },
+    {
+      "grade": 2,
+      "word": "정상",
+      "suffix": 10,
+      "raw": "정상10"
+    },
+    {
+      "grade": 2,
+      "word": "정지",
+      "suffix": 5,
+      "raw": "정지5"
+    },
+    {
+      "grade": 2,
+      "word": "제도",
+      "suffix": 1,
+      "raw": "제도1"
+    },
+    {
+      "grade": 2,
+      "word": "제안",
+      "suffix": 2,
+      "raw": "제안2"
+    },
+    {
+      "grade": 2,
+      "word": "조건",
+      "suffix": 2,
+      "raw": "조건2"
+    },
+    {
+      "grade": 2,
+      "word": "조사",
+      "suffix": 29,
+      "raw": "조사29"
+    },
+    {
+      "grade": 2,
+      "word": "종료",
+      "suffix": null,
+      "raw": "종료"
+    },
+    {
+      "grade": 2,
+      "word": "주의",
+      "suffix": 7,
+      "raw": "주의7"
+    },
+    {
+      "grade": 2,
+      "word": "주장",
+      "suffix": 3,
+      "raw": "주장3"
+    },
+    {
+      "grade": 2,
+      "word": "주제",
+      "suffix": 4,
+      "raw": "주제4"
+    },
+    {
+      "grade": 2,
+      "word": "준수",
+      "suffix": 3,
+      "raw": "준수3"
+    },
+    {
+      "grade": 2,
+      "word": "중립",
+      "suffix": 1,
+      "raw": "중립1"
+    },
+    {
+      "grade": 2,
+      "word": "중복",
+      "suffix": 5,
+      "raw": "중복5"
+    },
+    {
+      "grade": 2,
+      "word": "중시",
+      "suffix": 3,
+      "raw": "중시3"
+    },
+    {
+      "grade": 2,
+      "word": "증거",
+      "suffix": null,
+      "raw": "증거"
+    },
+    {
+      "grade": 2,
+      "word": "증명",
+      "suffix": null,
+      "raw": "증명"
+    },
+    {
+      "grade": 2,
+      "word": "지속",
+      "suffix": 1,
+      "raw": "지속1"
+    },
+    {
+      "grade": 2,
+      "word": "지시",
+      "suffix": 1,
+      "raw": "지시1"
+    },
+    {
+      "grade": 2,
+      "word": "지식",
+      "suffix": 2,
+      "raw": "지식2"
+    },
+    {
+      "grade": 2,
+      "word": "지원",
+      "suffix": 2,
+      "raw": "지원2"
+    },
+    {
+      "grade": 2,
+      "word": "지적",
+      "suffix": 5,
+      "raw": "지적5"
+    },
+    {
+      "grade": 2,
+      "word": "지점",
+      "suffix": 3,
+      "raw": "지점3"
+    },
+    {
+      "grade": 2,
+      "word": "지정",
+      "suffix": 13,
+      "raw": "지정13"
+    },
+    {
+      "grade": 2,
+      "word": "지지",
+      "suffix": 5,
+      "raw": "지지5"
+    },
+    {
+      "grade": 2,
+      "word": "지표",
+      "suffix": 3,
+      "raw": "지표3"
+    },
+    {
+      "grade": 2,
+      "word": "진출",
+      "suffix": 2,
+      "raw": "진출2"
+    },
+    {
+      "grade": 2,
+      "word": "집중",
+      "suffix": 2,
+      "raw": "집중2"
+    },
+    {
+      "grade": 2,
+      "word": "차단",
+      "suffix": null,
+      "raw": "차단"
+    },
+    {
+      "grade": 2,
+      "word": "참가",
+      "suffix": 1,
+      "raw": "참가1"
+    },
+    {
+      "grade": 2,
+      "word": "참여",
+      "suffix": null,
+      "raw": "참여"
+    },
+    {
+      "grade": 2,
+      "word": "창의",
+      "suffix": 4,
+      "raw": "창의4"
+    },
+    {
+      "grade": 2,
+      "word": "창조",
+      "suffix": 2,
+      "raw": "창조2"
+    },
+    {
+      "grade": 2,
+      "word": "처리",
+      "suffix": null,
+      "raw": "처리"
+    },
+    {
+      "grade": 2,
+      "word": "체험",
+      "suffix": null,
+      "raw": "체험"
+    },
+    {
+      "grade": 2,
+      "word": "초과",
+      "suffix": 2,
+      "raw": "초과2"
+    },
+    {
+      "grade": 2,
+      "word": "추리",
+      "suffix": 3,
+      "raw": "추리3"
+    },
+    {
+      "grade": 2,
+      "word": "추측",
+      "suffix": null,
+      "raw": "추측"
+    },
+    {
+      "grade": 2,
+      "word": "출처",
+      "suffix": 2,
+      "raw": "출처2"
+    },
+    {
+      "grade": 2,
+      "word": "충돌",
+      "suffix": null,
+      "raw": "충돌"
+    },
+    {
+      "grade": 2,
+      "word": "충족",
+      "suffix": null,
+      "raw": "충족"
+    },
+    {
+      "grade": 2,
+      "word": "측정",
+      "suffix": 1,
+      "raw": "측정1"
+    },
+    {
+      "grade": 2,
+      "word": "타당",
+      "suffix": 3,
+      "raw": "타당3"
+    },
+    {
+      "grade": 2,
+      "word": "타협",
+      "suffix": null,
+      "raw": "타협"
+    },
+    {
+      "grade": 2,
+      "word": "탁월하다",
+      "suffix": null,
+      "raw": "탁월하다"
+    },
+    {
+      "grade": 2,
+      "word": "탐구",
+      "suffix": 2,
+      "raw": "탐구2"
+    },
+    {
+      "grade": 2,
+      "word": "탐색",
+      "suffix": 2,
+      "raw": "탐색2"
+    },
+    {
+      "grade": 2,
+      "word": "토대",
+      "suffix": null,
+      "raw": "토대"
+    },
+    {
+      "grade": 2,
+      "word": "통과",
+      "suffix": null,
+      "raw": "통과"
+    },
+    {
+      "grade": 2,
+      "word": "통일",
+      "suffix": 2,
+      "raw": "통일2"
+    },
+    {
+      "grade": 2,
+      "word": "통제",
+      "suffix": 2,
+      "raw": "통제2"
+    },
+    {
+      "grade": 2,
+      "word": "특색",
+      "suffix": null,
+      "raw": "특색"
+    },
+    {
+      "grade": 2,
+      "word": "특성",
+      "suffix": 1,
+      "raw": "특성1"
+    },
+    {
+      "grade": 2,
+      "word": "특징",
+      "suffix": null,
+      "raw": "특징"
+    },
+    {
+      "grade": 2,
+      "word": "파괴",
+      "suffix": null,
+      "raw": "파괴"
+    },
+    {
+      "grade": 2,
+      "word": "파악",
+      "suffix": 1,
+      "raw": "파악1"
+    },
+    {
+      "grade": 2,
+      "word": "판단",
+      "suffix": null,
+      "raw": "판단"
+    },
+    {
+      "grade": 2,
+      "word": "판명",
+      "suffix": null,
+      "raw": "판명"
+    },
+    {
+      "grade": 2,
+      "word": "판별",
+      "suffix": null,
+      "raw": "판별"
+    },
+    {
+      "grade": 2,
+      "word": "판정",
+      "suffix": null,
+      "raw": "판정"
+    },
+    {
+      "grade": 2,
+      "word": "편의",
+      "suffix": 2,
+      "raw": "편의2"
+    },
+    {
+      "grade": 2,
+      "word": "평가",
+      "suffix": 3,
+      "raw": "평가3"
+    },
+    {
+      "grade": 2,
+      "word": "평이",
+      "suffix": null,
+      "raw": "평이"
+    },
+    {
+      "grade": 2,
+      "word": "폐기",
+      "suffix": 2,
+      "raw": "폐기2"
+    },
+    {
+      "grade": 2,
+      "word": "폐지",
+      "suffix": 2,
+      "raw": "폐지2"
+    },
+    {
+      "grade": 2,
+      "word": "포기",
+      "suffix": 2,
+      "raw": "포기2"
+    },
+    {
+      "grade": 2,
+      "word": "포함",
+      "suffix": 2,
+      "raw": "포함2"
+    },
+    {
+      "grade": 2,
+      "word": "표본",
+      "suffix": null,
+      "raw": "표본"
+    },
+    {
+      "grade": 2,
+      "word": "표시",
+      "suffix": 1,
+      "raw": "표시1"
+    },
+    {
+      "grade": 2,
+      "word": "표준",
+      "suffix": 1,
+      "raw": "표준1"
+    },
+    {
+      "grade": 2,
+      "word": "표현",
+      "suffix": null,
+      "raw": "표현"
+    },
+    {
+      "grade": 2,
+      "word": "필수",
+      "suffix": 2,
+      "raw": "필수2"
+    },
+    {
+      "grade": 2,
+      "word": "학습",
+      "suffix": null,
+      "raw": "학습"
+    },
+    {
+      "grade": 2,
+      "word": "합동",
+      "suffix": 1,
+      "raw": "합동1"
+    },
+    {
+      "grade": 2,
+      "word": "해결",
+      "suffix": null,
+      "raw": "해결"
+    },
+    {
+      "grade": 2,
+      "word": "해답",
+      "suffix": null,
+      "raw": "해답"
+    },
+    {
+      "grade": 2,
+      "word": "해당",
+      "suffix": 5,
+      "raw": "해당5"
+    },
+    {
+      "grade": 2,
+      "word": "해법",
+      "suffix": 2,
+      "raw": "해법2"
+    },
+    {
+      "grade": 2,
+      "word": "해석",
+      "suffix": 4,
+      "raw": "해석4"
+    },
+    {
+      "grade": 2,
+      "word": "해설",
+      "suffix": 3,
+      "raw": "해설3"
+    },
+    {
+      "grade": 2,
+      "word": "핵심",
+      "suffix": null,
+      "raw": "핵심"
+    },
+    {
+      "grade": 2,
+      "word": "행위",
+      "suffix": null,
+      "raw": "행위"
+    },
+    {
+      "grade": 2,
+      "word": "향상",
+      "suffix": 1,
+      "raw": "향상1"
+    },
+    {
+      "grade": 2,
+      "word": "허가",
+      "suffix": 1,
+      "raw": "허가1"
+    },
+    {
+      "grade": 2,
+      "word": "현실",
+      "suffix": 2,
+      "raw": "현실2"
+    },
+    {
+      "grade": 2,
+      "word": "현장",
+      "suffix": 3,
+      "raw": "현장3"
+    },
+    {
+      "grade": 2,
+      "word": "협동",
+      "suffix": null,
+      "raw": "협동"
+    },
+    {
+      "grade": 2,
+      "word": "협력",
+      "suffix": null,
+      "raw": "협력"
+    },
+    {
+      "grade": 2,
+      "word": "협의",
+      "suffix": 1,
+      "raw": "협의1"
+    },
+    {
+      "grade": 2,
+      "word": "협조",
+      "suffix": 2,
+      "raw": "협조2"
+    },
+    {
+      "grade": 2,
+      "word": "형태",
+      "suffix": null,
+      "raw": "형태"
+    },
+    {
+      "grade": 2,
+      "word": "혼동",
+      "suffix": 2,
+      "raw": "혼동2"
+    },
+    {
+      "grade": 2,
+      "word": "혼란",
+      "suffix": null,
+      "raw": "혼란"
+    },
+    {
+      "grade": 2,
+      "word": "혼잡",
+      "suffix": 2,
+      "raw": "혼잡2"
+    },
+    {
+      "grade": 2,
+      "word": "확고하다",
+      "suffix": null,
+      "raw": "확고하다"
+    },
+    {
+      "grade": 2,
+      "word": "확실",
+      "suffix": null,
+      "raw": "확실"
+    },
+    {
+      "grade": 2,
+      "word": "확인",
+      "suffix": 2,
+      "raw": "확인2"
+    },
+    {
+      "grade": 2,
+      "word": "활동",
+      "suffix": 2,
+      "raw": "활동2"
+    },
+    {
+      "grade": 2,
+      "word": "활약",
+      "suffix": null,
+      "raw": "활약"
+    },
+    {
+      "grade": 2,
+      "word": "활용",
+      "suffix": null,
+      "raw": "활용"
+    },
+    {
+      "grade": 2,
+      "word": "효과",
+      "suffix": 1,
+      "raw": "효과1"
+    },
+    {
+      "grade": 2,
+      "word": "흡수",
+      "suffix": 2,
+      "raw": "흡수2"
+    },
+    {
+      "grade": 2,
+      "word": "희귀",
+      "suffix": null,
+      "raw": "희귀"
+    },
+    {
+      "grade": 2,
+      "word": "희박하다",
+      "suffix": null,
+      "raw": "희박하다"
+    },
+    {
+      "grade": 3,
+      "word": "가동",
+      "suffix": 7,
+      "raw": "가동7"
+    },
+    {
+      "grade": 3,
+      "word": "가상",
+      "suffix": 5,
+      "raw": "가상5"
+    },
+    {
+      "grade": 3,
+      "word": "가설",
+      "suffix": 4,
+      "raw": "가설4"
+    },
+    {
+      "grade": 3,
+      "word": "가정",
+      "suffix": 7,
+      "raw": "가정7"
+    },
+    {
+      "grade": 3,
+      "word": "감소",
+      "suffix": 1,
+      "raw": "감소1"
+    },
+    {
+      "grade": 3,
+      "word": "감축",
+      "suffix": 1,
+      "raw": "감축1"
+    },
+    {
+      "grade": 3,
+      "word": "강화",
+      "suffix": 4,
+      "raw": "강화4"
+    },
+    {
+      "grade": 3,
+      "word": "개념",
+      "suffix": null,
+      "raw": "개념"
+    },
+    {
+      "grade": 3,
+      "word": "개략",
+      "suffix": null,
+      "raw": "개략"
+    },
+    {
+      "grade": 3,
+      "word": "개발",
+      "suffix": null,
+      "raw": "개발"
+    },
+    {
+      "grade": 3,
+      "word": "개방",
+      "suffix": 3,
+      "raw": "개방3"
+    },
+    {
+      "grade": 3,
+      "word": "개별",
+      "suffix": null,
+      "raw": "개별"
+    },
+    {
+      "grade": 3,
+      "word": "개선",
+      "suffix": 1,
+      "raw": "개선1"
+    },
+    {
+      "grade": 3,
+      "word": "개요",
+      "suffix": null,
+      "raw": "개요"
+    },
+    {
+      "grade": 3,
+      "word": "개정",
+      "suffix": 3,
+      "raw": "개정03"
+    },
+    {
+      "grade": 3,
+      "word": "개척",
+      "suffix": null,
+      "raw": "개척"
+    },
+    {
+      "grade": 3,
+      "word": "검증",
+      "suffix": null,
+      "raw": "검증"
+    },
+    {
+      "grade": 3,
+      "word": "검토",
+      "suffix": null,
+      "raw": "검토"
+    },
+    {
+      "grade": 3,
+      "word": "격차",
+      "suffix": 2,
+      "raw": "격차2"
+    },
+    {
+      "grade": 3,
+      "word": "견고하다",
+      "suffix": null,
+      "raw": "견고하다"
+    },
+    {
+      "grade": 3,
+      "word": "결실",
+      "suffix": 2,
+      "raw": "결실2"
+    },
+    {
+      "grade": 3,
+      "word": "결점",
+      "suffix": null,
+      "raw": "결점"
+    },
+    {
+      "grade": 3,
+      "word": "결핍",
+      "suffix": null,
+      "raw": "결핍"
+    },
+    {
+      "grade": 3,
+      "word": "결함",
+      "suffix": 1,
+      "raw": "결함1"
+    },
+    {
+      "grade": 3,
+      "word": "결합",
+      "suffix": null,
+      "raw": "결합"
+    },
+    {
+      "grade": 3,
+      "word": "경계",
+      "suffix": 4,
+      "raw": "경계4"
+    },
+    {
+      "grade": 3,
+      "word": "경과",
+      "suffix": 4,
+      "raw": "경과4"
+    },
+    {
+      "grade": 3,
+      "word": "경로",
+      "suffix": 3,
+      "raw": "경로3"
+    },
+    {
+      "grade": 3,
+      "word": "경제적",
+      "suffix": null,
+      "raw": "경제적"
+    },
+    {
+      "grade": 3,
+      "word": "경향",
+      "suffix": 2,
+      "raw": "경향2"
+    },
+    {
+      "grade": 3,
+      "word": "계기",
+      "suffix": 4,
+      "raw": "계기4"
+    },
+    {
+      "grade": 3,
+      "word": "계량",
+      "suffix": 1,
+      "raw": "계량1"
+    },
+    {
+      "grade": 3,
+      "word": "계승",
+      "suffix": 2,
+      "raw": "계승2"
+    },
+    {
+      "grade": 3,
+      "word": "계층",
+      "suffix": null,
+      "raw": "계층"
+    },
+    {
+      "grade": 3,
+      "word": "고유",
+      "suffix": 3,
+      "raw": "고유3"
+    },
+    {
+      "grade": 3,
+      "word": "공격적",
+      "suffix": null,
+      "raw": "공격적"
+    },
+    {
+      "grade": 3,
+      "word": "공공",
+      "suffix": 2,
+      "raw": "공공2"
+    },
+    {
+      "grade": 3,
+      "word": "공식",
+      "suffix": 1,
+      "raw": "공식1"
+    },
+    {
+      "grade": 3,
+      "word": "공유",
+      "suffix": 2,
+      "raw": "공유2"
+    },
+    {
+      "grade": 3,
+      "word": "공적",
+      "suffix": 1,
+      "raw": "공적1"
+    },
+    {
+      "grade": 3,
+      "word": "공존",
+      "suffix": null,
+      "raw": "공존"
+    },
+    {
+      "grade": 3,
+      "word": "과학적",
+      "suffix": null,
+      "raw": "과학적"
+    },
+    {
+      "grade": 3,
+      "word": "관념",
+      "suffix": 2,
+      "raw": "관념2"
+    },
+    {
+      "grade": 3,
+      "word": "교대",
+      "suffix": 1,
+      "raw": "교대1"
+    },
+    {
+      "grade": 3,
+      "word": "교류",
+      "suffix": 1,
+      "raw": "교류1"
+    },
+    {
+      "grade": 3,
+      "word": "교정",
+      "suffix": 11,
+      "raw": "교정11"
+    },
+    {
+      "grade": 3,
+      "word": "교차",
+      "suffix": 1,
+      "raw": "교차1"
+    },
+    {
+      "grade": 3,
+      "word": "교체",
+      "suffix": 1,
+      "raw": "교체1"
+    },
+    {
+      "grade": 3,
+      "word": "구상",
+      "suffix": 8,
+      "raw": "구상8"
+    },
+    {
+      "grade": 3,
+      "word": "구성",
+      "suffix": 6,
+      "raw": "구성6"
+    },
+    {
+      "grade": 3,
+      "word": "구조",
+      "suffix": 8,
+      "raw": "구조8"
+    },
+    {
+      "grade": 3,
+      "word": "구체",
+      "suffix": 2,
+      "raw": "구체2"
+    },
+    {
+      "grade": 3,
+      "word": "권고",
+      "suffix": 3,
+      "raw": "권고3"
+    },
+    {
+      "grade": 3,
+      "word": "규정",
+      "suffix": 4,
+      "raw": "규정4"
+    },
+    {
+      "grade": 3,
+      "word": "규제",
+      "suffix": null,
+      "raw": "규제"
+    },
+    {
+      "grade": 3,
+      "word": "균등",
+      "suffix": null,
+      "raw": "균등"
+    },
+    {
+      "grade": 3,
+      "word": "극단",
+      "suffix": 1,
+      "raw": "극단1"
+    },
+    {
+      "grade": 3,
+      "word": "극심하다",
+      "suffix": null,
+      "raw": "극심하다"
+    },
+    {
+      "grade": 3,
+      "word": "근본",
+      "suffix": null,
+      "raw": "근본"
+    },
+    {
+      "grade": 3,
+      "word": "근사",
+      "suffix": 1,
+      "raw": "근사1"
+    },
+    {
+      "grade": 3,
+      "word": "근원",
+      "suffix": null,
+      "raw": "근원"
+    },
+    {
+      "grade": 3,
+      "word": "근접",
+      "suffix": 1,
+      "raw": "근접1"
+    },
+    {
+      "grade": 3,
+      "word": "급등",
+      "suffix": null,
+      "raw": "급등"
+    },
+    {
+      "grade": 3,
+      "word": "급변",
+      "suffix": null,
+      "raw": "급변"
+    },
+    {
+      "grade": 3,
+      "word": "급속",
+      "suffix": null,
+      "raw": "급속"
+    },
+    {
+      "grade": 3,
+      "word": "급증",
+      "suffix": 2,
+      "raw": "급증2"
+    },
+    {
+      "grade": 3,
+      "word": "기관",
+      "suffix": 11,
+      "raw": "기관11"
+    },
+    {
+      "grade": 3,
+      "word": "기구",
+      "suffix": 15,
+      "raw": "기구15"
+    },
+    {
+      "grade": 3,
+      "word": "기술",
+      "suffix": 3,
+      "raw": "기술3"
+    },
+    {
+      "grade": 3,
+      "word": "기여",
+      "suffix": 2,
+      "raw": "기여2"
+    },
+    {
+      "grade": 3,
+      "word": "기원",
+      "suffix": 5,
+      "raw": "기원5"
+    },
+    {
+      "grade": 3,
+      "word": "기피",
+      "suffix": null,
+      "raw": "기피"
+    },
+    {
+      "grade": 3,
+      "word": "기획",
+      "suffix": 1,
+      "raw": "기획1"
+    },
+    {
+      "grade": 3,
+      "word": "긴밀하다",
+      "suffix": null,
+      "raw": "긴밀하다"
+    },
+    {
+      "grade": 3,
+      "word": "납득",
+      "suffix": null,
+      "raw": "납득"
+    },
+    {
+      "grade": 3,
+      "word": "내면적",
+      "suffix": null,
+      "raw": "내면적"
+    },
+    {
+      "grade": 3,
+      "word": "내적",
+      "suffix": 1,
+      "raw": "내적1"
+    },
+    {
+      "grade": 3,
+      "word": "네트워크",
+      "suffix": null,
+      "raw": "네트워크"
+    },
+    {
+      "grade": 3,
+      "word": "노출",
+      "suffix": null,
+      "raw": "노출"
+    },
+    {
+      "grade": 3,
+      "word": "논거",
+      "suffix": null,
+      "raw": "논거"
+    },
+    {
+      "grade": 3,
+      "word": "논란",
+      "suffix": null,
+      "raw": "논란"
+    },
+    {
+      "grade": 3,
+      "word": "논리",
+      "suffix": null,
+      "raw": "논리"
+    },
+    {
+      "grade": 3,
+      "word": "논술",
+      "suffix": 1,
+      "raw": "논술1"
+    },
+    {
+      "grade": 3,
+      "word": "논의",
+      "suffix": 2,
+      "raw": "논의2"
+    },
+    {
+      "grade": 3,
+      "word": "논증",
+      "suffix": 2,
+      "raw": "논증2"
+    },
+    {
+      "grade": 3,
+      "word": "누출",
+      "suffix": null,
+      "raw": "누출"
+    },
+    {
+      "grade": 3,
+      "word": "능동",
+      "suffix": null,
+      "raw": "능동"
+    },
+    {
+      "grade": 3,
+      "word": "능률",
+      "suffix": null,
+      "raw": "능률"
+    },
+    {
+      "grade": 3,
+      "word": "능숙하다",
+      "suffix": null,
+      "raw": "능숙하다"
+    },
+    {
+      "grade": 3,
+      "word": "능통",
+      "suffix": 2,
+      "raw": "능통2"
+    },
+    {
+      "grade": 3,
+      "word": "단일",
+      "suffix": 1,
+      "raw": "단일1"
+    },
+    {
+      "grade": 3,
+      "word": "단절",
+      "suffix": 5,
+      "raw": "단절5"
+    },
+    {
+      "grade": 3,
+      "word": "단축",
+      "suffix": 2,
+      "raw": "단축2"
+    },
+    {
+      "grade": 3,
+      "word": "달성",
+      "suffix": 1,
+      "raw": "달성1"
+    },
+    {
+      "grade": 3,
+      "word": "대등",
+      "suffix": 4,
+      "raw": "대등4"
+    },
+    {
+      "grade": 3,
+      "word": "대립",
+      "suffix": 3,
+      "raw": "대립3"
+    },
+    {
+      "grade": 3,
+      "word": "대상",
+      "suffix": 11,
+      "raw": "대상11"
+    },
+    {
+      "grade": 3,
+      "word": "대응",
+      "suffix": 2,
+      "raw": "대응2"
+    },
+    {
+      "grade": 3,
+      "word": "대의",
+      "suffix": 3,
+      "raw": "대의3"
+    },
+    {
+      "grade": 3,
+      "word": "대처",
+      "suffix": 3,
+      "raw": "대처3"
+    },
+    {
+      "grade": 3,
+      "word": "대체",
+      "suffix": 2,
+      "raw": "대체2"
+    },
+    {
+      "grade": 3,
+      "word": "대치",
+      "suffix": 3,
+      "raw": "대치3"
+    },
+    {
+      "grade": 3,
+      "word": "데이터",
+      "suffix": null,
+      "raw": "데이터"
+    },
+    {
+      "grade": 3,
+      "word": "도약",
+      "suffix": 2,
+      "raw": "도약2"
+    },
+    {
+      "grade": 3,
+      "word": "도입",
+      "suffix": null,
+      "raw": "도입"
+    },
+    {
+      "grade": 3,
+      "word": "도출",
+      "suffix": 2,
+      "raw": "도출2"
+    },
+    {
+      "grade": 3,
+      "word": "독자적",
+      "suffix": null,
+      "raw": "독자적"
+    },
+    {
+      "grade": 3,
+      "word": "동기",
+      "suffix": 6,
+      "raw": "동기6"
+    },
+    {
+      "grade": 3,
+      "word": "동반",
+      "suffix": 1,
+      "raw": "동반1"
+    },
+    {
+      "grade": 3,
+      "word": "동요",
+      "suffix": 1,
+      "raw": "동요1"
+    },
+    {
+      "grade": 3,
+      "word": "동원",
+      "suffix": 2,
+      "raw": "동원2"
+    },
+    {
+      "grade": 3,
+      "word": "동일",
+      "suffix": 2,
+      "raw": "동일2"
+    },
+    {
+      "grade": 3,
+      "word": "둔화",
+      "suffix": 1,
+      "raw": "둔화1"
+    },
+    {
+      "grade": 3,
+      "word": "등재",
+      "suffix": 2,
+      "raw": "등재2"
+    },
+    {
+      "grade": 3,
+      "word": "디지털",
+      "suffix": null,
+      "raw": "디지털"
+    },
+    {
+      "grade": 3,
+      "word": "마비",
+      "suffix": 2,
+      "raw": "마비2"
+    },
+    {
+      "grade": 3,
+      "word": "마찰",
+      "suffix": null,
+      "raw": "마찰"
+    },
+    {
+      "grade": 3,
+      "word": "매체",
+      "suffix": null,
+      "raw": "매체"
+    },
+    {
+      "grade": 3,
+      "word": "면밀",
+      "suffix": null,
+      "raw": "면밀"
+    },
+    {
+      "grade": 3,
+      "word": "명료",
+      "suffix": null,
+      "raw": "명료"
+    },
+    {
+      "grade": 3,
+      "word": "명백",
+      "suffix": null,
+      "raw": "명백"
+    },
+    {
+      "grade": 3,
+      "word": "명확",
+      "suffix": null,
+      "raw": "명확"
+    },
+    {
+      "grade": 3,
+      "word": "모순",
+      "suffix": 1,
+      "raw": "모순1"
+    },
+    {
+      "grade": 3,
+      "word": "모의",
+      "suffix": 4,
+      "raw": "모의4"
+    },
+    {
+      "grade": 3,
+      "word": "모호",
+      "suffix": 2,
+      "raw": "모호2"
+    },
+    {
+      "grade": 3,
+      "word": "몰입",
+      "suffix": null,
+      "raw": "몰입"
+    },
+    {
+      "grade": 3,
+      "word": "묘사",
+      "suffix": 2,
+      "raw": "묘사2"
+    },
+    {
+      "grade": 3,
+      "word": "무관하다",
+      "suffix": 3,
+      "raw": "무관하다3"
+    },
+    {
+      "grade": 3,
+      "word": "무능",
+      "suffix": null,
+      "raw": "무능"
+    },
+    {
+      "grade": 3,
+      "word": "무지",
+      "suffix": 6,
+      "raw": "무지6"
+    },
+    {
+      "grade": 3,
+      "word": "무한",
+      "suffix": 2,
+      "raw": "무한2"
+    },
+    {
+      "grade": 3,
+      "word": "무형",
+      "suffix": null,
+      "raw": "무형"
+    },
+    {
+      "grade": 3,
+      "word": "미비",
+      "suffix": 1,
+      "raw": "미비1"
+    },
+    {
+      "grade": 3,
+      "word": "미약하다",
+      "suffix": null,
+      "raw": "미약하다"
+    },
+    {
+      "grade": 3,
+      "word": "미흡하다",
+      "suffix": null,
+      "raw": "미흡하다"
+    },
+    {
+      "grade": 3,
+      "word": "밀도",
+      "suffix": 1,
+      "raw": "밀도1"
+    },
+    {
+      "grade": 3,
+      "word": "밀집",
+      "suffix": null,
+      "raw": "밀집"
+    },
+    {
+      "grade": 3,
+      "word": "밀착",
+      "suffix": null,
+      "raw": "밀착"
+    },
+    {
+      "grade": 3,
+      "word": "반론",
+      "suffix": null,
+      "raw": "반론"
+    },
+    {
+      "grade": 3,
+      "word": "반박",
+      "suffix": 1,
+      "raw": "반박1"
+    },
+    {
+      "grade": 3,
+      "word": "반발",
+      "suffix": 1,
+      "raw": "반발1"
+    },
+    {
+      "grade": 3,
+      "word": "반사",
+      "suffix": 1,
+      "raw": "반사1"
+    },
+    {
+      "grade": 3,
+      "word": "반영",
+      "suffix": 1,
+      "raw": "반영1"
+    },
+    {
+      "grade": 3,
+      "word": "반응",
+      "suffix": null,
+      "raw": "반응"
+    },
+    {
+      "grade": 3,
+      "word": "반전",
+      "suffix": 3,
+      "raw": "반전3"
+    },
+    {
+      "grade": 3,
+      "word": "발단",
+      "suffix": null,
+      "raw": "발단"
+    },
+    {
+      "grade": 3,
+      "word": "발상",
+      "suffix": 3,
+      "raw": "발상3"
+    },
+    {
+      "grade": 3,
+      "word": "발언",
+      "suffix": null,
+      "raw": "발언"
+    },
+    {
+      "grade": 3,
+      "word": "발의",
+      "suffix": 2,
+      "raw": "발의2"
+    },
+    {
+      "grade": 3,
+      "word": "발휘",
+      "suffix": null,
+      "raw": "발휘"
+    },
+    {
+      "grade": 3,
+      "word": "방어",
+      "suffix": 2,
+      "raw": "방어2"
+    },
+    {
+      "grade": 3,
+      "word": "방치",
+      "suffix": null,
+      "raw": "방치"
+    },
+    {
+      "grade": 3,
+      "word": "방해",
+      "suffix": 1,
+      "raw": "방해1"
+    },
+    {
+      "grade": 3,
+      "word": "배분",
+      "suffix": null,
+      "raw": "배분"
+    },
+    {
+      "grade": 3,
+      "word": "번성",
+      "suffix": null,
+      "raw": "번성"
+    },
+    {
+      "grade": 3,
+      "word": "법적",
+      "suffix": 1,
+      "raw": "법적1"
+    },
+    {
+      "grade": 3,
+      "word": "변동",
+      "suffix": null,
+      "raw": "변동"
+    },
+    {
+      "grade": 3,
+      "word": "변별",
+      "suffix": null,
+      "raw": "변별"
+    },
+    {
+      "grade": 3,
+      "word": "변혁",
+      "suffix": null,
+      "raw": "변혁"
+    },
+    {
+      "grade": 3,
+      "word": "변형",
+      "suffix": null,
+      "raw": "변형"
+    },
+    {
+      "grade": 3,
+      "word": "변환",
+      "suffix": 3,
+      "raw": "변환3"
+    },
+    {
+      "grade": 3,
+      "word": "보강",
+      "suffix": 1,
+      "raw": "보강1"
+    },
+    {
+      "grade": 3,
+      "word": "보급",
+      "suffix": null,
+      "raw": "보급"
+    },
+    {
+      "grade": 3,
+      "word": "보유",
+      "suffix": 1,
+      "raw": "보유1"
+    },
+    {
+      "grade": 3,
+      "word": "보조",
+      "suffix": 2,
+      "raw": "보조2"
+    },
+    {
+      "grade": 3,
+      "word": "보존",
+      "suffix": null,
+      "raw": "보존"
+    },
+    {
+      "grade": 3,
+      "word": "보편",
+      "suffix": null,
+      "raw": "보편"
+    },
+    {
+      "grade": 3,
+      "word": "복구",
+      "suffix": 2,
+      "raw": "복구2"
+    },
+    {
+      "grade": 3,
+      "word": "복원",
+      "suffix": 2,
+      "raw": "복원2"
+    },
+    {
+      "grade": 3,
+      "word": "복합",
+      "suffix": 2,
+      "raw": "복합2"
+    },
+    {
+      "grade": 3,
+      "word": "본격",
+      "suffix": null,
+      "raw": "본격"
+    },
+    {
+      "grade": 3,
+      "word": "본질",
+      "suffix": 2,
+      "raw": "본질2"
+    },
+    {
+      "grade": 3,
+      "word": "부가",
+      "suffix": 2,
+      "raw": "부가2"
+    },
+    {
+      "grade": 3,
+      "word": "부류",
+      "suffix": 2,
+      "raw": "부류2"
+    },
+    {
+      "grade": 3,
+      "word": "부문",
+      "suffix": 6,
+      "raw": "부문6"
+    },
+    {
+      "grade": 3,
+      "word": "부여",
+      "suffix": 4,
+      "raw": "부여4"
+    },
+    {
+      "grade": 3,
+      "word": "부재",
+      "suffix": 2,
+      "raw": "부재2"
+    },
+    {
+      "grade": 3,
+      "word": "부착",
+      "suffix": null,
+      "raw": "부착"
+    },
+    {
+      "grade": 3,
+      "word": "분담",
+      "suffix": null,
+      "raw": "분담"
+    },
+    {
+      "grade": 3,
+      "word": "분배",
+      "suffix": null,
+      "raw": "분배"
+    },
+    {
+      "grade": 3,
+      "word": "분별",
+      "suffix": null,
+      "raw": "분별"
+    },
+    {
+      "grade": 3,
+      "word": "분산",
+      "suffix": 2,
+      "raw": "분산2"
+    },
+    {
+      "grade": 3,
+      "word": "분석",
+      "suffix": 2,
+      "raw": "분석2"
+    },
+    {
+      "grade": 3,
+      "word": "분야",
+      "suffix": null,
+      "raw": "분야"
+    },
+    {
+      "grade": 3,
+      "word": "분열",
+      "suffix": 2,
+      "raw": "분열2"
+    },
+    {
+      "grade": 3,
+      "word": "분출",
+      "suffix": 3,
+      "raw": "분출3"
+    },
+    {
+      "grade": 3,
+      "word": "분포",
+      "suffix": 2,
+      "raw": "분포2"
+    },
+    {
+      "grade": 3,
+      "word": "분할",
+      "suffix": 1,
+      "raw": "분할1"
+    },
+    {
+      "grade": 3,
+      "word": "분해",
+      "suffix": null,
+      "raw": "분해"
+    },
+    {
+      "grade": 3,
+      "word": "붕괴",
+      "suffix": null,
+      "raw": "붕괴"
+    },
+    {
+      "grade": 3,
+      "word": "비례",
+      "suffix": 1,
+      "raw": "비례1"
+    },
+    {
+      "grade": 3,
+      "word": "비약",
+      "suffix": 3,
+      "raw": "비약3"
+    },
+    {
+      "grade": 3,
+      "word": "비평",
+      "suffix": null,
+      "raw": "비평"
+    },
+    {
+      "grade": 3,
+      "word": "빅데이터",
+      "suffix": null,
+      "raw": "빅데이터"
+    },
+    {
+      "grade": 3,
+      "word": "사태",
+      "suffix": 5,
+      "raw": "사태5"
+    },
+    {
+      "grade": 3,
+      "word": "사후",
+      "suffix": 3,
+      "raw": "사후3"
+    },
+    {
+      "grade": 3,
+      "word": "삽입",
+      "suffix": null,
+      "raw": "삽입"
+    },
+    {
+      "grade": 3,
+      "word": "상관",
+      "suffix": 3,
+      "raw": "상관3"
+    },
+    {
+      "grade": 3,
+      "word": "상승",
+      "suffix": 1,
+      "raw": "상승1"
+    },
+    {
+      "grade": 3,
+      "word": "상위",
+      "suffix": 1,
+      "raw": "상위1"
+    },
+    {
+      "grade": 3,
+      "word": "상정",
+      "suffix": 8,
+      "raw": "상정8"
+    },
+    {
+      "grade": 3,
+      "word": "상징",
+      "suffix": null,
+      "raw": "상징"
+    },
+    {
+      "grade": 3,
+      "word": "상호",
+      "suffix": 4,
+      "raw": "상호4"
+    },
+    {
+      "grade": 3,
+      "word": "생성",
+      "suffix": null,
+      "raw": "생성"
+    },
+    {
+      "grade": 3,
+      "word": "서술",
+      "suffix": null,
+      "raw": "서술"
+    },
+    {
+      "grade": 3,
+      "word": "서열",
+      "suffix": 1,
+      "raw": "서열1"
+    },
+    {
+      "grade": 3,
+      "word": "선정",
+      "suffix": 7,
+      "raw": "선정7"
+    },
+    {
+      "grade": 3,
+      "word": "선진",
+      "suffix": 3,
+      "raw": "선진3"
+    },
+    {
+      "grade": 3,
+      "word": "선행",
+      "suffix": 1,
+      "raw": "선행1"
+    },
+    {
+      "grade": 3,
+      "word": "선호",
+      "suffix": 3,
+      "raw": "선호3"
+    },
+    {
+      "grade": 3,
+      "word": "선후",
+      "suffix": 2,
+      "raw": "선후2"
+    },
+    {
+      "grade": 3,
+      "word": "설계",
+      "suffix": 2,
+      "raw": "설계2"
+    },
+    {
+      "grade": 3,
+      "word": "설립",
+      "suffix": 2,
+      "raw": "설립2"
+    },
+    {
+      "grade": 3,
+      "word": "설문",
+      "suffix": 1,
+      "raw": "설문1"
+    },
+    {
+      "grade": 3,
+      "word": "설정",
+      "suffix": 2,
+      "raw": "설정2"
+    },
+    {
+      "grade": 3,
+      "word": "성립",
+      "suffix": null,
+      "raw": "성립"
+    },
+    {
+      "grade": 3,
+      "word": "성분",
+      "suffix": 1,
+      "raw": "성분1"
+    },
+    {
+      "grade": 3,
+      "word": "성찰",
+      "suffix": null,
+      "raw": "성찰"
+    },
+    {
+      "grade": 3,
+      "word": "성취",
+      "suffix": 2,
+      "raw": "성취2"
+    },
+    {
+      "grade": 3,
+      "word": "성패",
+      "suffix": 2,
+      "raw": "성패2"
+    },
+    {
+      "grade": 3,
+      "word": "성행",
+      "suffix": 3,
+      "raw": "성행3"
+    },
+    {
+      "grade": 3,
+      "word": "성향",
+      "suffix": 2,
+      "raw": "성향2"
+    },
+    {
+      "grade": 3,
+      "word": "세부",
+      "suffix": 3,
+      "raw": "세부3"
+    },
+    {
+      "grade": 3,
+      "word": "소멸",
+      "suffix": 1,
+      "raw": "소멸1"
+    },
+    {
+      "grade": 3,
+      "word": "소실",
+      "suffix": 4,
+      "raw": "소실4"
+    },
+    {
+      "grade": 3,
+      "word": "소양",
+      "suffix": 7,
+      "raw": "소양7"
+    },
+    {
+      "grade": 3,
+      "word": "소외",
+      "suffix": null,
+      "raw": "소외"
+    },
+    {
+      "grade": 3,
+      "word": "소화",
+      "suffix": 6,
+      "raw": "소화6"
+    },
+    {
+      "grade": 3,
+      "word": "속박",
+      "suffix": null,
+      "raw": "속박"
+    },
+    {
+      "grade": 3,
+      "word": "속성",
+      "suffix": 5,
+      "raw": "속성5"
+    },
+    {
+      "grade": 3,
+      "word": "손상",
+      "suffix": null,
+      "raw": "손상"
+    },
+    {
+      "grade": 3,
+      "word": "쇠퇴",
+      "suffix": null,
+      "raw": "쇠퇴"
+    },
+    {
+      "grade": 3,
+      "word": "수동적",
+      "suffix": 2,
+      "raw": "수동적2"
+    },
+    {
+      "grade": 3,
+      "word": "수락",
+      "suffix": null,
+      "raw": "수락"
+    },
+    {
+      "grade": 3,
+      "word": "수반",
+      "suffix": 7,
+      "raw": "수반7"
+    },
+    {
+      "grade": 3,
+      "word": "수신",
+      "suffix": 6,
+      "raw": "수신6"
+    },
+    {
+      "grade": 3,
+      "word": "수여",
+      "suffix": 1,
+      "raw": "수여1"
+    },
+    {
+      "grade": 3,
+      "word": "수월하다",
+      "suffix": null,
+      "raw": "수월하다"
+    },
+    {
+      "grade": 3,
+      "word": "수축",
+      "suffix": 1,
+      "raw": "수축1"
+    },
+    {
+      "grade": 3,
+      "word": "수행",
+      "suffix": 2,
+      "raw": "수행2"
+    },
+    {
+      "grade": 3,
+      "word": "순응",
+      "suffix": 1,
+      "raw": "순응1"
+    },
+    {
+      "grade": 3,
+      "word": "시초",
+      "suffix": 2,
+      "raw": "시초2"
+    },
+    {
+      "grade": 3,
+      "word": "시행",
+      "suffix": 1,
+      "raw": "시행1"
+    },
+    {
+      "grade": 3,
+      "word": "신장",
+      "suffix": 4,
+      "raw": "신장4"
+    },
+    {
+      "grade": 3,
+      "word": "실례",
+      "suffix": 2,
+      "raw": "실례2"
+    },
+    {
+      "grade": 3,
+      "word": "실용",
+      "suffix": null,
+      "raw": "실용"
+    },
+    {
+      "grade": 3,
+      "word": "실제",
+      "suffix": 2,
+      "raw": "실제2"
+    },
+    {
+      "grade": 3,
+      "word": "실체",
+      "suffix": 2,
+      "raw": "실체2"
+    },
+    {
+      "grade": 3,
+      "word": "실태",
+      "suffix": 2,
+      "raw": "실태2"
+    },
+    {
+      "grade": 3,
+      "word": "실현",
+      "suffix": null,
+      "raw": "실현"
+    },
+    {
+      "grade": 3,
+      "word": "심화",
+      "suffix": 3,
+      "raw": "심화3"
+    },
+    {
+      "grade": 3,
+      "word": "아날로그",
+      "suffix": null,
+      "raw": "아날로그"
+    },
+    {
+      "grade": 3,
+      "word": "아이러니",
+      "suffix": null,
+      "raw": "아이러니"
+    },
+    {
+      "grade": 3,
+      "word": "악순환",
+      "suffix": null,
+      "raw": "악순환"
+    },
+    {
+      "grade": 3,
+      "word": "악영향",
+      "suffix": null,
+      "raw": "악영향"
+    },
+    {
+      "grade": 3,
+      "word": "악화",
+      "suffix": 1,
+      "raw": "악화1"
+    },
+    {
+      "grade": 3,
+      "word": "암시",
+      "suffix": 1,
+      "raw": "암시1"
+    },
+    {
+      "grade": 3,
+      "word": "압도",
+      "suffix": 2,
+      "raw": "압도2"
+    },
+    {
+      "grade": 3,
+      "word": "압력",
+      "suffix": null,
+      "raw": "압력"
+    },
+    {
+      "grade": 3,
+      "word": "압축",
+      "suffix": 2,
+      "raw": "압축2"
+    },
+    {
+      "grade": 3,
+      "word": "약세",
+      "suffix": 1,
+      "raw": "약세1"
+    },
+    {
+      "grade": 3,
+      "word": "약화",
+      "suffix": 1,
+      "raw": "약화1"
+    },
+    {
+      "grade": 3,
+      "word": "양면",
+      "suffix": null,
+      "raw": "양면"
+    },
+    {
+      "grade": 3,
+      "word": "양상",
+      "suffix": 7,
+      "raw": "양상7"
+    },
+    {
+      "grade": 3,
+      "word": "양성",
+      "suffix": 9,
+      "raw": "양성9"
+    },
+    {
+      "grade": 3,
+      "word": "양식",
+      "suffix": 4,
+      "raw": "양식4"
+    },
+    {
+      "grade": 3,
+      "word": "억제",
+      "suffix": null,
+      "raw": "억제"
+    },
+    {
+      "grade": 3,
+      "word": "엄밀",
+      "suffix": null,
+      "raw": "엄밀"
+    },
+    {
+      "grade": 3,
+      "word": "엄정",
+      "suffix": 1,
+      "raw": "엄정1"
+    },
+    {
+      "grade": 3,
+      "word": "여건",
+      "suffix": null,
+      "raw": "여건"
+    },
+    {
+      "grade": 3,
+      "word": "여부",
+      "suffix": 1,
+      "raw": "여부1"
+    },
+    {
+      "grade": 3,
+      "word": "여분",
+      "suffix": 1,
+      "raw": "여분1"
+    },
+    {
+      "grade": 3,
+      "word": "역량",
+      "suffix": 1,
+      "raw": "역량1"
+    },
+    {
+      "grade": 3,
+      "word": "역부족",
+      "suffix": null,
+      "raw": "역부족"
+    },
+    {
+      "grade": 3,
+      "word": "역사적",
+      "suffix": null,
+      "raw": "역사적"
+    },
+    {
+      "grade": 3,
+      "word": "역설",
+      "suffix": 2,
+      "raw": "역설2"
+    },
+    {
+      "grade": 3,
+      "word": "역전",
+      "suffix": 7,
+      "raw": "역전7"
+    },
+    {
+      "grade": 3,
+      "word": "역점",
+      "suffix": 1,
+      "raw": "역점1"
+    },
+    {
+      "grade": 3,
+      "word": "연관",
+      "suffix": 6,
+      "raw": "연관6"
+    },
+    {
+      "grade": 3,
+      "word": "연립",
+      "suffix": null,
+      "raw": "연립"
+    },
+    {
+      "grade": 3,
+      "word": "연상",
+      "suffix": 13,
+      "raw": "연상13"
+    },
+    {
+      "grade": 3,
+      "word": "연속",
+      "suffix": 2,
+      "raw": "연속2"
+    },
+    {
+      "grade": 3,
+      "word": "연쇄",
+      "suffix": 1,
+      "raw": "연쇄1"
+    },
+    {
+      "grade": 3,
+      "word": "연장",
+      "suffix": 4,
+      "raw": "연장4"
+    },
+    {
+      "grade": 3,
+      "word": "연합",
+      "suffix": 3,
+      "raw": "연합3"
+    },
+    {
+      "grade": 3,
+      "word": "열거",
+      "suffix": null,
+      "raw": "열거"
+    },
+    {
+      "grade": 3,
+      "word": "영구",
+      "suffix": 1,
+      "raw": "영구1"
+    },
+    {
+      "grade": 3,
+      "word": "영역",
+      "suffix": 3,
+      "raw": "영역3"
+    },
+    {
+      "grade": 3,
+      "word": "예견",
+      "suffix": null,
+      "raw": "예견"
+    },
+    {
+      "grade": 3,
+      "word": "예비",
+      "suffix": 2,
+      "raw": "예비2"
+    },
+    {
+      "grade": 3,
+      "word": "오류",
+      "suffix": 3,
+      "raw": "오류3"
+    },
+    {
+      "grade": 3,
+      "word": "완결",
+      "suffix": 3,
+      "raw": "완결3"
+    },
+    {
+      "grade": 3,
+      "word": "완료",
+      "suffix": null,
+      "raw": "완료"
+    },
+    {
+      "grade": 3,
+      "word": "완수",
+      "suffix": 1,
+      "raw": "완수1"
+    },
+    {
+      "grade": 3,
+      "word": "완화",
+      "suffix": 2,
+      "raw": "완화2"
+    },
+    {
+      "grade": 3,
+      "word": "외래",
+      "suffix": null,
+      "raw": "외래"
+    },
+    {
+      "grade": 3,
+      "word": "외적",
+      "suffix": 1,
+      "raw": "외적1"
+    },
+    {
+      "grade": 3,
+      "word": "요소",
+      "suffix": 4,
+      "raw": "요소4"
+    },
+    {
+      "grade": 3,
+      "word": "요원",
+      "suffix": 2,
+      "raw": "요원2"
+    },
+    {
+      "grade": 3,
+      "word": "요인",
+      "suffix": 3,
+      "raw": "요인3"
+    },
+    {
+      "grade": 3,
+      "word": "요지",
+      "suffix": 4,
+      "raw": "요지4"
+    },
+    {
+      "grade": 3,
+      "word": "용례",
+      "suffix": null,
+      "raw": "용례"
+    },
+    {
+      "grade": 3,
+      "word": "용이",
+      "suffix": null,
+      "raw": "용이"
+    },
+    {
+      "grade": 3,
+      "word": "용인",
+      "suffix": 3,
+      "raw": "용인3"
+    },
+    {
+      "grade": 3,
+      "word": "우려",
+      "suffix": null,
+      "raw": "우려"
+    },
+    {
+      "grade": 3,
+      "word": "운용",
+      "suffix": null,
+      "raw": "운용"
+    },
+    {
+      "grade": 3,
+      "word": "원동력",
+      "suffix": null,
+      "raw": "원동력"
+    },
+    {
+      "grade": 3,
+      "word": "원리",
+      "suffix": 2,
+      "raw": "원리2"
+    },
+    {
+      "grade": 3,
+      "word": "원천",
+      "suffix": 2,
+      "raw": "원천2"
+    },
+    {
+      "grade": 3,
+      "word": "원칙",
+      "suffix": null,
+      "raw": "원칙"
+    },
+    {
+      "grade": 3,
+      "word": "위축",
+      "suffix": 2,
+      "raw": "위축2"
+    },
+    {
+      "grade": 3,
+      "word": "유념",
+      "suffix": null,
+      "raw": "유념"
+    },
+    {
+      "grade": 3,
+      "word": "유망",
+      "suffix": null,
+      "raw": "유망"
+    },
+    {
+      "grade": 3,
+      "word": "유발",
+      "suffix": 3,
+      "raw": "유발3"
+    },
+    {
+      "grade": 3,
+      "word": "유의미",
+      "suffix": null,
+      "raw": "유의미"
+    },
+    {
+      "grade": 3,
+      "word": "유일",
+      "suffix": 6,
+      "raw": "유일6"
+    },
+    {
+      "grade": 3,
+      "word": "유입",
+      "suffix": 1,
+      "raw": "유입1"
+    },
+    {
+      "grade": 3,
+      "word": "유추",
+      "suffix": 2,
+      "raw": "유추2"
+    },
+    {
+      "grade": 3,
+      "word": "유출",
+      "suffix": 1,
+      "raw": "유출1"
+    },
+    {
+      "grade": 3,
+      "word": "유포",
+      "suffix": 2,
+      "raw": "유포2"
+    },
+    {
+      "grade": 3,
+      "word": "유한",
+      "suffix": 2,
+      "raw": "유한2"
+    },
+    {
+      "grade": 3,
+      "word": "유형",
+      "suffix": 2,
+      "raw": "유형2"
+    },
+    {
+      "grade": 3,
+      "word": "융합",
+      "suffix": null,
+      "raw": "융합"
+    },
+    {
+      "grade": 3,
+      "word": "음성",
+      "suffix": 4,
+      "raw": "음성4"
+    },
+    {
+      "grade": 3,
+      "word": "응용",
+      "suffix": null,
+      "raw": "응용"
+    },
+    {
+      "grade": 3,
+      "word": "의거",
+      "suffix": 1,
+      "raw": "의거1"
+    },
+    {
+      "grade": 3,
+      "word": "의결",
+      "suffix": 2,
+      "raw": "의결2"
+    },
+    {
+      "grade": 3,
+      "word": "의사",
+      "suffix": 2,
+      "raw": "의사2"
+    },
+    {
+      "grade": 3,
+      "word": "의식",
+      "suffix": 3,
+      "raw": "의식3"
+    },
+    {
+      "grade": 3,
+      "word": "의지",
+      "suffix": 4,
+      "raw": "의지4"
+    },
+    {
+      "grade": 3,
+      "word": "이견",
+      "suffix": null,
+      "raw": "이견"
+    },
+    {
+      "grade": 3,
+      "word": "이론",
+      "suffix": 1,
+      "raw": "이론1"
+    },
+    {
+      "grade": 3,
+      "word": "이면",
+      "suffix": 1,
+      "raw": "이면1"
+    },
+    {
+      "grade": 3,
+      "word": "이상적",
+      "suffix": 1,
+      "raw": "이상적1"
+    },
+    {
+      "grade": 3,
+      "word": "이성",
+      "suffix": 8,
+      "raw": "이성8"
+    },
+    {
+      "grade": 3,
+      "word": "이송",
+      "suffix": null,
+      "raw": "이송"
+    },
+    {
+      "grade": 3,
+      "word": "이슈",
+      "suffix": null,
+      "raw": "이슈"
+    },
+    {
+      "grade": 3,
+      "word": "이의",
+      "suffix": 6,
+      "raw": "이의6"
+    },
+    {
+      "grade": 3,
+      "word": "이익",
+      "suffix": 2,
+      "raw": "이익2"
+    },
+    {
+      "grade": 3,
+      "word": "이지적",
+      "suffix": null,
+      "raw": "이지적"
+    },
+    {
+      "grade": 3,
+      "word": "이질",
+      "suffix": 2,
+      "raw": "이질2"
+    },
+    {
+      "grade": 3,
+      "word": "이치",
+      "suffix": 5,
+      "raw": "이치5"
+    },
+    {
+      "grade": 3,
+      "word": "인공",
+      "suffix": 1,
+      "raw": "인공1"
+    },
+    {
+      "grade": 3,
+      "word": "인과",
+      "suffix": 3,
+      "raw": "인과3"
+    },
+    {
+      "grade": 3,
+      "word": "인증",
+      "suffix": 3,
+      "raw": "인증3"
+    },
+    {
+      "grade": 3,
+      "word": "인지",
+      "suffix": 8,
+      "raw": "인지8"
+    },
+    {
+      "grade": 3,
+      "word": "인하다",
+      "suffix": 1,
+      "raw": "인하다1"
+    },
+    {
+      "grade": 3,
+      "word": "일괄",
+      "suffix": null,
+      "raw": "일괄"
+    },
+    {
+      "grade": 3,
+      "word": "일반",
+      "suffix": 2,
+      "raw": "일반2"
+    },
+    {
+      "grade": 3,
+      "word": "일방적",
+      "suffix": null,
+      "raw": "일방적"
+    },
+    {
+      "grade": 3,
+      "word": "일시적",
+      "suffix": null,
+      "raw": "일시적"
+    },
+    {
+      "grade": 3,
+      "word": "일절",
+      "suffix": 2,
+      "raw": "일절2"
+    },
+    {
+      "grade": 3,
+      "word": "일정하다",
+      "suffix": null,
+      "raw": "일정하다"
+    },
+    {
+      "grade": 3,
+      "word": "일차적",
+      "suffix": null,
+      "raw": "일차적"
+    },
+    {
+      "grade": 3,
+      "word": "일치",
+      "suffix": 1,
+      "raw": "일치1"
+    },
+    {
+      "grade": 3,
+      "word": "입장",
+      "suffix": 4,
+      "raw": "입장4"
+    },
+    {
+      "grade": 3,
+      "word": "자립",
+      "suffix": 1,
+      "raw": "자립1"
+    },
+    {
+      "grade": 3,
+      "word": "자발",
+      "suffix": null,
+      "raw": "자발"
+    },
+    {
+      "grade": 3,
+      "word": "자연적",
+      "suffix": null,
+      "raw": "자연적"
+    },
+    {
+      "grade": 3,
+      "word": "자율",
+      "suffix": null,
+      "raw": "자율"
+    },
+    {
+      "grade": 3,
+      "word": "자질",
+      "suffix": 3,
+      "raw": "자질3"
+    },
+    {
+      "grade": 3,
+      "word": "자체",
+      "suffix": null,
+      "raw": "자체"
+    },
+    {
+      "grade": 3,
+      "word": "작용",
+      "suffix": 1,
+      "raw": "작용1"
+    },
+    {
+      "grade": 3,
+      "word": "장려",
+      "suffix": 3,
+      "raw": "장려3"
+    },
+    {
+      "grade": 3,
+      "word": "장벽",
+      "suffix": 4,
+      "raw": "장벽4"
+    },
+    {
+      "grade": 3,
+      "word": "재래",
+      "suffix": 2,
+      "raw": "재래2"
+    },
+    {
+      "grade": 3,
+      "word": "재생",
+      "suffix": 1,
+      "raw": "재생1"
+    },
+    {
+      "grade": 3,
+      "word": "재현",
+      "suffix": 2,
+      "raw": "재현2"
+    },
+    {
+      "grade": 3,
+      "word": "저장",
+      "suffix": 3,
+      "raw": "저장3"
+    },
+    {
+      "grade": 3,
+      "word": "저항",
+      "suffix": null,
+      "raw": "저항"
+    },
+    {
+      "grade": 3,
+      "word": "적대",
+      "suffix": 5,
+      "raw": "적대5"
+    },
+    {
+      "grade": 3,
+      "word": "적용",
+      "suffix": null,
+      "raw": "적용"
+    },
+    {
+      "grade": 3,
+      "word": "적응",
+      "suffix": 2,
+      "raw": "적응2"
+    },
+    {
+      "grade": 3,
+      "word": "적절",
+      "suffix": null,
+      "raw": "적절"
+    },
+    {
+      "grade": 3,
+      "word": "적합",
+      "suffix": null,
+      "raw": "적합"
+    },
+    {
+      "grade": 3,
+      "word": "전개",
+      "suffix": 2,
+      "raw": "전개2"
+    },
+    {
+      "grade": 3,
+      "word": "전국적",
+      "suffix": null,
+      "raw": "전국적"
+    },
+    {
+      "grade": 3,
+      "word": "전략",
+      "suffix": 3,
+      "raw": "전략3"
+    },
+    {
+      "grade": 3,
+      "word": "전망",
+      "suffix": 3,
+      "raw": "전망3"
+    },
+    {
+      "grade": 3,
+      "word": "전문",
+      "suffix": 8,
+      "raw": "전문8"
+    },
+    {
+      "grade": 3,
+      "word": "전반",
+      "suffix": 2,
+      "raw": "전반2"
+    },
+    {
+      "grade": 3,
+      "word": "전송",
+      "suffix": 1,
+      "raw": "전송1"
+    },
+    {
+      "grade": 3,
+      "word": "전용",
+      "suffix": 4,
+      "raw": "전용4"
+    },
+    {
+      "grade": 3,
+      "word": "전제",
+      "suffix": 8,
+      "raw": "전제8"
+    },
+    {
+      "grade": 3,
+      "word": "전진",
+      "suffix": 4,
+      "raw": "전진4"
+    },
+    {
+      "grade": 3,
+      "word": "전통적",
+      "suffix": null,
+      "raw": "전통적"
+    },
+    {
+      "grade": 3,
+      "word": "전파",
+      "suffix": 3,
+      "raw": "전파3"
+    },
+    {
+      "grade": 3,
+      "word": "전환",
+      "suffix": 3,
+      "raw": "전환3"
+    },
+    {
+      "grade": 3,
+      "word": "절감",
+      "suffix": null,
+      "raw": "절감"
+    },
+    {
+      "grade": 3,
+      "word": "절대",
+      "suffix": 4,
+      "raw": "절대4"
+    },
+    {
+      "grade": 3,
+      "word": "점검",
+      "suffix": null,
+      "raw": "점검"
+    },
+    {
+      "grade": 3,
+      "word": "접근",
+      "suffix": null,
+      "raw": "접근"
+    },
+    {
+      "grade": 3,
+      "word": "접속",
+      "suffix": null,
+      "raw": "접속"
+    },
+    {
+      "grade": 3,
+      "word": "정밀",
+      "suffix": 2,
+      "raw": "정밀2"
+    },
+    {
+      "grade": 3,
+      "word": "정비",
+      "suffix": 5,
+      "raw": "정비5"
+    },
+    {
+      "grade": 3,
+      "word": "정서적",
+      "suffix": null,
+      "raw": "정서적"
+    },
+    {
+      "grade": 3,
+      "word": "정수",
+      "suffix": 20,
+      "raw": "정수20"
+    },
+    {
+      "grade": 3,
+      "word": "정식",
+      "suffix": 3,
+      "raw": "정식3"
+    },
+    {
+      "grade": 3,
+      "word": "정신적",
+      "suffix": null,
+      "raw": "정신적"
+    },
+    {
+      "grade": 3,
+      "word": "정오",
+      "suffix": 2,
+      "raw": "정오2"
+    },
+    {
+      "grade": 3,
+      "word": "정의",
+      "suffix": 5,
+      "raw": "정의5"
+    },
+    {
+      "grade": 3,
+      "word": "정점",
+      "suffix": 2,
+      "raw": "정점2"
+    },
+    {
+      "grade": 3,
+      "word": "정정",
+      "suffix": 13,
+      "raw": "정정13"
+    },
+    {
+      "grade": 3,
+      "word": "정제",
+      "suffix": 8,
+      "raw": "정제8"
+    },
+    {
+      "grade": 3,
+      "word": "정착",
+      "suffix": null,
+      "raw": "정착"
+    },
+    {
+      "grade": 3,
+      "word": "정화",
+      "suffix": 8,
+      "raw": "정화8"
+    },
+    {
+      "grade": 3,
+      "word": "제거",
+      "suffix": 3,
+      "raw": "제거3"
+    },
+    {
+      "grade": 3,
+      "word": "제공",
+      "suffix": 4,
+      "raw": "제공4"
+    },
+    {
+      "grade": 3,
+      "word": "제기",
+      "suffix": 6,
+      "raw": "제기6"
+    },
+    {
+      "grade": 3,
+      "word": "제시",
+      "suffix": 2,
+      "raw": "제시2"
+    },
+    {
+      "grade": 3,
+      "word": "제약",
+      "suffix": 1,
+      "raw": "제약1"
+    },
+    {
+      "grade": 3,
+      "word": "제어",
+      "suffix": 1,
+      "raw": "제어1"
+    },
+    {
+      "grade": 3,
+      "word": "제외",
+      "suffix": 2,
+      "raw": "제외2"
+    },
+    {
+      "grade": 3,
+      "word": "제작",
+      "suffix": 2,
+      "raw": "제작2"
+    },
+    {
+      "grade": 3,
+      "word": "제조",
+      "suffix": 7,
+      "raw": "제조7"
+    },
+    {
+      "grade": 3,
+      "word": "제출",
+      "suffix": 2,
+      "raw": "제출2"
+    },
+    {
+      "grade": 3,
+      "word": "제한",
+      "suffix": 1,
+      "raw": "제한1"
+    },
+    {
+      "grade": 3,
+      "word": "조력",
+      "suffix": 1,
+      "raw": "조력1"
+    },
+    {
+      "grade": 3,
+      "word": "조장",
+      "suffix": 3,
+      "raw": "조장3"
+    },
+    {
+      "grade": 3,
+      "word": "조절",
+      "suffix": 2,
+      "raw": "조절2"
+    },
+    {
+      "grade": 3,
+      "word": "조정",
+      "suffix": 9,
+      "raw": "조정9"
+    },
+    {
+      "grade": 3,
+      "word": "조종",
+      "suffix": 6,
+      "raw": "조종6"
+    },
+    {
+      "grade": 3,
+      "word": "조직",
+      "suffix": null,
+      "raw": "조직"
+    },
+    {
+      "grade": 3,
+      "word": "조치",
+      "suffix": 3,
+      "raw": "조치3"
+    },
+    {
+      "grade": 3,
+      "word": "조화",
+      "suffix": 7,
+      "raw": "조화7"
+    },
+    {
+      "grade": 3,
+      "word": "존속",
+      "suffix": 1,
+      "raw": "존속1"
+    },
+    {
+      "grade": 3,
+      "word": "존재",
+      "suffix": null,
+      "raw": "존재"
+    },
+    {
+      "grade": 3,
+      "word": "종결",
+      "suffix": 2,
+      "raw": "종결2"
+    },
+    {
+      "grade": 3,
+      "word": "종합",
+      "suffix": null,
+      "raw": "종합"
+    },
+    {
+      "grade": 3,
+      "word": "주관",
+      "suffix": 2,
+      "raw": "주관2"
+    },
+    {
+      "grade": 3,
+      "word": "주도",
+      "suffix": 2,
+      "raw": "주도2"
+    },
+    {
+      "grade": 3,
+      "word": "주류",
+      "suffix": 1,
+      "raw": "주류1"
+    },
+    {
+      "grade": 3,
+      "word": "주목",
+      "suffix": 3,
+      "raw": "주목3"
+    },
+    {
+      "grade": 3,
+      "word": "주요",
+      "suffix": 1,
+      "raw": "주요1"
+    },
+    {
+      "grade": 3,
+      "word": "주입",
+      "suffix": 1,
+      "raw": "주입1"
+    },
+    {
+      "grade": 3,
+      "word": "주종",
+      "suffix": 1,
+      "raw": "주종1"
+    },
+    {
+      "grade": 3,
+      "word": "주체",
+      "suffix": 2,
+      "raw": "주체2"
+    },
+    {
+      "grade": 3,
+      "word": "준거",
+      "suffix": 2,
+      "raw": "준거2"
+    },
+    {
+      "grade": 3,
+      "word": "중계",
+      "suffix": 4,
+      "raw": "중계4"
+    },
+    {
+      "grade": 3,
+      "word": "중단",
+      "suffix": 4,
+      "raw": "중단4"
+    },
+    {
+      "grade": 3,
+      "word": "중대",
+      "suffix": 5,
+      "raw": "중대5"
+    },
+    {
+      "grade": 3,
+      "word": "중재",
+      "suffix": 2,
+      "raw": "중재2"
+    },
+    {
+      "grade": 3,
+      "word": "중점",
+      "suffix": 3,
+      "raw": "중점3"
+    },
+    {
+      "grade": 3,
+      "word": "중지",
+      "suffix": 2,
+      "raw": "중지2"
+    },
+    {
+      "grade": 3,
+      "word": "증가",
+      "suffix": 1,
+      "raw": "증가1"
+    },
+    {
+      "grade": 3,
+      "word": "증대",
+      "suffix": null,
+      "raw": "증대"
+    },
+    {
+      "grade": 3,
+      "word": "증진",
+      "suffix": null,
+      "raw": "증진"
+    },
+    {
+      "grade": 3,
+      "word": "지구적",
+      "suffix": 1,
+      "raw": "지구적1"
+    },
+    {
+      "grade": 3,
+      "word": "지리적",
+      "suffix": null,
+      "raw": "지리적"
+    },
+    {
+      "grade": 3,
+      "word": "지배",
+      "suffix": 1,
+      "raw": "지배1"
+    },
+    {
+      "grade": 3,
+      "word": "지수",
+      "suffix": 6,
+      "raw": "지수6"
+    },
+    {
+      "grade": 3,
+      "word": "지적",
+      "suffix": 1,
+      "raw": "지적1"
+    },
+    {
+      "grade": 3,
+      "word": "지체",
+      "suffix": 4,
+      "raw": "지체4"
+    },
+    {
+      "grade": 3,
+      "word": "지칭",
+      "suffix": null,
+      "raw": "지칭"
+    },
+    {
+      "grade": 3,
+      "word": "지향",
+      "suffix": 3,
+      "raw": "지향3"
+    },
+    {
+      "grade": 3,
+      "word": "직면",
+      "suffix": null,
+      "raw": "직면"
+    },
+    {
+      "grade": 3,
+      "word": "진단",
+      "suffix": 2,
+      "raw": "진단2"
+    },
+    {
+      "grade": 3,
+      "word": "진술",
+      "suffix": 2,
+      "raw": "진술2"
+    },
+    {
+      "grade": 3,
+      "word": "진입",
+      "suffix": null,
+      "raw": "진입"
+    },
+    {
+      "grade": 3,
+      "word": "진전",
+      "suffix": 8,
+      "raw": "진전8"
+    },
+    {
+      "grade": 3,
+      "word": "진취적",
+      "suffix": null,
+      "raw": "진취적"
+    },
+    {
+      "grade": 3,
+      "word": "진행",
+      "suffix": 2,
+      "raw": "진행2"
+    },
+    {
+      "grade": 3,
+      "word": "진흥",
+      "suffix": null,
+      "raw": "진흥"
+    },
+    {
+      "grade": 3,
+      "word": "집단적",
+      "suffix": null,
+      "raw": "집단적"
+    },
+    {
+      "grade": 3,
+      "word": "집약",
+      "suffix": null,
+      "raw": "집약"
+    },
+    {
+      "grade": 3,
+      "word": "집합",
+      "suffix": 1,
+      "raw": "집합1"
+    },
+    {
+      "grade": 3,
+      "word": "차등",
+      "suffix": 3,
+      "raw": "차등3"
+    },
+    {
+      "grade": 3,
+      "word": "차원",
+      "suffix": 2,
+      "raw": "차원2"
+    },
+    {
+      "grade": 3,
+      "word": "참고",
+      "suffix": 1,
+      "raw": "참고1"
+    },
+    {
+      "grade": 3,
+      "word": "참조",
+      "suffix": 2,
+      "raw": "참조2"
+    },
+    {
+      "grade": 3,
+      "word": "창시",
+      "suffix": null,
+      "raw": "창시"
+    },
+    {
+      "grade": 3,
+      "word": "창출",
+      "suffix": 1,
+      "raw": "창출1"
+    },
+    {
+      "grade": 3,
+      "word": "채취",
+      "suffix": null,
+      "raw": "채취"
+    },
+    {
+      "grade": 3,
+      "word": "채택",
+      "suffix": null,
+      "raw": "채택"
+    },
+    {
+      "grade": 3,
+      "word": "처분",
+      "suffix": null,
+      "raw": "처분"
+    },
+    {
+      "grade": 3,
+      "word": "처치",
+      "suffix": null,
+      "raw": "처치"
+    },
+    {
+      "grade": 3,
+      "word": "천연",
+      "suffix": 1,
+      "raw": "천연1"
+    },
+    {
+      "grade": 3,
+      "word": "철회",
+      "suffix": null,
+      "raw": "철회"
+    },
+    {
+      "grade": 3,
+      "word": "첨가",
+      "suffix": null,
+      "raw": "첨가"
+    },
+    {
+      "grade": 3,
+      "word": "첨단",
+      "suffix": 1,
+      "raw": "첨단1"
+    },
+    {
+      "grade": 3,
+      "word": "첨부",
+      "suffix": 1,
+      "raw": "첨부1"
+    },
+    {
+      "grade": 3,
+      "word": "체계",
+      "suffix": 3,
+      "raw": "체계3"
+    },
+    {
+      "grade": 3,
+      "word": "초래",
+      "suffix": 1,
+      "raw": "초래1"
+    },
+    {
+      "grade": 3,
+      "word": "초석",
+      "suffix": 5,
+      "raw": "초석5"
+    },
+    {
+      "grade": 3,
+      "word": "초월",
+      "suffix": 2,
+      "raw": "초월2"
+    },
+    {
+      "grade": 3,
+      "word": "초점",
+      "suffix": 2,
+      "raw": "초점2"
+    },
+    {
+      "grade": 3,
+      "word": "총체",
+      "suffix": null,
+      "raw": "총체"
+    },
+    {
+      "grade": 3,
+      "word": "추가",
+      "suffix": 2,
+      "raw": "추가2"
+    },
+    {
+      "grade": 3,
+      "word": "추구",
+      "suffix": 1,
+      "raw": "추구1"
+    },
+    {
+      "grade": 3,
+      "word": "추락",
+      "suffix": 2,
+      "raw": "추락2"
+    },
+    {
+      "grade": 3,
+      "word": "추론",
+      "suffix": 2,
+      "raw": "추론2"
+    },
+    {
+      "grade": 3,
+      "word": "추상",
+      "suffix": 1,
+      "raw": "추상1"
+    },
+    {
+      "grade": 3,
+      "word": "추적",
+      "suffix": 3,
+      "raw": "추적3"
+    },
+    {
+      "grade": 3,
+      "word": "추종",
+      "suffix": 1,
+      "raw": "추종1"
+    },
+    {
+      "grade": 3,
+      "word": "추진",
+      "suffix": 2,
+      "raw": "추진2"
+    },
+    {
+      "grade": 3,
+      "word": "추후",
+      "suffix": 1,
+      "raw": "추후1"
+    },
+    {
+      "grade": 3,
+      "word": "축소",
+      "suffix": null,
+      "raw": "축소"
+    },
+    {
+      "grade": 3,
+      "word": "축적",
+      "suffix": null,
+      "raw": "축적"
+    },
+    {
+      "grade": 3,
+      "word": "출현",
+      "suffix": null,
+      "raw": "출현"
+    },
+    {
+      "grade": 3,
+      "word": "충당",
+      "suffix": 1,
+      "raw": "충당1"
+    },
+    {
+      "grade": 3,
+      "word": "충전",
+      "suffix": 2,
+      "raw": "충전2"
+    },
+    {
+      "grade": 3,
+      "word": "취급",
+      "suffix": null,
+      "raw": "취급"
+    },
+    {
+      "grade": 3,
+      "word": "취지",
+      "suffix": 3,
+      "raw": "취지3"
+    },
+    {
+      "grade": 3,
+      "word": "치열하다",
+      "suffix": null,
+      "raw": "치열하다"
+    },
+    {
+      "grade": 3,
+      "word": "치중",
+      "suffix": 2,
+      "raw": "치중2"
+    },
+    {
+      "grade": 3,
+      "word": "콘텐츠",
+      "suffix": null,
+      "raw": "콘텐츠"
+    },
+    {
+      "grade": 3,
+      "word": "통계적",
+      "suffix": null,
+      "raw": "통계적"
+    },
+    {
+      "grade": 3,
+      "word": "통보",
+      "suffix": 1,
+      "raw": "통보1"
+    },
+    {
+      "grade": 3,
+      "word": "통찰",
+      "suffix": 1,
+      "raw": "통찰1"
+    },
+    {
+      "grade": 3,
+      "word": "통합",
+      "suffix": null,
+      "raw": "통합"
+    },
+    {
+      "grade": 3,
+      "word": "투사",
+      "suffix": 2,
+      "raw": "투사2"
+    },
+    {
+      "grade": 3,
+      "word": "투영",
+      "suffix": 2,
+      "raw": "투영2"
+    },
+    {
+      "grade": 3,
+      "word": "특수",
+      "suffix": 2,
+      "raw": "특수2"
+    },
+    {
+      "grade": 3,
+      "word": "특유",
+      "suffix": null,
+      "raw": "특유"
+    },
+    {
+      "grade": 3,
+      "word": "특이",
+      "suffix": null,
+      "raw": "특이"
+    },
+    {
+      "grade": 3,
+      "word": "특정",
+      "suffix": null,
+      "raw": "특정"
+    },
+    {
+      "grade": 3,
+      "word": "특질",
+      "suffix": null,
+      "raw": "특질"
+    },
+    {
+      "grade": 3,
+      "word": "파손",
+      "suffix": null,
+      "raw": "파손"
+    },
+    {
+      "grade": 3,
+      "word": "파열",
+      "suffix": null,
+      "raw": "파열"
+    },
+    {
+      "grade": 3,
+      "word": "팽배",
+      "suffix": 2,
+      "raw": "팽배2"
+    },
+    {
+      "grade": 3,
+      "word": "팽창",
+      "suffix": null,
+      "raw": "팽창"
+    },
+    {
+      "grade": 3,
+      "word": "편성",
+      "suffix": 2,
+      "raw": "편성2"
+    },
+    {
+      "grade": 3,
+      "word": "편중",
+      "suffix": null,
+      "raw": "편중"
+    },
+    {
+      "grade": 3,
+      "word": "편찬",
+      "suffix": null,
+      "raw": "편찬"
+    },
+    {
+      "grade": 3,
+      "word": "평형",
+      "suffix": 2,
+      "raw": "평형2"
+    },
+    {
+      "grade": 3,
+      "word": "폐쇄",
+      "suffix": null,
+      "raw": "폐쇄"
+    },
+    {
+      "grade": 3,
+      "word": "포섭",
+      "suffix": null,
+      "raw": "포섭"
+    },
+    {
+      "grade": 3,
+      "word": "폭발적",
+      "suffix": null,
+      "raw": "폭발적"
+    },
+    {
+      "grade": 3,
+      "word": "표면",
+      "suffix": null,
+      "raw": "표면"
+    },
+    {
+      "grade": 3,
+      "word": "표절",
+      "suffix": null,
+      "raw": "표절"
+    },
+    {
+      "grade": 3,
+      "word": "표출",
+      "suffix": null,
+      "raw": "표출"
+    },
+    {
+      "grade": 3,
+      "word": "프로젝트",
+      "suffix": null,
+      "raw": "프로젝트"
+    },
+    {
+      "grade": 3,
+      "word": "필사적",
+      "suffix": null,
+      "raw": "필사적"
+    },
+    {
+      "grade": 3,
+      "word": "필연",
+      "suffix": 1,
+      "raw": "필연1"
+    },
+    {
+      "grade": 3,
+      "word": "하강",
+      "suffix": null,
+      "raw": "하강"
+    },
+    {
+      "grade": 3,
+      "word": "하락",
+      "suffix": null,
+      "raw": "하락"
+    },
+    {
+      "grade": 3,
+      "word": "한계",
+      "suffix": null,
+      "raw": "한계"
+    },
+    {
+      "grade": 3,
+      "word": "한도",
+      "suffix": 2,
+      "raw": "한도2"
+    },
+    {
+      "grade": 3,
+      "word": "한정",
+      "suffix": 1,
+      "raw": "한정1"
+    },
+    {
+      "grade": 3,
+      "word": "할당",
+      "suffix": null,
+      "raw": "할당"
+    },
+    {
+      "grade": 3,
+      "word": "함양",
+      "suffix": 3,
+      "raw": "함양3"
+    },
+    {
+      "grade": 3,
+      "word": "함유",
+      "suffix": 1,
+      "raw": "함유1"
+    },
+    {
+      "grade": 3,
+      "word": "합당",
+      "suffix": 1,
+      "raw": "합당1"
+    },
+    {
+      "grade": 3,
+      "word": "합리",
+      "suffix": 1,
+      "raw": "합리1"
+    },
+    {
+      "grade": 3,
+      "word": "합산",
+      "suffix": null,
+      "raw": "합산"
+    },
+    {
+      "grade": 3,
+      "word": "합의",
+      "suffix": 1,
+      "raw": "합의1"
+    },
+    {
+      "grade": 3,
+      "word": "해박",
+      "suffix": 2,
+      "raw": "해박2"
+    },
+    {
+      "grade": 3,
+      "word": "해소",
+      "suffix": 3,
+      "raw": "해소3"
+    },
+    {
+      "grade": 3,
+      "word": "행태",
+      "suffix": null,
+      "raw": "행태"
+    },
+    {
+      "grade": 3,
+      "word": "향후",
+      "suffix": null,
+      "raw": "향후"
+    },
+    {
+      "grade": 3,
+      "word": "허용",
+      "suffix": null,
+      "raw": "허용"
+    },
+    {
+      "grade": 3,
+      "word": "혁신",
+      "suffix": null,
+      "raw": "혁신"
+    },
+    {
+      "grade": 3,
+      "word": "현대적",
+      "suffix": null,
+      "raw": "현대적"
+    },
+    {
+      "grade": 3,
+      "word": "현상",
+      "suffix": 4,
+      "raw": "현상4"
+    },
+    {
+      "grade": 3,
+      "word": "현존",
+      "suffix": null,
+      "raw": "현존"
+    },
+    {
+      "grade": 3,
+      "word": "현황",
+      "suffix": 2,
+      "raw": "현황2"
+    },
+    {
+      "grade": 3,
+      "word": "형상",
+      "suffix": 4,
+      "raw": "형상4"
+    },
+    {
+      "grade": 3,
+      "word": "형성",
+      "suffix": 1,
+      "raw": "형성1"
+    },
+    {
+      "grade": 3,
+      "word": "형식",
+      "suffix": 1,
+      "raw": "형식1"
+    },
+    {
+      "grade": 3,
+      "word": "형평",
+      "suffix": null,
+      "raw": "형평"
+    },
+    {
+      "grade": 3,
+      "word": "호응",
+      "suffix": null,
+      "raw": "호응"
+    },
+    {
+      "grade": 3,
+      "word": "혼돈",
+      "suffix": 1,
+      "raw": "혼돈1"
+    },
+    {
+      "grade": 3,
+      "word": "혼용",
+      "suffix": null,
+      "raw": "혼용"
+    },
+    {
+      "grade": 3,
+      "word": "혼합",
+      "suffix": null,
+      "raw": "혼합"
+    },
+    {
+      "grade": 3,
+      "word": "확대",
+      "suffix": 2,
+      "raw": "확대2"
+    },
+    {
+      "grade": 3,
+      "word": "확률",
+      "suffix": null,
+      "raw": "확률"
+    },
+    {
+      "grade": 3,
+      "word": "확립",
+      "suffix": null,
+      "raw": "확립"
+    },
+    {
+      "grade": 3,
+      "word": "확보",
+      "suffix": 1,
+      "raw": "확보1"
+    },
+    {
+      "grade": 3,
+      "word": "확산",
+      "suffix": null,
+      "raw": "확산"
+    },
+    {
+      "grade": 3,
+      "word": "확연",
+      "suffix": 2,
+      "raw": "확연2"
+    },
+    {
+      "grade": 3,
+      "word": "확장",
+      "suffix": null,
+      "raw": "확장"
+    },
+    {
+      "grade": 3,
+      "word": "확정",
+      "suffix": 2,
+      "raw": "확정2"
+    },
+    {
+      "grade": 3,
+      "word": "확충",
+      "suffix": null,
+      "raw": "확충"
+    },
+    {
+      "grade": 3,
+      "word": "환경적",
+      "suffix": null,
+      "raw": "환경적"
+    },
+    {
+      "grade": 3,
+      "word": "회복",
+      "suffix": null,
+      "raw": "회복"
+    },
+    {
+      "grade": 3,
+      "word": "회피",
+      "suffix": 1,
+      "raw": "회피1"
+    },
+    {
+      "grade": 3,
+      "word": "획득",
+      "suffix": null,
+      "raw": "획득"
+    },
+    {
+      "grade": 3,
+      "word": "획일",
+      "suffix": null,
+      "raw": "획일"
+    },
+    {
+      "grade": 3,
+      "word": "효능",
+      "suffix": null,
+      "raw": "효능"
+    },
+    {
+      "grade": 3,
+      "word": "효력",
+      "suffix": null,
+      "raw": "효력"
+    },
+    {
+      "grade": 3,
+      "word": "효용",
+      "suffix": 1,
+      "raw": "효용1"
+    },
+    {
+      "grade": 3,
+      "word": "효율",
+      "suffix": null,
+      "raw": "효율"
+    },
+    {
+      "grade": 3,
+      "word": "후속",
+      "suffix": 2,
+      "raw": "후속2"
+    },
+    {
+      "grade": 3,
+      "word": "희소",
+      "suffix": 2,
+      "raw": "희소2"
+    },
+    {
+      "grade": 4,
+      "word": "가감",
+      "suffix": null,
+      "raw": "가감"
+    },
+    {
+      "grade": 4,
+      "word": "가공",
+      "suffix": 1,
+      "raw": "가공1"
+    },
+    {
+      "grade": 4,
+      "word": "가급적",
+      "suffix": null,
+      "raw": "가급적"
+    },
+    {
+      "grade": 4,
+      "word": "가변",
+      "suffix": 1,
+      "raw": "가변1"
+    },
+    {
+      "grade": 4,
+      "word": "가부",
+      "suffix": 1,
+      "raw": "가부1"
+    },
+    {
+      "grade": 4,
+      "word": "가시",
+      "suffix": 4,
+      "raw": "가시4"
+    },
+    {
+      "grade": 4,
+      "word": "가중",
+      "suffix": 1,
+      "raw": "가중1"
+    },
+    {
+      "grade": 4,
+      "word": "각인",
+      "suffix": 2,
+      "raw": "각인2"
+    },
+    {
+      "grade": 4,
+      "word": "간과",
+      "suffix": 2,
+      "raw": "간과2"
+    },
+    {
+      "grade": 4,
+      "word": "간극",
+      "suffix": null,
+      "raw": "간극"
+    },
+    {
+      "grade": 4,
+      "word": "간주",
+      "suffix": 1,
+      "raw": "간주1"
+    },
+    {
+      "grade": 4,
+      "word": "간파",
+      "suffix": null,
+      "raw": "간파"
+    },
+    {
+      "grade": 4,
+      "word": "간헐적",
+      "suffix": null,
+      "raw": "간헐적"
+    },
+    {
+      "grade": 4,
+      "word": "감안",
+      "suffix": 2,
+      "raw": "감안2"
+    },
+    {
+      "grade": 4,
+      "word": "감지",
+      "suffix": 4,
+      "raw": "감지4"
+    },
+    {
+      "grade": 4,
+      "word": "강구",
+      "suffix": 10,
+      "raw": "강구10"
+    },
+    {
+      "grade": 4,
+      "word": "개관",
+      "suffix": 8,
+      "raw": "개관8"
+    },
+    {
+      "grade": 4,
+      "word": "개괄",
+      "suffix": null,
+      "raw": "개괄"
+    },
+    {
+      "grade": 4,
+      "word": "개량",
+      "suffix": 1,
+      "raw": "개량1"
+    },
+    {
+      "grade": 4,
+      "word": "개론",
+      "suffix": null,
+      "raw": "개론"
+    },
+    {
+      "grade": 4,
+      "word": "개설",
+      "suffix": 2,
+      "raw": "개설2"
+    },
+    {
+      "grade": 4,
+      "word": "개시",
+      "suffix": 6,
+      "raw": "개시6"
+    },
+    {
+      "grade": 4,
+      "word": "개입",
+      "suffix": null,
+      "raw": "개입"
+    },
+    {
+      "grade": 4,
+      "word": "개진",
+      "suffix": 5,
+      "raw": "개진5"
+    },
+    {
+      "grade": 4,
+      "word": "개체",
+      "suffix": 2,
+      "raw": "개체2"
+    },
+    {
+      "grade": 4,
+      "word": "객관",
+      "suffix": 3,
+      "raw": "객관3"
+    },
+    {
+      "grade": 4,
+      "word": "객체",
+      "suffix": 2,
+      "raw": "객체2"
+    },
+    {
+      "grade": 4,
+      "word": "갱신",
+      "suffix": 2,
+      "raw": "갱신2"
+    },
+    {
+      "grade": 4,
+      "word": "거론",
+      "suffix": null,
+      "raw": "거론"
+    },
+    {
+      "grade": 4,
+      "word": "거시",
+      "suffix": 1,
+      "raw": "거시1"
+    },
+    {
+      "grade": 4,
+      "word": "격리",
+      "suffix": null,
+      "raw": "격리"
+    },
+    {
+      "grade": 4,
+      "word": "격식적",
+      "suffix": null,
+      "raw": "격식적"
+    },
+    {
+      "grade": 4,
+      "word": "견인",
+      "suffix": 3,
+      "raw": "견인3"
+    },
+    {
+      "grade": 4,
+      "word": "견제",
+      "suffix": null,
+      "raw": "견제"
+    },
+    {
+      "grade": 4,
+      "word": "견지",
+      "suffix": 3,
+      "raw": "견지3"
+    },
+    {
+      "grade": 4,
+      "word": "결부",
+      "suffix": 1,
+      "raw": "결부1"
+    },
+    {
+      "grade": 4,
+      "word": "결속",
+      "suffix": null,
+      "raw": "결속"
+    },
+    {
+      "grade": 4,
+      "word": "결손",
+      "suffix": null,
+      "raw": "결손"
+    },
+    {
+      "grade": 4,
+      "word": "결여",
+      "suffix": 1,
+      "raw": "결여1"
+    },
+    {
+      "grade": 4,
+      "word": "경시",
+      "suffix": 7,
+      "raw": "경시7"
+    },
+    {
+      "grade": 4,
+      "word": "경위",
+      "suffix": 5,
+      "raw": "경위5"
+    },
+    {
+      "grade": 4,
+      "word": "경유",
+      "suffix": 2,
+      "raw": "경유2"
+    },
+    {
+      "grade": 4,
+      "word": "경직",
+      "suffix": 4,
+      "raw": "경직4"
+    },
+    {
+      "grade": 4,
+      "word": "계발",
+      "suffix": null,
+      "raw": "계발"
+    },
+    {
+      "grade": 4,
+      "word": "계열",
+      "suffix": null,
+      "raw": "계열"
+    },
+    {
+      "grade": 4,
+      "word": "계통",
+      "suffix": 1,
+      "raw": "계통1"
+    },
+    {
+      "grade": 4,
+      "word": "고갈",
+      "suffix": 1,
+      "raw": "고갈1"
+    },
+    {
+      "grade": 4,
+      "word": "고립",
+      "suffix": null,
+      "raw": "고립"
+    },
+    {
+      "grade": 4,
+      "word": "고무적",
+      "suffix": null,
+      "raw": "고무적"
+    },
+    {
+      "grade": 4,
+      "word": "고안",
+      "suffix": 1,
+      "raw": "고안1"
+    },
+    {
+      "grade": 4,
+      "word": "고양",
+      "suffix": 5,
+      "raw": "고양5"
+    },
+    {
+      "grade": 4,
+      "word": "고전적",
+      "suffix": null,
+      "raw": "고전적"
+    },
+    {
+      "grade": 4,
+      "word": "고착",
+      "suffix": null,
+      "raw": "고착"
+    },
+    {
+      "grade": 4,
+      "word": "고찰",
+      "suffix": 2,
+      "raw": "고찰2"
+    },
+    {
+      "grade": 4,
+      "word": "고취",
+      "suffix": 2,
+      "raw": "고취2"
+    },
+    {
+      "grade": 4,
+      "word": "공고",
+      "suffix": 10,
+      "raw": "공고10"
+    },
+    {
+      "grade": 4,
+      "word": "공시적",
+      "suffix": null,
+      "raw": "공시적"
+    },
+    {
+      "grade": 4,
+      "word": "과도기적",
+      "suffix": null,
+      "raw": "과도기적"
+    },
+    {
+      "grade": 4,
+      "word": "관건",
+      "suffix": 2,
+      "raw": "관건2"
+    },
+    {
+      "grade": 4,
+      "word": "관망",
+      "suffix": 3,
+      "raw": "관망3"
+    },
+    {
+      "grade": 4,
+      "word": "관여",
+      "suffix": null,
+      "raw": "관여"
+    },
+    {
+      "grade": 4,
+      "word": "관점",
+      "suffix": 2,
+      "raw": "관점2"
+    },
+    {
+      "grade": 4,
+      "word": "관조",
+      "suffix": 3,
+      "raw": "관조03"
+    },
+    {
+      "grade": 4,
+      "word": "관통",
+      "suffix": 2,
+      "raw": "관통2"
+    },
+    {
+      "grade": 4,
+      "word": "관철",
+      "suffix": 1,
+      "raw": "관철1"
+    },
+    {
+      "grade": 4,
+      "word": "광범위하다",
+      "suffix": null,
+      "raw": "광범위하다"
+    },
+    {
+      "grade": 4,
+      "word": "괴리",
+      "suffix": null,
+      "raw": "괴리"
+    },
+    {
+      "grade": 4,
+      "word": "교섭",
+      "suffix": null,
+      "raw": "교섭"
+    },
+    {
+      "grade": 4,
+      "word": "구도",
+      "suffix": 10,
+      "raw": "구도10"
+    },
+    {
+      "grade": 4,
+      "word": "구비",
+      "suffix": 2,
+      "raw": "구비2"
+    },
+    {
+      "grade": 4,
+      "word": "구축",
+      "suffix": 3,
+      "raw": "구축3"
+    },
+    {
+      "grade": 4,
+      "word": "구현",
+      "suffix": 4,
+      "raw": "구현4"
+    },
+    {
+      "grade": 4,
+      "word": "국면",
+      "suffix": null,
+      "raw": "국면"
+    },
+    {
+      "grade": 4,
+      "word": "국부적",
+      "suffix": null,
+      "raw": "국부적"
+    },
+    {
+      "grade": 4,
+      "word": "국한",
+      "suffix": 1,
+      "raw": "국한1"
+    },
+    {
+      "grade": 4,
+      "word": "궁구",
+      "suffix": null,
+      "raw": "궁구"
+    },
+    {
+      "grade": 4,
+      "word": "궁극적",
+      "suffix": null,
+      "raw": "궁극적"
+    },
+    {
+      "grade": 4,
+      "word": "귀결",
+      "suffix": null,
+      "raw": "귀결"
+    },
+    {
+      "grade": 4,
+      "word": "귀납",
+      "suffix": null,
+      "raw": "귀납"
+    },
+    {
+      "grade": 4,
+      "word": "귀속",
+      "suffix": 2,
+      "raw": "귀속2"
+    },
+    {
+      "grade": 4,
+      "word": "규명",
+      "suffix": null,
+      "raw": "규명"
+    },
+    {
+      "grade": 4,
+      "word": "균일",
+      "suffix": null,
+      "raw": "균일"
+    },
+    {
+      "grade": 4,
+      "word": "극대화",
+      "suffix": null,
+      "raw": "극대화"
+    },
+    {
+      "grade": 4,
+      "word": "극소화",
+      "suffix": null,
+      "raw": "극소화"
+    },
+    {
+      "grade": 4,
+      "word": "근간",
+      "suffix": 3,
+      "raw": "근간3"
+    },
+    {
+      "grade": 4,
+      "word": "근절",
+      "suffix": 1,
+      "raw": "근절1"
+    },
+    {
+      "grade": 4,
+      "word": "급진",
+      "suffix": 1,
+      "raw": "급진1"
+    },
+    {
+      "grade": 4,
+      "word": "기반",
+      "suffix": 1,
+      "raw": "기반1"
+    },
+    {
+      "grade": 4,
+      "word": "기인",
+      "suffix": 3,
+      "raw": "기인3"
+    },
+    {
+      "grade": 4,
+      "word": "기저",
+      "suffix": 1,
+      "raw": "기저1"
+    },
+    {
+      "grade": 4,
+      "word": "기점",
+      "suffix": 1,
+      "raw": "기점1"
+    },
+    {
+      "grade": 4,
+      "word": "기제",
+      "suffix": 5,
+      "raw": "기제5"
+    },
+    {
+      "grade": 4,
+      "word": "기조",
+      "suffix": 1,
+      "raw": "기조1"
+    },
+    {
+      "grade": 4,
+      "word": "기존",
+      "suffix": null,
+      "raw": "기존"
+    },
+    {
+      "grade": 4,
+      "word": "난해하다",
+      "suffix": null,
+      "raw": "난해하다"
+    },
+    {
+      "grade": 4,
+      "word": "내재",
+      "suffix": null,
+      "raw": "내재"
+    },
+    {
+      "grade": 4,
+      "word": "내포",
+      "suffix": 2,
+      "raw": "내포2"
+    },
+    {
+      "grade": 4,
+      "word": "논박",
+      "suffix": null,
+      "raw": "논박"
+    },
+    {
+      "grade": 4,
+      "word": "논쟁",
+      "suffix": null,
+      "raw": "논쟁"
+    },
+    {
+      "grade": 4,
+      "word": "논점",
+      "suffix": null,
+      "raw": "논점"
+    },
+    {
+      "grade": 4,
+      "word": "논제",
+      "suffix": null,
+      "raw": "논제"
+    },
+    {
+      "grade": 4,
+      "word": "논조",
+      "suffix": null,
+      "raw": "논조"
+    },
+    {
+      "grade": 4,
+      "word": "논지",
+      "suffix": 2,
+      "raw": "논지2"
+    },
+    {
+      "grade": 4,
+      "word": "논하다",
+      "suffix": null,
+      "raw": "논하다"
+    },
+    {
+      "grade": 4,
+      "word": "누락",
+      "suffix": null,
+      "raw": "누락"
+    },
+    {
+      "grade": 4,
+      "word": "누적",
+      "suffix": 1,
+      "raw": "누적1"
+    },
+    {
+      "grade": 4,
+      "word": "다각",
+      "suffix": 1,
+      "raw": "다각1"
+    },
+    {
+      "grade": 4,
+      "word": "다면적",
+      "suffix": null,
+      "raw": "다면적"
+    },
+    {
+      "grade": 4,
+      "word": "다원적",
+      "suffix": null,
+      "raw": "다원적"
+    },
+    {
+      "grade": 4,
+      "word": "다중",
+      "suffix": 1,
+      "raw": "다중1"
+    },
+    {
+      "grade": 4,
+      "word": "다차원",
+      "suffix": null,
+      "raw": "다차원"
+    },
+    {
+      "grade": 4,
+      "word": "다층",
+      "suffix": null,
+      "raw": "다층"
+    },
+    {
+      "grade": 4,
+      "word": "단면",
+      "suffix": 2,
+      "raw": "단면2"
+    },
+    {
+      "grade": 4,
+      "word": "단선적",
+      "suffix": null,
+      "raw": "단선적"
+    },
+    {
+      "grade": 4,
+      "word": "단편적",
+      "suffix": null,
+      "raw": "단편적"
+    },
+    {
+      "grade": 4,
+      "word": "당면",
+      "suffix": 3,
+      "raw": "당면3"
+    },
+    {
+      "grade": 4,
+      "word": "당위",
+      "suffix": 1,
+      "raw": "당위1"
+    },
+    {
+      "grade": 4,
+      "word": "대두",
+      "suffix": 5,
+      "raw": "대두05"
+    },
+    {
+      "grade": 4,
+      "word": "대별",
+      "suffix": null,
+      "raw": "대별"
+    },
+    {
+      "grade": 4,
+      "word": "대안",
+      "suffix": 5,
+      "raw": "대안5"
+    },
+    {
+      "grade": 4,
+      "word": "대척",
+      "suffix": 3,
+      "raw": "대척3"
+    },
+    {
+      "grade": 4,
+      "word": "도모",
+      "suffix": 5,
+      "raw": "도모5"
+    },
+    {
+      "grade": 4,
+      "word": "도식",
+      "suffix": 6,
+      "raw": "도식6"
+    },
+    {
+      "grade": 4,
+      "word": "도전적",
+      "suffix": null,
+      "raw": "도전적"
+    },
+    {
+      "grade": 4,
+      "word": "도태",
+      "suffix": 1,
+      "raw": "도태1"
+    },
+    {
+      "grade": 4,
+      "word": "독단적",
+      "suffix": null,
+      "raw": "독단적"
+    },
+    {
+      "grade": 4,
+      "word": "독보적",
+      "suffix": null,
+      "raw": "독보적"
+    },
+    {
+      "grade": 4,
+      "word": "동적",
+      "suffix": 1,
+      "raw": "동적1"
+    },
+    {
+      "grade": 4,
+      "word": "동질",
+      "suffix": null,
+      "raw": "동질"
+    },
+    {
+      "grade": 4,
+      "word": "동태",
+      "suffix": 4,
+      "raw": "동태4"
+    },
+    {
+      "grade": 4,
+      "word": "동향",
+      "suffix": 4,
+      "raw": "동향4"
+    },
+    {
+      "grade": 4,
+      "word": "동화",
+      "suffix": 1,
+      "raw": "동화1"
+    },
+    {
+      "grade": 4,
+      "word": "등한시",
+      "suffix": null,
+      "raw": "등한시"
+    },
+    {
+      "grade": 4,
+      "word": "딜레마",
+      "suffix": null,
+      "raw": "딜레마"
+    },
+    {
+      "grade": 4,
+      "word": "만성",
+      "suffix": 3,
+      "raw": "만성3"
+    },
+    {
+      "grade": 4,
+      "word": "망라",
+      "suffix": null,
+      "raw": "망라"
+    },
+    {
+      "grade": 4,
+      "word": "매개",
+      "suffix": 3,
+      "raw": "매개3"
+    },
+    {
+      "grade": 4,
+      "word": "맥락",
+      "suffix": null,
+      "raw": "맥락"
+    },
+    {
+      "grade": 4,
+      "word": "맹목적",
+      "suffix": null,
+      "raw": "맹목적"
+    },
+    {
+      "grade": 4,
+      "word": "맹점",
+      "suffix": null,
+      "raw": "맹점"
+    },
+    {
+      "grade": 4,
+      "word": "메커니즘",
+      "suffix": null,
+      "raw": "메커니즘"
+    },
+    {
+      "grade": 4,
+      "word": "명명",
+      "suffix": 1,
+      "raw": "명명1"
+    },
+    {
+      "grade": 4,
+      "word": "명목",
+      "suffix": 2,
+      "raw": "명목2"
+    },
+    {
+      "grade": 4,
+      "word": "명시",
+      "suffix": 2,
+      "raw": "명시2"
+    },
+    {
+      "grade": 4,
+      "word": "명제",
+      "suffix": 2,
+      "raw": "명제2"
+    },
+    {
+      "grade": 4,
+      "word": "모델",
+      "suffix": null,
+      "raw": "모델"
+    },
+    {
+      "grade": 4,
+      "word": "모색",
+      "suffix": 3,
+      "raw": "모색3"
+    },
+    {
+      "grade": 4,
+      "word": "모형",
+      "suffix": 4,
+      "raw": "모형4"
+    },
+    {
+      "grade": 4,
+      "word": "묵시적",
+      "suffix": null,
+      "raw": "묵시적"
+    },
+    {
+      "grade": 4,
+      "word": "묵인",
+      "suffix": null,
+      "raw": "묵인"
+    },
+    {
+      "grade": 4,
+      "word": "물리적",
+      "suffix": null,
+      "raw": "물리적"
+    },
+    {
+      "grade": 4,
+      "word": "물적",
+      "suffix": null,
+      "raw": "물적"
+    },
+    {
+      "grade": 4,
+      "word": "물질적",
+      "suffix": null,
+      "raw": "물질적"
+    },
+    {
+      "grade": 4,
+      "word": "미결",
+      "suffix": null,
+      "raw": "미결"
+    },
+    {
+      "grade": 4,
+      "word": "미시",
+      "suffix": 5,
+      "raw": "미시5"
+    },
+    {
+      "grade": 4,
+      "word": "반동",
+      "suffix": null,
+      "raw": "반동"
+    },
+    {
+      "grade": 4,
+      "word": "반려",
+      "suffix": 3,
+      "raw": "반려3"
+    },
+    {
+      "grade": 4,
+      "word": "반문",
+      "suffix": 1,
+      "raw": "반문1"
+    },
+    {
+      "grade": 4,
+      "word": "반비례",
+      "suffix": null,
+      "raw": "반비례"
+    },
+    {
+      "grade": 4,
+      "word": "반증",
+      "suffix": null,
+      "raw": "반증"
+    },
+    {
+      "grade": 4,
+      "word": "반추",
+      "suffix": null,
+      "raw": "반추"
+    },
+    {
+      "grade": 4,
+      "word": "반향",
+      "suffix": 1,
+      "raw": "반향1"
+    },
+    {
+      "grade": 4,
+      "word": "발동",
+      "suffix": null,
+      "raw": "발동"
+    },
+    {
+      "grade": 4,
+      "word": "발산",
+      "suffix": 2,
+      "raw": "발산2"
+    },
+    {
+      "grade": 4,
+      "word": "발원",
+      "suffix": 1,
+      "raw": "발원1"
+    },
+    {
+      "grade": 4,
+      "word": "발췌하다",
+      "suffix": null,
+      "raw": "발췌하다"
+    },
+    {
+      "grade": 4,
+      "word": "발현",
+      "suffix": null,
+      "raw": "발현"
+    },
+    {
+      "grade": 4,
+      "word": "방사",
+      "suffix": 7,
+      "raw": "방사7"
+    },
+    {
+      "grade": 4,
+      "word": "방임",
+      "suffix": 3,
+      "raw": "방임3"
+    },
+    {
+      "grade": 4,
+      "word": "방출",
+      "suffix": 1,
+      "raw": "방출1"
+    },
+    {
+      "grade": 4,
+      "word": "배격",
+      "suffix": null,
+      "raw": "배격"
+    },
+    {
+      "grade": 4,
+      "word": "배제",
+      "suffix": 3,
+      "raw": "배제3"
+    },
+    {
+      "grade": 4,
+      "word": "배척",
+      "suffix": 4,
+      "raw": "배척4"
+    },
+    {
+      "grade": 4,
+      "word": "배치",
+      "suffix": 2,
+      "raw": "배치2"
+    },
+    {
+      "grade": 4,
+      "word": "배타적",
+      "suffix": null,
+      "raw": "배타적"
+    },
+    {
+      "grade": 4,
+      "word": "번복",
+      "suffix": null,
+      "raw": "번복"
+    },
+    {
+      "grade": 4,
+      "word": "범례",
+      "suffix": 2,
+      "raw": "범례2"
+    },
+    {
+      "grade": 4,
+      "word": "범주",
+      "suffix": 5,
+      "raw": "범주5"
+    },
+    {
+      "grade": 4,
+      "word": "변모",
+      "suffix": 2,
+      "raw": "변모2"
+    },
+    {
+      "grade": 4,
+      "word": "변수",
+      "suffix": 6,
+      "raw": "변수6"
+    },
+    {
+      "grade": 4,
+      "word": "변용",
+      "suffix": 2,
+      "raw": "변용2"
+    },
+    {
+      "grade": 4,
+      "word": "변인",
+      "suffix": 2,
+      "raw": "변인2"
+    },
+    {
+      "grade": 4,
+      "word": "병합",
+      "suffix": null,
+      "raw": "병합"
+    },
+    {
+      "grade": 4,
+      "word": "병행",
+      "suffix": 2,
+      "raw": "병행2"
+    },
+    {
+      "grade": 4,
+      "word": "보류",
+      "suffix": 1,
+      "raw": "보류1"
+    },
+    {
+      "grade": 4,
+      "word": "복제",
+      "suffix": 3,
+      "raw": "복제3"
+    },
+    {
+      "grade": 4,
+      "word": "본연",
+      "suffix": null,
+      "raw": "본연"
+    },
+    {
+      "grade": 4,
+      "word": "봉착",
+      "suffix": null,
+      "raw": "봉착"
+    },
+    {
+      "grade": 4,
+      "word": "부각",
+      "suffix": 4,
+      "raw": "부각4"
+    },
+    {
+      "grade": 4,
+      "word": "부수적",
+      "suffix": null,
+      "raw": "부수적"
+    },
+    {
+      "grade": 4,
+      "word": "부연",
+      "suffix": 4,
+      "raw": "부연4"
+    },
+    {
+      "grade": 4,
+      "word": "부응",
+      "suffix": 1,
+      "raw": "부응1"
+    },
+    {
+      "grade": 4,
+      "word": "부차적",
+      "suffix": null,
+      "raw": "부차적"
+    },
+    {
+      "grade": 4,
+      "word": "부합",
+      "suffix": 2,
+      "raw": "부합2"
+    },
+    {
+      "grade": 4,
+      "word": "분기점",
+      "suffix": null,
+      "raw": "분기점"
+    },
+    {
+      "grade": 4,
+      "word": "분절",
+      "suffix": null,
+      "raw": "분절"
+    },
+    {
+      "grade": 4,
+      "word": "분화",
+      "suffix": 1,
+      "raw": "분화1"
+    },
+    {
+      "grade": 4,
+      "word": "불가결",
+      "suffix": null,
+      "raw": "불가결"
+    },
+    {
+      "grade": 4,
+      "word": "불가피",
+      "suffix": null,
+      "raw": "불가피"
+    },
+    {
+      "grade": 4,
+      "word": "불변",
+      "suffix": 2,
+      "raw": "불변2"
+    },
+    {
+      "grade": 4,
+      "word": "비중",
+      "suffix": 1,
+      "raw": "비중01"
+    },
+    {
+      "grade": 4,
+      "word": "사료",
+      "suffix": 3,
+      "raw": "사료3"
+    },
+    {
+      "grade": 4,
+      "word": "사상",
+      "suffix": 15,
+      "raw": "사상15"
+    },
+    {
+      "grade": 4,
+      "word": "사적",
+      "suffix": 2,
+      "raw": "사적2"
+    },
+    {
+      "grade": 4,
+      "word": "산출",
+      "suffix": 2,
+      "raw": "산출2"
+    },
+    {
+      "grade": 4,
+      "word": "상반",
+      "suffix": 4,
+      "raw": "상반4"
+    },
+    {
+      "grade": 4,
+      "word": "상보",
+      "suffix": 3,
+      "raw": "상보3"
+    },
+    {
+      "grade": 4,
+      "word": "상부",
+      "suffix": 3,
+      "raw": "상부3"
+    },
+    {
+      "grade": 4,
+      "word": "상생",
+      "suffix": 3,
+      "raw": "상생3"
+    },
+    {
+      "grade": 4,
+      "word": "상쇄",
+      "suffix": null,
+      "raw": "상쇄"
+    },
+    {
+      "grade": 4,
+      "word": "상용",
+      "suffix": 3,
+      "raw": "상용3"
+    },
+    {
+      "grade": 4,
+      "word": "상응",
+      "suffix": null,
+      "raw": "상응"
+    },
+    {
+      "grade": 4,
+      "word": "상이",
+      "suffix": 2,
+      "raw": "상이2"
+    },
+    {
+      "grade": 4,
+      "word": "상충",
+      "suffix": 3,
+      "raw": "상충3"
+    },
+    {
+      "grade": 4,
+      "word": "상층",
+      "suffix": null,
+      "raw": "상층"
+    },
+    {
+      "grade": 4,
+      "word": "상통",
+      "suffix": 3,
+      "raw": "상통3"
+    },
+    {
+      "grade": 4,
+      "word": "상한선",
+      "suffix": null,
+      "raw": "상한선"
+    },
+    {
+      "grade": 4,
+      "word": "상향",
+      "suffix": 1,
+      "raw": "상향1"
+    },
+    {
+      "grade": 4,
+      "word": "선결",
+      "suffix": 1,
+      "raw": "선결1"
+    },
+    {
+      "grade": 4,
+      "word": "선례",
+      "suffix": null,
+      "raw": "선례"
+    },
+    {
+      "grade": 4,
+      "word": "선별",
+      "suffix": null,
+      "raw": "선별"
+    },
+    {
+      "grade": 4,
+      "word": "세분",
+      "suffix": 3,
+      "raw": "세분3"
+    },
+    {
+      "grade": 4,
+      "word": "소거",
+      "suffix": 2,
+      "raw": "소거2"
+    },
+    {
+      "grade": 4,
+      "word": "소모",
+      "suffix": 2,
+      "raw": "소모2"
+    },
+    {
+      "grade": 4,
+      "word": "소요",
+      "suffix": 2,
+      "raw": "소요2"
+    },
+    {
+      "grade": 4,
+      "word": "소진",
+      "suffix": 3,
+      "raw": "소진3"
+    },
+    {
+      "grade": 4,
+      "word": "수렴",
+      "suffix": 3,
+      "raw": "수렴3"
+    },
+    {
+      "grade": 4,
+      "word": "수직적",
+      "suffix": null,
+      "raw": "수직적"
+    },
+    {
+      "grade": 4,
+      "word": "수평적",
+      "suffix": null,
+      "raw": "수평적"
+    },
+    {
+      "grade": 4,
+      "word": "숙고",
+      "suffix": null,
+      "raw": "숙고"
+    },
+    {
+      "grade": 4,
+      "word": "순기능",
+      "suffix": null,
+      "raw": "순기능"
+    },
+    {
+      "grade": 4,
+      "word": "순환",
+      "suffix": 1,
+      "raw": "순환1"
+    },
+    {
+      "grade": 4,
+      "word": "승인",
+      "suffix": 2,
+      "raw": "승인2"
+    },
+    {
+      "grade": 4,
+      "word": "시사",
+      "suffix": 2,
+      "raw": "시사2"
+    },
+    {
+      "grade": 4,
+      "word": "시스템",
+      "suffix": null,
+      "raw": "시스템"
+    },
+    {
+      "grade": 4,
+      "word": "식별",
+      "suffix": null,
+      "raw": "식별"
+    },
+    {
+      "grade": 4,
+      "word": "실재",
+      "suffix": 2,
+      "raw": "실재2"
+    },
+    {
+      "grade": 4,
+      "word": "실증",
+      "suffix": 2,
+      "raw": "실증2"
+    },
+    {
+      "grade": 4,
+      "word": "실질",
+      "suffix": null,
+      "raw": "실질"
+    },
+    {
+      "grade": 4,
+      "word": "실효",
+      "suffix": 2,
+      "raw": "실효2"
+    },
+    {
+      "grade": 4,
+      "word": "심의",
+      "suffix": 5,
+      "raw": "심의5"
+    },
+    {
+      "grade": 4,
+      "word": "심층",
+      "suffix": null,
+      "raw": "심층"
+    },
+    {
+      "grade": 4,
+      "word": "악조건",
+      "suffix": null,
+      "raw": "악조건"
+    },
+    {
+      "grade": 4,
+      "word": "안착",
+      "suffix": null,
+      "raw": "안착"
+    },
+    {
+      "grade": 4,
+      "word": "암묵적",
+      "suffix": null,
+      "raw": "암묵적"
+    },
+    {
+      "grade": 4,
+      "word": "양극단",
+      "suffix": null,
+      "raw": "양극단"
+    },
+    {
+      "grade": 4,
+      "word": "양립",
+      "suffix": null,
+      "raw": "양립"
+    },
+    {
+      "grade": 4,
+      "word": "양방향",
+      "suffix": null,
+      "raw": "양방향"
+    },
+    {
+      "grade": 4,
+      "word": "양적",
+      "suffix": 1,
+      "raw": "양적1"
+    },
+    {
+      "grade": 4,
+      "word": "양태",
+      "suffix": 3,
+      "raw": "양태3"
+    },
+    {
+      "grade": 4,
+      "word": "여과",
+      "suffix": 4,
+      "raw": "여과4"
+    },
+    {
+      "grade": 4,
+      "word": "역기능",
+      "suffix": null,
+      "raw": "역기능"
+    },
+    {
+      "grade": 4,
+      "word": "역동적",
+      "suffix": null,
+      "raw": "역동적"
+    },
+    {
+      "grade": 4,
+      "word": "역류",
+      "suffix": null,
+      "raw": "역류"
+    },
+    {
+      "grade": 4,
+      "word": "역이용",
+      "suffix": null,
+      "raw": "역이용"
+    },
+    {
+      "grade": 4,
+      "word": "역행적",
+      "suffix": null,
+      "raw": "역행적"
+    },
+    {
+      "grade": 4,
+      "word": "역효과",
+      "suffix": null,
+      "raw": "역효과"
+    },
+    {
+      "grade": 4,
+      "word": "연계",
+      "suffix": 3,
+      "raw": "연계3"
+    },
+    {
+      "grade": 4,
+      "word": "연역",
+      "suffix": 2,
+      "raw": "연역2"
+    },
+    {
+      "grade": 4,
+      "word": "예증",
+      "suffix": 2,
+      "raw": "예증2"
+    },
+    {
+      "grade": 4,
+      "word": "오차",
+      "suffix": null,
+      "raw": "오차"
+    },
+    {
+      "grade": 4,
+      "word": "옹호",
+      "suffix": null,
+      "raw": "옹호"
+    },
+    {
+      "grade": 4,
+      "word": "와해",
+      "suffix": 1,
+      "raw": "와해1"
+    },
+    {
+      "grade": 4,
+      "word": "완비",
+      "suffix": 1,
+      "raw": "완비1"
+    },
+    {
+      "grade": 4,
+      "word": "완충",
+      "suffix": null,
+      "raw": "완충"
+    },
+    {
+      "grade": 4,
+      "word": "왜곡",
+      "suffix": 1,
+      "raw": "왜곡1"
+    },
+    {
+      "grade": 4,
+      "word": "외면적",
+      "suffix": 1,
+      "raw": "외면적1"
+    },
+    {
+      "grade": 4,
+      "word": "외재",
+      "suffix": null,
+      "raw": "외재"
+    },
+    {
+      "grade": 4,
+      "word": "외형적",
+      "suffix": null,
+      "raw": "외형적"
+    },
+    {
+      "grade": 4,
+      "word": "요건",
+      "suffix": null,
+      "raw": "요건"
+    },
+    {
+      "grade": 4,
+      "word": "우발",
+      "suffix": null,
+      "raw": "우발"
+    },
+    {
+      "grade": 4,
+      "word": "우연적",
+      "suffix": null,
+      "raw": "우연적"
+    },
+    {
+      "grade": 4,
+      "word": "우호적",
+      "suffix": null,
+      "raw": "우호적"
+    },
+    {
+      "grade": 4,
+      "word": "우회",
+      "suffix": 3,
+      "raw": "우회3"
+    },
+    {
+      "grade": 4,
+      "word": "원형",
+      "suffix": 3,
+      "raw": "원형3"
+    },
+    {
+      "grade": 4,
+      "word": "위계",
+      "suffix": 2,
+      "raw": "위계2"
+    },
+    {
+      "grade": 4,
+      "word": "위상",
+      "suffix": 1,
+      "raw": "위상1"
+    },
+    {
+      "grade": 4,
+      "word": "유관",
+      "suffix": 1,
+      "raw": "유관1"
+    },
+    {
+      "grade": 4,
+      "word": "유도",
+      "suffix": 7,
+      "raw": "유도7"
+    },
+    {
+      "grade": 4,
+      "word": "유동",
+      "suffix": 2,
+      "raw": "유동2"
+    },
+    {
+      "grade": 4,
+      "word": "유보",
+      "suffix": 2,
+      "raw": "유보2"
+    },
+    {
+      "grade": 4,
+      "word": "유연",
+      "suffix": 7,
+      "raw": "유연7"
+    },
+    {
+      "grade": 4,
+      "word": "유예",
+      "suffix": 1,
+      "raw": "유예1"
+    },
+    {
+      "grade": 4,
+      "word": "유인",
+      "suffix": 7,
+      "raw": "유인7"
+    },
+    {
+      "grade": 4,
+      "word": "유전적",
+      "suffix": null,
+      "raw": "유전적"
+    },
+    {
+      "grade": 4,
+      "word": "유효",
+      "suffix": 1,
+      "raw": "유효1"
+    },
+    {
+      "grade": 4,
+      "word": "육성",
+      "suffix": 5,
+      "raw": "육성5"
+    },
+    {
+      "grade": 4,
+      "word": "융성",
+      "suffix": null,
+      "raw": "융성"
+    },
+    {
+      "grade": 4,
+      "word": "은폐",
+      "suffix": 2,
+      "raw": "은폐2"
+    },
+    {
+      "grade": 4,
+      "word": "응집",
+      "suffix": 1,
+      "raw": "응집1"
+    },
+    {
+      "grade": 4,
+      "word": "응축",
+      "suffix": null,
+      "raw": "응축"
+    },
+    {
+      "grade": 4,
+      "word": "이분법적",
+      "suffix": null,
+      "raw": "이분법적"
+    },
+    {
+      "grade": 4,
+      "word": "이원",
+      "suffix": 1,
+      "raw": "이원1"
+    },
+    {
+      "grade": 4,
+      "word": "이중",
+      "suffix": 3,
+      "raw": "이중3"
+    },
+    {
+      "grade": 4,
+      "word": "이차적",
+      "suffix": null,
+      "raw": "이차적"
+    },
+    {
+      "grade": 4,
+      "word": "이행",
+      "suffix": 8,
+      "raw": "이행8"
+    },
+    {
+      "grade": 4,
+      "word": "인식",
+      "suffix": null,
+      "raw": "인식"
+    },
+    {
+      "grade": 4,
+      "word": "인용",
+      "suffix": 2,
+      "raw": "인용2"
+    },
+    {
+      "grade": 4,
+      "word": "인위적",
+      "suffix": null,
+      "raw": "인위적"
+    },
+    {
+      "grade": 4,
+      "word": "인자",
+      "suffix": 6,
+      "raw": "인자6"
+    },
+    {
+      "grade": 4,
+      "word": "인접",
+      "suffix": 2,
+      "raw": "인접2"
+    },
+    {
+      "grade": 4,
+      "word": "일관",
+      "suffix": 1,
+      "raw": "일관1"
+    },
+    {
+      "grade": 4,
+      "word": "일련",
+      "suffix": 1,
+      "raw": "일련1"
+    },
+    {
+      "grade": 4,
+      "word": "일례",
+      "suffix": null,
+      "raw": "일례"
+    },
+    {
+      "grade": 4,
+      "word": "일률적",
+      "suffix": null,
+      "raw": "일률적"
+    },
+    {
+      "grade": 4,
+      "word": "일방향적",
+      "suffix": null,
+      "raw": "일방향적"
+    },
+    {
+      "grade": 4,
+      "word": "일원",
+      "suffix": 1,
+      "raw": "일원1"
+    },
+    {
+      "grade": 4,
+      "word": "일체",
+      "suffix": 1,
+      "raw": "일체1"
+    },
+    {
+      "grade": 4,
+      "word": "일탈",
+      "suffix": null,
+      "raw": "일탈"
+    },
+    {
+      "grade": 4,
+      "word": "일환",
+      "suffix": 1,
+      "raw": "일환1"
+    },
+    {
+      "grade": 4,
+      "word": "임의",
+      "suffix": null,
+      "raw": "임의"
+    },
+    {
+      "grade": 4,
+      "word": "입각하다",
+      "suffix": 2,
+      "raw": "입각하다2"
+    },
+    {
+      "grade": 4,
+      "word": "입증",
+      "suffix": null,
+      "raw": "입증"
+    },
+    {
+      "grade": 4,
+      "word": "입체적",
+      "suffix": null,
+      "raw": "입체적"
+    },
+    {
+      "grade": 4,
+      "word": "자각",
+      "suffix": 3,
+      "raw": "자각3"
+    },
+    {
+      "grade": 4,
+      "word": "잠재",
+      "suffix": null,
+      "raw": "잠재"
+    },
+    {
+      "grade": 4,
+      "word": "잠정적",
+      "suffix": null,
+      "raw": "잠정적"
+    },
+    {
+      "grade": 4,
+      "word": "재개",
+      "suffix": 3,
+      "raw": "재개3"
+    },
+    {
+      "grade": 4,
+      "word": "재고",
+      "suffix": 1,
+      "raw": "재고1"
+    },
+    {
+      "grade": 4,
+      "word": "재발",
+      "suffix": null,
+      "raw": "재발"
+    },
+    {
+      "grade": 4,
+      "word": "쟁점",
+      "suffix": null,
+      "raw": "쟁점"
+    },
+    {
+      "grade": 4,
+      "word": "저변",
+      "suffix": 2,
+      "raw": "저변2"
+    },
+    {
+      "grade": 4,
+      "word": "저조",
+      "suffix": 2,
+      "raw": "저조2"
+    },
+    {
+      "grade": 4,
+      "word": "저지",
+      "suffix": 3,
+      "raw": "저지3"
+    },
+    {
+      "grade": 4,
+      "word": "저하",
+      "suffix": 1,
+      "raw": "저하1"
+    },
+    {
+      "grade": 4,
+      "word": "저해",
+      "suffix": 1,
+      "raw": "저해1"
+    },
+    {
+      "grade": 4,
+      "word": "적정",
+      "suffix": 6,
+      "raw": "적정6"
+    },
+    {
+      "grade": 4,
+      "word": "전락",
+      "suffix": 2,
+      "raw": "전락2"
+    },
+    {
+      "grade": 4,
+      "word": "전례",
+      "suffix": null,
+      "raw": "전례"
+    },
+    {
+      "grade": 4,
+      "word": "전면",
+      "suffix": 1,
+      "raw": "전면1"
+    },
+    {
+      "grade": 4,
+      "word": "전무",
+      "suffix": 1,
+      "raw": "전무1"
+    },
+    {
+      "grade": 4,
+      "word": "전이",
+      "suffix": 3,
+      "raw": "전이3"
+    },
+    {
+      "grade": 4,
+      "word": "전형",
+      "suffix": 4,
+      "raw": "전형4"
+    },
+    {
+      "grade": 4,
+      "word": "절충",
+      "suffix": 1,
+      "raw": "절충1"
+    },
+    {
+      "grade": 4,
+      "word": "점유",
+      "suffix": 1,
+      "raw": "점유1"
+    },
+    {
+      "grade": 4,
+      "word": "점진적",
+      "suffix": null,
+      "raw": "점진적"
+    },
+    {
+      "grade": 4,
+      "word": "접목",
+      "suffix": 2,
+      "raw": "접목2"
+    },
+    {
+      "grade": 4,
+      "word": "접합",
+      "suffix": null,
+      "raw": "접합"
+    },
+    {
+      "grade": 4,
+      "word": "정량적",
+      "suffix": null,
+      "raw": "정량적"
+    },
+    {
+      "grade": 4,
+      "word": "정렬",
+      "suffix": 2,
+      "raw": "정렬2"
+    },
+    {
+      "grade": 4,
+      "word": "정립",
+      "suffix": 2,
+      "raw": "정립2"
+    },
+    {
+      "grade": 4,
+      "word": "정비례",
+      "suffix": 1,
+      "raw": "정비례1"
+    },
+    {
+      "grade": 4,
+      "word": "정적",
+      "suffix": 8,
+      "raw": "정적8"
+    },
+    {
+      "grade": 4,
+      "word": "제고",
+      "suffix": 2,
+      "raw": "제고2"
+    },
+    {
+      "grade": 4,
+      "word": "조망",
+      "suffix": 1,
+      "raw": "조망1"
+    },
+    {
+      "grade": 4,
+      "word": "조밀하다",
+      "suffix": null,
+      "raw": "조밀하다"
+    },
+    {
+      "grade": 4,
+      "word": "조성",
+      "suffix": 4,
+      "raw": "조성4"
+    },
+    {
+      "grade": 4,
+      "word": "조율",
+      "suffix": 3,
+      "raw": "조율3"
+    },
+    {
+      "grade": 4,
+      "word": "조작",
+      "suffix": 5,
+      "raw": "조작5"
+    },
+    {
+      "grade": 4,
+      "word": "조합",
+      "suffix": 1,
+      "raw": "조합1"
+    },
+    {
+      "grade": 4,
+      "word": "조회",
+      "suffix": 2,
+      "raw": "조회2"
+    },
+    {
+      "grade": 4,
+      "word": "존폐",
+      "suffix": null,
+      "raw": "존폐"
+    },
+    {
+      "grade": 4,
+      "word": "종속",
+      "suffix": 2,
+      "raw": "종속2"
+    },
+    {
+      "grade": 4,
+      "word": "종식",
+      "suffix": 1,
+      "raw": "종식1"
+    },
+    {
+      "grade": 4,
+      "word": "종적",
+      "suffix": 1,
+      "raw": "종적1"
+    },
+    {
+      "grade": 4,
+      "word": "주기",
+      "suffix": 13,
+      "raw": "주기13"
+    },
+    {
+      "grade": 4,
+      "word": "주력",
+      "suffix": 1,
+      "raw": "주력1"
+    },
+    {
+      "grade": 4,
+      "word": "주시",
+      "suffix": 3,
+      "raw": "주시3"
+    },
+    {
+      "grade": 4,
+      "word": "주지",
+      "suffix": 2,
+      "raw": "주지2"
+    },
+    {
+      "grade": 4,
+      "word": "주축",
+      "suffix": 1,
+      "raw": "주축1"
+    },
+    {
+      "grade": 4,
+      "word": "중개",
+      "suffix": 2,
+      "raw": "중개2"
+    },
+    {
+      "grade": 4,
+      "word": "중첩",
+      "suffix": 2,
+      "raw": "중첩2"
+    },
+    {
+      "grade": 4,
+      "word": "중추",
+      "suffix": 1,
+      "raw": "중추1"
+    },
+    {
+      "grade": 4,
+      "word": "중화",
+      "suffix": 2,
+      "raw": "중화2"
+    },
+    {
+      "grade": 4,
+      "word": "증감",
+      "suffix": 1,
+      "raw": "증감1"
+    },
+    {
+      "grade": 4,
+      "word": "증강",
+      "suffix": null,
+      "raw": "증강"
+    },
+    {
+      "grade": 4,
+      "word": "증설",
+      "suffix": null,
+      "raw": "증설"
+    },
+    {
+      "grade": 4,
+      "word": "증식",
+      "suffix": null,
+      "raw": "증식"
+    },
+    {
+      "grade": 4,
+      "word": "증폭",
+      "suffix": null,
+      "raw": "증폭"
+    },
+    {
+      "grade": 4,
+      "word": "지각",
+      "suffix": 4,
+      "raw": "지각4"
+    },
+    {
+      "grade": 4,
+      "word": "지성",
+      "suffix": 6,
+      "raw": "지성6"
+    },
+    {
+      "grade": 4,
+      "word": "지양",
+      "suffix": null,
+      "raw": "지양"
+    },
+    {
+      "grade": 4,
+      "word": "지연",
+      "suffix": 3,
+      "raw": "지연3"
+    },
+    {
+      "grade": 4,
+      "word": "직간접적",
+      "suffix": null,
+      "raw": "직간접적"
+    },
+    {
+      "grade": 4,
+      "word": "직결",
+      "suffix": 2,
+      "raw": "직결2"
+    },
+    {
+      "grade": 4,
+      "word": "직시",
+      "suffix": null,
+      "raw": "직시"
+    },
+    {
+      "grade": 4,
+      "word": "진보",
+      "suffix": 2,
+      "raw": "진보2"
+    },
+    {
+      "grade": 4,
+      "word": "진위",
+      "suffix": 1,
+      "raw": "진위1"
+    },
+    {
+      "grade": 4,
+      "word": "진의",
+      "suffix": 1,
+      "raw": "진의1"
+    },
+    {
+      "grade": 4,
+      "word": "진화",
+      "suffix": 5,
+      "raw": "진화5"
+    },
+    {
+      "grade": 4,
+      "word": "질적",
+      "suffix": null,
+      "raw": "질적"
+    },
+    {
+      "grade": 4,
+      "word": "집대성",
+      "suffix": null,
+      "raw": "집대성"
+    },
+    {
+      "grade": 4,
+      "word": "집적",
+      "suffix": 2,
+      "raw": "집적2"
+    },
+    {
+      "grade": 4,
+      "word": "착안",
+      "suffix": 2,
+      "raw": "착안2"
+    },
+    {
+      "grade": 4,
+      "word": "창안",
+      "suffix": 1,
+      "raw": "창안1"
+    },
+    {
+      "grade": 4,
+      "word": "척도",
+      "suffix": null,
+      "raw": "척도"
+    },
+    {
+      "grade": 4,
+      "word": "체결",
+      "suffix": null,
+      "raw": "체결"
+    },
+    {
+      "grade": 4,
+      "word": "체제",
+      "suffix": 2,
+      "raw": "체제2"
+    },
+    {
+      "grade": 4,
+      "word": "촉구",
+      "suffix": null,
+      "raw": "촉구"
+    },
+    {
+      "grade": 4,
+      "word": "촉발",
+      "suffix": 2,
+      "raw": "촉발2"
+    },
+    {
+      "grade": 4,
+      "word": "촉진",
+      "suffix": 1,
+      "raw": "촉진1"
+    },
+    {
+      "grade": 4,
+      "word": "총괄",
+      "suffix": null,
+      "raw": "총괄"
+    },
+    {
+      "grade": 4,
+      "word": "총칭",
+      "suffix": null,
+      "raw": "총칭"
+    },
+    {
+      "grade": 4,
+      "word": "최선책",
+      "suffix": null,
+      "raw": "최선책"
+    },
+    {
+      "grade": 4,
+      "word": "최적",
+      "suffix": null,
+      "raw": "최적"
+    },
+    {
+      "grade": 4,
+      "word": "추산",
+      "suffix": 2,
+      "raw": "추산2"
+    },
+    {
+      "grade": 4,
+      "word": "추세",
+      "suffix": 3,
+      "raw": "추세3"
+    },
+    {
+      "grade": 4,
+      "word": "추이",
+      "suffix": null,
+      "raw": "추이"
+    },
+    {
+      "grade": 4,
+      "word": "추정",
+      "suffix": 2,
+      "raw": "추정2"
+    },
+    {
+      "grade": 4,
+      "word": "추출",
+      "suffix": null,
+      "raw": "추출"
+    },
+    {
+      "grade": 4,
+      "word": "축약",
+      "suffix": null,
+      "raw": "축약"
+    },
+    {
+      "grade": 4,
+      "word": "취약",
+      "suffix": null,
+      "raw": "취약"
+    },
+    {
+      "grade": 4,
+      "word": "취합",
+      "suffix": null,
+      "raw": "취합"
+    },
+    {
+      "grade": 4,
+      "word": "층위",
+      "suffix": null,
+      "raw": "층위"
+    },
+    {
+      "grade": 4,
+      "word": "치명적",
+      "suffix": null,
+      "raw": "치명적"
+    },
+    {
+      "grade": 4,
+      "word": "치환",
+      "suffix": null,
+      "raw": "치환"
+    },
+    {
+      "grade": 4,
+      "word": "침투",
+      "suffix": null,
+      "raw": "침투"
+    },
+    {
+      "grade": 4,
+      "word": "타개",
+      "suffix": null,
+      "raw": "타개"
+    },
+    {
+      "grade": 4,
+      "word": "타율",
+      "suffix": 1,
+      "raw": "타율1"
+    },
+    {
+      "grade": 4,
+      "word": "탄력적",
+      "suffix": null,
+      "raw": "탄력적"
+    },
+    {
+      "grade": 4,
+      "word": "통시적",
+      "suffix": null,
+      "raw": "통시적"
+    },
+    {
+      "grade": 4,
+      "word": "통용",
+      "suffix": null,
+      "raw": "통용"
+    },
+    {
+      "grade": 4,
+      "word": "통칭",
+      "suffix": 1,
+      "raw": "통칭1"
+    },
+    {
+      "grade": 4,
+      "word": "퇴보",
+      "suffix": null,
+      "raw": "퇴보"
+    },
+    {
+      "grade": 4,
+      "word": "퇴화",
+      "suffix": 1,
+      "raw": "퇴화1"
+    },
+    {
+      "grade": 4,
+      "word": "파격적",
+      "suffix": null,
+      "raw": "파격적"
+    },
+    {
+      "grade": 4,
+      "word": "파급",
+      "suffix": null,
+      "raw": "파급"
+    },
+    {
+      "grade": 4,
+      "word": "파동",
+      "suffix": 1,
+      "raw": "파동1"
+    },
+    {
+      "grade": 4,
+      "word": "파생",
+      "suffix": 1,
+      "raw": "파생1"
+    },
+    {
+      "grade": 4,
+      "word": "파장",
+      "suffix": 2,
+      "raw": "파장2"
+    },
+    {
+      "grade": 4,
+      "word": "파편",
+      "suffix": null,
+      "raw": "파편"
+    },
+    {
+      "grade": 4,
+      "word": "판이하다",
+      "suffix": null,
+      "raw": "판이하다"
+    },
+    {
+      "grade": 4,
+      "word": "패러다임",
+      "suffix": null,
+      "raw": "패러다임"
+    },
+    {
+      "grade": 4,
+      "word": "편재",
+      "suffix": 2,
+      "raw": "편재2"
+    },
+    {
+      "grade": 4,
+      "word": "편파",
+      "suffix": 2,
+      "raw": "편파2"
+    },
+    {
+      "grade": 4,
+      "word": "편향",
+      "suffix": null,
+      "raw": "편향"
+    },
+    {
+      "grade": 4,
+      "word": "평면적",
+      "suffix": null,
+      "raw": "평면적"
+    },
+    {
+      "grade": 4,
+      "word": "포괄",
+      "suffix": null,
+      "raw": "포괄"
+    },
+    {
+      "grade": 4,
+      "word": "포용적",
+      "suffix": null,
+      "raw": "포용적"
+    },
+    {
+      "grade": 4,
+      "word": "포착",
+      "suffix": null,
+      "raw": "포착"
+    },
+    {
+      "grade": 4,
+      "word": "표류",
+      "suffix": null,
+      "raw": "표류"
+    },
+    {
+      "grade": 4,
+      "word": "표명",
+      "suffix": null,
+      "raw": "표명"
+    },
+    {
+      "grade": 4,
+      "word": "표방",
+      "suffix": null,
+      "raw": "표방"
+    },
+    {
+      "grade": 4,
+      "word": "표상",
+      "suffix": null,
+      "raw": "표상"
+    },
+    {
+      "grade": 4,
+      "word": "표적",
+      "suffix": 3,
+      "raw": "표적3"
+    },
+    {
+      "grade": 4,
+      "word": "피드백",
+      "suffix": null,
+      "raw": "피드백"
+    },
+    {
+      "grade": 4,
+      "word": "피력",
+      "suffix": null,
+      "raw": "피력"
+    },
+    {
+      "grade": 4,
+      "word": "피상적",
+      "suffix": null,
+      "raw": "피상적"
+    },
+    {
+      "grade": 4,
+      "word": "하부",
+      "suffix": 3,
+      "raw": "하부3"
+    },
+    {
+      "grade": 4,
+      "word": "하위",
+      "suffix": 2,
+      "raw": "하위2"
+    },
+    {
+      "grade": 4,
+      "word": "하층",
+      "suffix": null,
+      "raw": "하층"
+    },
+    {
+      "grade": 4,
+      "word": "하한선",
+      "suffix": null,
+      "raw": "하한선"
+    },
+    {
+      "grade": 4,
+      "word": "하향",
+      "suffix": 1,
+      "raw": "하향1"
+    },
+    {
+      "grade": 4,
+      "word": "학문적",
+      "suffix": null,
+      "raw": "학문적"
+    },
+    {
+      "grade": 4,
+      "word": "학설",
+      "suffix": null,
+      "raw": "학설"
+    },
+    {
+      "grade": 4,
+      "word": "학술",
+      "suffix": null,
+      "raw": "학술"
+    },
+    {
+      "grade": 4,
+      "word": "학제적",
+      "suffix": null,
+      "raw": "학제적"
+    },
+    {
+      "grade": 4,
+      "word": "한시적",
+      "suffix": null,
+      "raw": "한시적"
+    },
+    {
+      "grade": 4,
+      "word": "함축",
+      "suffix": null,
+      "raw": "함축"
+    },
+    {
+      "grade": 4,
+      "word": "할애",
+      "suffix": null,
+      "raw": "할애"
+    },
+    {
+      "grade": 4,
+      "word": "함의",
+      "suffix": null,
+      "raw": "함의"
+    },
+    {
+      "grade": 4,
+      "word": "합류",
+      "suffix": null,
+      "raw": "합류"
+    },
+    {
+      "grade": 4,
+      "word": "합성",
+      "suffix": null,
+      "raw": "합성"
+    },
+    {
+      "grade": 4,
+      "word": "항구적",
+      "suffix": null,
+      "raw": "항구적"
+    },
+    {
+      "grade": 4,
+      "word": "항시적",
+      "suffix": null,
+      "raw": "항시적"
+    },
+    {
+      "grade": 4,
+      "word": "현안",
+      "suffix": 2,
+      "raw": "현안2"
+    },
+    {
+      "grade": 4,
+      "word": "현저하다",
+      "suffix": 2,
+      "raw": "현저하다2"
+    },
+    {
+      "grade": 4,
+      "word": "혼재",
+      "suffix": 2,
+      "raw": "혼재2"
+    },
+    {
+      "grade": 4,
+      "word": "확증",
+      "suffix": null,
+      "raw": "확증"
+    },
+    {
+      "grade": 4,
+      "word": "활성화",
+      "suffix": null,
+      "raw": "활성화"
+    },
+    {
+      "grade": 4,
+      "word": "회귀",
+      "suffix": null,
+      "raw": "회귀"
+    },
+    {
+      "grade": 4,
+      "word": "회수",
+      "suffix": 1,
+      "raw": "회수1"
+    },
+    {
+      "grade": 4,
+      "word": "획기적",
+      "suffix": null,
+      "raw": "획기적"
+    },
+    {
+      "grade": 4,
+      "word": "횡적",
+      "suffix": 1,
+      "raw": "횡적1"
+    },
+    {
+      "grade": 4,
+      "word": "후천적",
+      "suffix": null,
+      "raw": "후천적"
+    },
+    {
+      "grade": 4,
+      "word": "후행",
+      "suffix": null,
+      "raw": "후행"
+    }
+  ]
+}

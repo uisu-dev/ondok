@@ -87,10 +87,34 @@ export default function HomePage() {
           ))}
         </div>
 
+        {/* 사고도구어 사전 — 보조 링크 */}
+        <Link href="/sago" className="block group">
+          <Card
+            interactive
+            className="px-5 py-4 flex items-center gap-4 border border-transparent group-hover:border-accent-300"
+          >
+            <div className="shrink-0 w-12 h-12 rounded-2xl bg-surface-muted flex items-center justify-center text-2xl">
+              📖
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-fg-strong">
+                사고도구어 1,387개 살펴보기
+              </p>
+              <p className="text-xs text-fg-muted">
+                문해력의 기반이 되는 단어들을 등급별로 정리했어요.
+              </p>
+            </div>
+            <div className="shrink-0 text-accent-600 text-lg group-hover:translate-x-0.5 transition-transform">
+              →
+            </div>
+          </Card>
+        </Link>
+
         <OnthinkingBanner />
 
         <p className="text-xs text-fg-subtle text-center pb-4">
-          도서 데이터 출처: 충남교육청 온독지수 추천도서 목록 (2026)
+          도서 데이터 출처: 충남교육청 온독지수 추천도서 목록 (2026) · 사고도구어
+          출처: 충청남도교육청
         </p>
       </div>
     </main>
