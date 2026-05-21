@@ -1,0 +1,217 @@
+# Seed Specification v1
+# Generated: 2026-05-21
+# Source Interview: .harness/ouroboros/interviews/interview-2026-05-21.md
+# WARNING: This file is immutable. To change, create a new version.
+
+version: 1
+created: "2026-05-21T00:00:00"
+interview_ref: ".harness/ouroboros/interviews/interview-2026-05-21.md"
+
+goal:
+  summary: "충남교육청 온독지수 추천도서 214권을 MBTI·취향 기반 진단 퀴즈로 학생에게 추천하는 웹사이트를 만든다."
+  detail: "학생이 MBTI 8문항과 취향·관심 분야·분위기 질문에 답하면, 점수화된 매칭으로 책 3~5권을 추천한다. 각 결과 카드에는 표지·책소개·온독지수·네이버 링크가 포함되며, 충남교육청 온생각 사이트(onthinking.or.kr) 소개 배너도 게재한다."
+  non_goals:
+    - "학생 로그인/계정 기능 (익명 사용)"
+    - "독서 진도/리뷰 작성 기능"
+    - "학년 기반 추천 (학년 ≠ 문해력 원칙)"
+    - "오프라인 도서 대여/구매 트랜잭션 처리"
+
+constraints:
+  must:
+    - "Next.js (App Router) + TypeScript + Tailwind 사용"
+    - "Supabase Postgres에 books 테이블로 데이터 저장"
+    - "Vercel 배포"
+    - "StyleSeed 디자인 엔진의 Golden Rules 준수 (카드 안 배치, 단일 액센트, 시맨틱 토큰)"
+    - "충남교육청 온생각 사이트 배너 포함"
+    - "표지 이미지는 next/image 또는 동등 최적화 적용"
+  must_not:
+    - "학년/연령을 추천 입력값으로 사용하지 않는다"
+    - ".env 등 시크릿을 코드에 커밋하지 않는다"
+    - "순수 검정(#000) 사용 금지 — 스킨 darkest text 토큰 사용"
+    - "Presentation 레이어에서 Supabase 직접 호출 금지 (Logic 경유)"
+  should:
+    - "결과 페이지에 '다시 진단하기' 동선 제공"
+    - "익명 분석을 위해 진단 응답을 Supabase에 저장 (개인정보 제외)"
+    - "이미지 로딩 실패 시 placeholder 표지 표시"
+
+acceptance_criteria:
+  - id: "AC-001"
+    description: "학생이 8문항 MBTI 퀴즈를 풀면 16개 유형 중 하나로 정확히 분류된다."
+    verification: "automated"
+    priority: "must"
+    complexity: "low"
+  - id: "AC-002"
+    description: "퀴즈 완료 후 결과 페이지에 3~5권의 추천 도서가 표지·서명·작가·온독지수·책소개·네이버 링크와 함께 표시된다."
+    verification: "both"
+    priority: "must"
+    complexity: "medium"
+  - id: "AC-003"
+    description: "추천 결과는 MBTI·관심 분야·분위기 답변에 따라 결정론적으로 점수화되며, 같은 입력에 같은 결과(혹은 시드 기반 다양성)를 낸다."
+    verification: "automated"
+    priority: "must"
+    complexity: "medium"
+  - id: "AC-004"
+    description: "랜딩 페이지에 충남교육청 온생각(onthinking.or.kr) 소개 배너가 클릭 가능한 외부 링크로 표시된다."
+    verification: "manual"
+    priority: "must"
+    complexity: "low"
+  - id: "AC-005"
+    description: "Supabase books 테이블에 214권 모두 적재되며, 표지URL·책소개·네이버링크 필드는 null이 없다."
+    verification: "automated"
+    priority: "must"
+    complexity: "low"
+  - id: "AC-006"
+    description: "StyleSeed Golden Rules 컴플라이언스: 모든 콘텐츠가 카드 안에 있으며 하드코딩 hex가 없다."
+    verification: "manual"
+    priority: "must"
+    complexity: "low"
+  - id: "AC-007"
+    description: "Vercel 배포 후 공개 URL에서 진단→결과 흐름이 모바일 뷰포트에서 동작한다."
+    verification: "manual"
+    priority: "must"
+    complexity: "low"
+
+ontology:
+  entities:
+    - name: "Book"
+      fields:
+        - name: "id"
+          type: "number"
+          required: true
+        - name: "title"
+          type: "string"
+          required: true
+        - name: "author"
+          type: "string"
+          required: true
+        - name: "publisher"
+          type: "string"
+          required: true
+        - name: "year"
+          type: "number"
+          required: true
+        - name: "category"
+          type: "string"
+          required: true
+        - name: "ondok_index"
+          type: "number"
+          required: true
+        - name: "cover_url"
+          type: "string"
+          required: true
+        - name: "description"
+          type: "string"
+          required: true
+        - name: "naver_link"
+          type: "string"
+          required: true
+        - name: "isbn"
+          type: "string"
+          required: true
+      relationships: []
+    - name: "QuizAnswer"
+      fields:
+        - name: "mbti"
+          type: "string"
+          required: true
+        - name: "interests"
+          type: "string"
+          required: true
+        - name: "mood"
+          type: "string"
+          required: true
+      relationships: []
+    - name: "Recommendation"
+      fields:
+        - name: "book_id"
+          type: "reference"
+          required: true
+        - name: "score"
+          type: "number"
+          required: true
+        - name: "reason"
+          type: "string"
+          required: false
+      relationships:
+        - target: "Book"
+          type: "belongs_to"
+  actions:
+    - name: "takeQuiz"
+      actor: "student"
+      input: "answers to MBTI questions and preference questions"
+      output: "QuizAnswer object"
+      side_effects:
+        - "optional anonymous quiz log saved to Supabase"
+    - name: "recommendBooks"
+      actor: "recommendation engine (Logic layer)"
+      input: "QuizAnswer"
+      output: "list of 3-5 Recommendation objects"
+      side_effects: []
+    - name: "browseRecommendation"
+      actor: "student"
+      input: "Recommendation"
+      output: "rendered book card; optional navigation to Naver link"
+      side_effects: []
+
+architecture:
+  pattern: "3-tier-layered"
+  layers:
+    presentation:
+      description: "Next.js App Router pages and React components"
+      directories: ["src/app", "src/components"]
+      responsibilities:
+        - "Quiz wizard UI rendering"
+        - "Result page card rendering"
+        - "Form state management (client component)"
+        - "Banner and landing page"
+      cannot_access: ["database", "external_services"]
+    logic:
+      description: "Pure TypeScript modules for recommendation scoring and MBTI parsing"
+      directories: ["src/lib", "src/services"]
+      responsibilities:
+        - "MBTI 8-question parsing → 16 type code"
+        - "Book scoring algorithm (MBTI × category × mood × interests)"
+        - "Result diversity and ranking"
+      cannot_access: []
+    data:
+      description: "Supabase client wrappers and book repository"
+      directories: ["src/data"]
+      responsibilities:
+        - "Book table CRUD (read-only at runtime)"
+        - "Optional anonymous quiz log insert"
+      cannot_access: ["presentation"]
+  layer_communication:
+    presentation_to_logic: "direct function call (RSC) or server action"
+    logic_to_data: "repository functions"
+    data_format: "TypeScript interfaces (Book, QuizAnswer, Recommendation)"
+
+scope:
+  mvp:
+    - "랜딩 페이지 (온생각 배너 포함)"
+    - "MBTI 8문항 + 관심 분야 + 분위기 퀴즈 위저드"
+    - "추천 알고리즘 (스코어링 + 다양성)"
+    - "결과 페이지 (3~5권 카드, 표지·소개·네이버 링크)"
+    - "Supabase books 테이블 + 일회성 import 스크립트"
+    - "Vercel 배포 + 환경변수 분리"
+  future:
+    - "익명 진단 응답 통계 대시보드"
+    - "교사용 추천 큐레이션 도구"
+    - "검색·필터 (수동 탐색 모드)"
+    - "OG 이미지 자동 생성으로 결과 공유"
+    - "다국어 (저학년 한자어 친화 모드 등)"
+
+tech_decisions:
+  - decision: "Supabase Postgres에 books 테이블 저장 (코드 내 JSON 임베드 대신)"
+    reason: "사용자가 Supabase를 인프라로 지정. 향후 책 추가/수정이 코드 배포 없이 가능."
+    alternatives_considered:
+      - "JSON 파일 임베드 (간단하지만 운영 유연성 저하)"
+      - "Supabase Storage + JSON (오버엔지니어링)"
+  - decision: "학년/연령 입력 없음, 책 자체 온독지수는 카드의 참고 chip으로만 노출"
+    reason: "사용자 명시 — 학년과 문해력은 별개"
+    alternatives_considered:
+      - "학년 → 온독지수 매핑 (기각: 가정이 무너지면 추천 품질 저하)"
+  - decision: "추천 결과 3~5권 (정확한 수는 매칭 점수 분포에 따라 동적)"
+    reason: "너무 적으면 선택권 부족, 너무 많으면 결정 피로"
+    alternatives_considered:
+      - "고정 5권"
+      - "1권 (강제 선택)"

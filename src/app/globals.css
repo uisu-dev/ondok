@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* StyleSeed tokens — toss-inspired skin (student-friendly)
+   Golden Rules: single accent + grayscale, no pure #000, soft shadows (<8%),
+   semantic tokens only. */
+@theme {
+  /* Accent — blue (toss family) */
+  --color-accent-50:  #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bfdbfe;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3182f6;
+  --color-accent-600: #1b64da;
+  --color-accent-700: #0f4fb5;
+  --color-accent-800: #0c3f8f;
+  --color-accent-900: #0a3478;
+
+  /* Surfaces */
+  --color-background: #f5f7fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f9fafb;
+
+  /* Foreground (no #000) */
+  --color-fg-strong: #111319;
+  --color-fg: #1f2330;
+  --color-fg-muted: #6b7280;
+  --color-fg-subtle: #9ca3af;
+  --color-fg-inverse: #ffffff;
+
+  /* Borders */
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+
+  /* Category accents */
+  --color-cat-lit: #8b5cf6;
+  --color-cat-sci: #10b981;
+  --color-cat-soc: #f59e0b;
+  --color-cat-hum: #ef4444;
+
+  /* Shadows (<= 8% opacity per StyleSeed) */
+  --shadow-card: 0 1px 2px rgba(17, 19, 25, 0.04), 0 8px 24px rgba(17, 19, 25, 0.06);
+  --shadow-card-hover: 0 2px 6px rgba(17, 19, 25, 0.06), 0 16px 32px rgba(17, 19, 25, 0.08);
+
+  /* Radii */
+  --radius-card: 20px;
+  --radius-button: 12px;
+  --radius-chip: 999px;
+
+  /* Type */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+@layer base {
+  html { height: 100%; }
+  body {
+    min-height: 100%;
+    background: var(--color-background);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  *:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
