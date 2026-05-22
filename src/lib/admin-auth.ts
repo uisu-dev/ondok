@@ -54,9 +54,10 @@ export async function clearAdminCookie(): Promise<void> {
   cookieStore.delete(COOKIE_NAME);
 }
 
-/** Verify the user-typed password against env. Constant-time. */
+/** Verify the user-typed password against env. Constant-time.
+ *  Trims env value to guard against accidental whitespace in deploy UIs. */
 export function verifyAdminPassword(input: string): boolean {
-  const pass = process.env.ADMIN_PASSWORD;
+  const pass = process.env.ADMIN_PASSWORD?.trim();
   if (!pass) return false;
   const a = Buffer.from(input, "utf8");
   const b = Buffer.from(pass, "utf8");
