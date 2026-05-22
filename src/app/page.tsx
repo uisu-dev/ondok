@@ -44,12 +44,11 @@ const LITERACY_PATHS: PathCard[] = [
     hint: "1급 43 · 2급 293 · 3급 585 · 4급 466",
   },
   {
-    href: "#",
+    href: "/worksheet",
     emoji: "✏️",
     title: "사고도구어 활동지",
-    subtitle: "단어가 자연스럽게 등장하는 짧은 글로 학습",
-    hint: "곧 공개",
-    comingSoon: true,
+    subtitle: "독후·독해 활동으로 사고도구어 익히기",
+    hint: "추천도서 · 모의고사 · 자체 지문 · 세 갈래",
   },
 ];
 
