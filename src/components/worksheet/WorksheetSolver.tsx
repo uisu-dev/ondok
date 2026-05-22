@@ -204,8 +204,8 @@ export function WorksheetSolver({
           )}
           {worksheet.type === "written" && worksheet.passage && (
             <div
-              style={{ fontSize: `${FONT_PX[fontSize]}px` }}
-              className="text-fg-strong leading-relaxed whitespace-pre-wrap break-words"
+              style={{ fontSize: `${FONT_PX[fontSize]}px`, color: "#000" }}
+              className="leading-relaxed whitespace-pre-wrap break-words"
             >
               {worksheet.passage}
             </div>
@@ -223,7 +223,6 @@ export function WorksheetSolver({
             onAnswer={(v) => setAnswer(idx, v)}
             revealed={!!reveal[idx]}
             onToggleReveal={() => toggleReveal(idx)}
-            fontPx={FONT_PX[fontSize]}
           />
         ))}
       </div>
@@ -242,7 +241,6 @@ function QuestionCard({
   onAnswer,
   revealed,
   onToggleReveal,
-  fontPx,
 }: {
   index: number;
   question: Question;
@@ -250,27 +248,19 @@ function QuestionCard({
   onAnswer: (v: string) => void;
   revealed: boolean;
   onToggleReveal: () => void;
-  fontPx: number;
 }) {
-  // Slightly bump prompt size vs body content for visual hierarchy.
-  const promptPx = fontPx + 1;
-  const optionPx = fontPx;
+  // Question text uses default size (independent of the 글자 크기 toggle which
+  // is scoped to the passage only — per user spec).
   return (
     <Card
       as="article"
       className="px-5 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
     >
       <div className="flex items-baseline gap-2">
-        <span
-          style={{ fontSize: `${promptPx}px` }}
-          className="font-bold text-accent-700 print:text-fg-strong"
-        >
+        <span className="text-base font-bold text-accent-700 print:text-fg-strong">
           {index + 1}.
         </span>
-        <p
-          style={{ fontSize: `${promptPx}px` }}
-          className="font-semibold text-fg-strong flex-1 whitespace-pre-wrap leading-snug"
-        >
+        <p className="text-base font-semibold text-fg-strong flex-1 whitespace-pre-wrap leading-snug">
           {question.prompt}
         </p>
         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-chip bg-surface-muted text-fg-muted print:hidden">
@@ -311,16 +301,10 @@ function QuestionCard({
                   onChange={() => onAnswer(opt.label)}
                   className="mt-1 print:hidden"
                 />
-                <span
-                  style={{ fontSize: `${optionPx}px` }}
-                  className="font-semibold text-fg-strong shrink-0"
-                >
+                <span className="font-semibold text-fg-strong shrink-0">
                   {opt.label}
                 </span>
-                <span
-                  style={{ fontSize: `${optionPx}px` }}
-                  className="flex-1 text-fg whitespace-pre-wrap"
-                >
+                <span className="flex-1 text-fg whitespace-pre-wrap">
                   {opt.text}
                 </span>
                 {showCorrect && (
