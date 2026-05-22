@@ -17,7 +17,7 @@ const SUB_MENUS: SubMenu[] = [
     title: "온독 추천도서 활동지",
     subtitle: "추천도서 한 권을 깊이 읽고 푸는 독후 활동",
     hint: "책 메타정보 + 사고도구어 관점 활동",
-    status: "준비중",
+    status: "공개",
   },
   {
     href: "/worksheet/exam",
@@ -25,7 +25,7 @@ const SUB_MENUS: SubMenu[] = [
     title: "수능·모의고사 비문학 활동지",
     subtitle: "평가원 기출 비문학 지문을 사고도구어 관점에서 풀어보기",
     hint: "출처 명시 + 사고도구어 관점 문제",
-    status: "준비중",
+    status: "공개",
   },
   {
     href: "/worksheet/written",
@@ -33,7 +33,7 @@ const SUB_MENUS: SubMenu[] = [
     title: "사고도구어 활용 지문 활동지",
     subtitle: "사고도구어가 자연스럽게 등장하는 짧은 글로 매일 학습",
     hint: "등급별 자체 제작 지문 + 활동",
-    status: "준비중",
+    status: "공개",
   },
 ];
 

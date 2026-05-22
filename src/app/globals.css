@@ -68,3 +68,16 @@
     border-radius: 6px;
   }
 }
+
+@media print {
+  @page {
+    margin: 1.6cm 1.4cm;
+    size: A4;
+  }
+  html, body {
+    background: white !important;
+    color: black !important;
+  }
+  /* Card shadows look bad on paper — keep border only */
+  /* Tailwind print: utilities (print:hidden, print:break-inside-avoid, etc.) handle the rest */
+}
