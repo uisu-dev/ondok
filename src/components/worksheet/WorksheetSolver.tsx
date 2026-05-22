@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
-import { splitIntoParagraphs } from "@/lib/text";
 import type { Book } from "@/lib/types";
 import {
   QTYPE_LABEL,
@@ -13,6 +12,24 @@ import {
   type Question,
   type WorksheetWithQuestions,
 } from "@/lib/worksheet-types";
+
+type FontSize = "sm" | "md" | "lg" | "xl";
+
+const FONT_CLASS: Record<FontSize, string> = {
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg",
+  xl: "text-xl",
+};
+
+const FONT_BUTTONS: { key: FontSize; size: string }[] = [
+  { key: "sm", size: "text-[11px]" },
+  { key: "md", size: "text-sm" },
+  { key: "lg", size: "text-base" },
+  { key: "xl", size: "text-lg" },
+];
+
+const STORAGE_KEY = "ondok:worksheet-fontsize";
 
 export function WorksheetSolver({
   worksheet,
@@ -23,6 +40,25 @@ export function WorksheetSolver({
 }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reveal, setReveal] = useState<Record<number, boolean>>({});
+  const [fontSize, setFontSize] = useState<FontSize>("md");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY) as FontSize | null;
+      if (saved && saved in FONT_CLASS) setFontSize(saved);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  function changeFontSize(s: FontSize) {
+    setFontSize(s);
+    try {
+      localStorage.setItem(STORAGE_KEY, s);
+    } catch {
+      /* ignore */
+    }
+  }
 
   function setAnswer(qIdx: number, value: string) {
     setAnswers((prev) => ({ ...prev, [qIdx]: value }));
@@ -44,17 +80,38 @@ export function WorksheetSolver({
           {worksheet.title}
         </h1>
         {worksheet.intro && (
-          <p className="text-sm text-fg-muted leading-relaxed whitespace-pre-line">
+          <p className="text-sm text-fg-muted leading-relaxed whitespace-pre-wrap">
             {worksheet.intro}
           </p>
         )}
-        <div className="pt-2 print:hidden">
+        <div className="flex flex-wrap items-center gap-3 pt-2 print:hidden">
           <button
             onClick={() => typeof window !== "undefined" && window.print()}
             className="text-xs font-semibold text-accent-600 hover:text-accent-700"
           >
             🖨 인쇄하기
           </button>
+          <div className="flex items-center gap-1 ml-auto">
+            <span className="text-xs text-fg-muted mr-1">글자 크기</span>
+            {FONT_BUTTONS.map((b) => {
+              const active = b.key === fontSize;
+              return (
+                <button
+                  key={b.key}
+                  onClick={() => changeFontSize(b.key)}
+                  className={`${b.size} font-bold w-8 h-8 rounded-button border ${
+                    active
+                      ? "border-accent-500 bg-accent-50 text-accent-700"
+                      : "border-border bg-surface text-fg-muted hover:border-accent-300"
+                  }`}
+                  aria-label={`글자 크기 ${b.key}`}
+                  aria-pressed={active}
+                >
+                  가
+                </button>
+              );
+            })}
+          </div>
         </div>
       </Card>
 
@@ -121,19 +178,33 @@ export function WorksheetSolver({
         </Card>
       )}
 
-      {worksheet.type === "written" && worksheet.passage && (
+      {(worksheet.passageImageUrl ||
+        (worksheet.type === "written" && worksheet.passage)) && (
         <Card
           as="section"
-          className="px-6 py-5 space-y-2 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
+          className="px-6 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
         >
-          <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
-            지문
-          </p>
-          <div className="text-base text-fg leading-relaxed space-y-3">
-            {splitIntoParagraphs(worksheet.passage, 3).map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
+          {worksheet.type === "written" && (
+            <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
+              지문
+            </p>
+          )}
+          {worksheet.passageImageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={worksheet.passageImageUrl}
+              alt="지문 이미지"
+              loading="lazy"
+              className="block w-full max-h-[480px] object-contain rounded-button bg-surface-muted print:max-h-[60vh]"
+            />
+          )}
+          {worksheet.type === "written" && worksheet.passage && (
+            <div
+              className={`text-fg-strong leading-relaxed whitespace-pre-wrap break-words ${FONT_CLASS[fontSize]}`}
+            >
+              {worksheet.passage}
+            </div>
+          )}
         </Card>
       )}
 
@@ -182,13 +253,23 @@ function QuestionCard({
         <span className="text-base font-bold text-accent-700 print:text-fg-strong">
           {index + 1}.
         </span>
-        <p className="text-base font-semibold text-fg-strong flex-1 whitespace-pre-line">
+        <p className="text-base font-semibold text-fg-strong flex-1 whitespace-pre-wrap">
           {question.prompt}
         </p>
         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-chip bg-surface-muted text-fg-muted print:hidden">
           {QTYPE_LABEL[question.type]}
         </span>
       </div>
+
+      {question.imageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={question.imageUrl}
+          alt="문제 이미지"
+          loading="lazy"
+          className="block w-full max-h-[360px] object-contain rounded-button bg-surface-muted print:max-h-[40vh]"
+        />
+      )}
 
       {question.type === "multiple_choice" && question.options && (
         <div className="space-y-1.5">
@@ -216,7 +297,9 @@ function QuestionCard({
                 <span className="font-semibold text-fg-strong shrink-0">
                   {opt.label}
                 </span>
-                <span className="flex-1 text-fg">{opt.text}</span>
+                <span className="flex-1 text-fg whitespace-pre-wrap">
+                  {opt.text}
+                </span>
                 {showCorrect && (
                   <span className="text-xs font-bold text-[var(--color-cat-sci)] print:hidden">
                     정답
@@ -225,6 +308,45 @@ function QuestionCard({
               </label>
             );
           })}
+          <div className="pt-1 print:hidden">
+            <button
+              onClick={onToggleReveal}
+              className="text-xs font-semibold text-accent-600 hover:text-accent-700"
+            >
+              {revealed ? "정답 가리기" : "정답 보기"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {question.type === "true_false" && question.options && (
+        <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-3">
+            {question.options.map((opt, i) => {
+              const selected = answer === opt.label;
+              const showCorrect = revealed && opt.correct;
+              const isO = opt.label === "O";
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => onAnswer(opt.label)}
+                  className={`min-h-[72px] rounded-button border-2 text-3xl font-bold transition-colors ${
+                    showCorrect
+                      ? "border-[var(--color-cat-sci)] bg-[color-mix(in_oklab,var(--color-cat-sci)_14%,white)] text-[var(--color-cat-sci)]"
+                      : selected
+                        ? "border-accent-500 bg-accent-50 text-accent-700"
+                        : isO
+                          ? "border-border bg-surface text-fg-strong hover:border-accent-300"
+                          : "border-border bg-surface text-fg-strong hover:border-accent-300"
+                  } print:bg-transparent print:border-fg-strong print:text-fg-strong`}
+                  aria-pressed={selected}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
           <div className="pt-1 print:hidden">
             <button
               onClick={onToggleReveal}
@@ -254,7 +376,7 @@ function QuestionCard({
                 {revealed ? "예시 답안 가리기" : "예시 답안 보기"}
               </button>
               {revealed && (
-                <p className="mt-1 px-3 py-2 rounded-button bg-[color-mix(in_oklab,var(--color-cat-sci)_8%,white)] text-sm text-fg">
+                <p className="mt-1 px-3 py-2 rounded-button bg-[color-mix(in_oklab,var(--color-cat-sci)_8%,white)] text-sm text-fg whitespace-pre-wrap">
                   예시 답안: {question.sampleAnswer}
                 </p>
               )}
@@ -281,7 +403,7 @@ function QuestionCard({
                 {revealed ? "채점 기준 가리기" : "채점 기준 보기"}
               </button>
               {revealed && (
-                <p className="mt-1 px-3 py-2 rounded-button bg-surface-muted text-xs text-fg leading-relaxed whitespace-pre-line">
+                <p className="mt-1 px-3 py-2 rounded-button bg-surface-muted text-xs text-fg leading-relaxed whitespace-pre-wrap">
                   채점 기준: {question.rubric}
                 </p>
               )}

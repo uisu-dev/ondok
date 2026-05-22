@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import {
   QTYPE_LABEL,
   TYPE_EMOJI,
@@ -31,6 +32,7 @@ interface DraftQ {
   options?: QuestionOption[];
   sampleAnswer?: string;
   rubric?: string;
+  imageUrl?: string;
 }
 
 const newUid = () => Math.random().toString(36).slice(2);
@@ -47,6 +49,17 @@ function makeBlankQ(t: QuestionType): DraftQ {
         text: "",
         correct: false,
       })),
+    };
+  }
+  if (t === "true_false") {
+    return {
+      uid: newUid(),
+      type: t,
+      prompt: "",
+      options: [
+        { label: "O", text: "O", correct: true },
+        { label: "X", text: "X", correct: false },
+      ],
     };
   }
   if (t === "short_answer") {
@@ -70,6 +83,9 @@ export function WorksheetEditor({
   const [source, setSource] = useState("");
   const [externalUrl, setExternalUrl] = useState("");
   const [passage, setPassage] = useState("");
+  const [passageImageUrl, setPassageImageUrl] = useState<string | undefined>(
+    undefined
+  );
   const [questions, setQuestions] = useState<DraftQ[]>([
     makeBlankQ("multiple_choice"),
   ]);
@@ -168,6 +184,13 @@ export function WorksheetEditor({
           return;
         }
       }
+      if (q.type === "true_false") {
+        const opts = q.options ?? [];
+        if (!opts.some((o) => o.correct)) {
+          setError("OX 퀴즈는 정답(O 또는 X)을 하나 선택해 주세요.");
+          return;
+        }
+      }
     }
 
     setSaving(true);
@@ -179,7 +202,8 @@ export function WorksheetEditor({
         bookId: type === "books" ? bookId : undefined,
         source: type === "exam" ? source.trim() || undefined : undefined,
         externalUrl: type === "exam" ? externalUrl.trim() || undefined : undefined,
-        passage: type === "written" ? passage.trim() : undefined,
+        passage: type === "written" ? passage : undefined,
+        passageImageUrl: type === "written" ? passageImageUrl : undefined,
         questions: questions.map((q, i) => ({
           position: i,
           type: q.type,
@@ -187,6 +211,7 @@ export function WorksheetEditor({
           options: q.options?.map((o) => ({ ...o, text: o.text.trim() })),
           sampleAnswer: q.sampleAnswer?.trim() || undefined,
           rubric: q.rubric?.trim() || undefined,
+          imageUrl: q.imageUrl,
         })),
       };
       const resp = await fetch("/api/admin/worksheets", {
@@ -339,21 +364,29 @@ export function WorksheetEditor({
         )}
 
         {type === "written" && (
-          <div>
-            <label className="block text-xs font-bold text-fg-strong mb-1">
-              자체 지문 *
-            </label>
-            <textarea
-              value={passage}
-              onChange={(e) => setPassage(e.target.value)}
-              rows={10}
-              placeholder="사고도구어가 자연스럽게 등장하는 짧은 글을 작성해 주세요. (예: 100~400자)"
-              className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none leading-relaxed"
+          <>
+            <div>
+              <label className="block text-xs font-bold text-fg-strong mb-1">
+                자체 지문 *
+              </label>
+              <textarea
+                value={passage}
+                onChange={(e) => setPassage(e.target.value)}
+                rows={10}
+                placeholder="사고도구어가 자연스럽게 등장하는 짧은 글을 작성해 주세요. (예: 100~400자)"
+                className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none leading-relaxed"
+              />
+              <p className="text-xs text-fg-subtle mt-1">
+                줄바꿈과 단락 앞 띄어쓰기가 그대로 학생 화면에 반영돼요.
+              </p>
+            </div>
+            <ImageUpload
+              url={passageImageUrl}
+              onChange={setPassageImageUrl}
+              label="지문 이미지 (선택)"
+              hint="지문 위에 표시될 그림입니다. 큰 이미지는 자동으로 줄어들어요."
             />
-            <p className="text-xs text-fg-subtle mt-1">
-              빈 줄은 단락 구분으로 표시됩니다.
-            </p>
-          </div>
+          </>
         )}
       </Card>
 
@@ -405,6 +438,47 @@ export function WorksheetEditor({
                 className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none"
               />
             </div>
+
+            <ImageUpload
+              url={q.imageUrl}
+              onChange={(url) => updateQ(q.uid, { imageUrl: url })}
+              label="문제 이미지 (선택)"
+              hint="문제 발문 아래에 표시돼요."
+            />
+
+            {q.type === "true_false" && q.options && (
+              <div>
+                <label className="block text-xs font-bold text-fg-strong mb-2">
+                  정답
+                </label>
+                <div className="flex gap-2">
+                  {q.options.map((o, oi) => {
+                    const active = o.correct;
+                    return (
+                      <button
+                        type="button"
+                        key={oi}
+                        onClick={() =>
+                          updateQ(q.uid, {
+                            options: q.options!.map((opt, i) => ({
+                              ...opt,
+                              correct: i === oi,
+                            })),
+                          })
+                        }
+                        className={`flex-1 min-h-[56px] rounded-button border-2 text-2xl font-bold transition-colors ${
+                          active
+                            ? "border-accent-500 bg-accent-50 text-accent-700"
+                            : "border-border bg-surface text-fg-strong hover:border-accent-300"
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {q.type === "multiple_choice" && q.options && (
               <div className="space-y-2">
@@ -497,6 +571,13 @@ export function WorksheetEditor({
             className="text-sm px-3 py-2 rounded-button bg-surface border border-border hover:bg-accent-50 hover:border-accent-300"
           >
             + 객관식 추가
+          </button>
+          <button
+            type="button"
+            onClick={() => addQ("true_false")}
+            className="text-sm px-3 py-2 rounded-button bg-surface border border-border hover:bg-accent-50 hover:border-accent-300"
+          >
+            + OX 퀴즈 추가
           </button>
           <button
             type="button"

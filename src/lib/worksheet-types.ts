@@ -1,8 +1,12 @@
 export type WorksheetType = "books" | "exam" | "written";
-export type QuestionType = "multiple_choice" | "short_answer" | "essay";
+export type QuestionType =
+  | "multiple_choice"
+  | "short_answer"
+  | "essay"
+  | "true_false";
 
 export interface QuestionOption {
-  label: string; // 예: "①", "②", "③", "④"
+  label: string; // 예: "①", "②", "③", "④", "O", "X"
   text: string;
   correct: boolean;
 }
@@ -12,9 +16,10 @@ export interface Question {
   position: number;
   type: QuestionType;
   prompt: string;
-  options?: QuestionOption[];
+  options?: QuestionOption[]; // multiple_choice + true_false 둘 다 사용
   sampleAnswer?: string;
   rubric?: string;
+  imageUrl?: string;
 }
 
 export interface Worksheet {
@@ -26,6 +31,7 @@ export interface Worksheet {
   source?: string | null;
   externalUrl?: string | null;
   passage?: string | null;
+  passageImageUrl?: string | null;
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -43,6 +49,7 @@ export interface WorksheetDraft {
   source?: string;
   externalUrl?: string;
   passage?: string;
+  passageImageUrl?: string;
   questions: Omit<Question, "id">[];
 }
 
@@ -62,4 +69,5 @@ export const QTYPE_LABEL: Record<QuestionType, string> = {
   multiple_choice: "객관식",
   short_answer: "단답형",
   essay: "서술형",
+  true_false: "OX 퀴즈",
 };

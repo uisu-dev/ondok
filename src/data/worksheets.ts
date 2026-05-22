@@ -16,6 +16,7 @@ interface WorksheetRow {
   source: string | null;
   external_url: string | null;
   passage: string | null;
+  passage_image_url: string | null;
   published: boolean;
   created_at: string;
   updated_at: string;
@@ -30,6 +31,7 @@ interface QuestionRow {
   options: Question["options"] | null;
   sample_answer: string | null;
   rubric: string | null;
+  image_url: string | null;
 }
 
 function fromWorksheetRow(row: WorksheetRow): Worksheet {
@@ -42,6 +44,7 @@ function fromWorksheetRow(row: WorksheetRow): Worksheet {
     source: row.source,
     externalUrl: row.external_url,
     passage: row.passage,
+    passageImageUrl: row.passage_image_url,
     published: row.published,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -57,6 +60,7 @@ function fromQuestionRow(row: QuestionRow): Question {
     options: row.options ?? undefined,
     sampleAnswer: row.sample_answer ?? undefined,
     rubric: row.rubric ?? undefined,
+    imageUrl: row.image_url ?? undefined,
   };
 }
 
@@ -116,6 +120,7 @@ export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<numbe
       source: draft.source ?? null,
       external_url: draft.externalUrl ?? null,
       passage: draft.passage ?? null,
+      passage_image_url: draft.passageImageUrl ?? null,
     })
     .select("id")
     .single();
@@ -130,6 +135,7 @@ export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<numbe
       options: q.options ?? null,
       sample_answer: q.sampleAnswer ?? null,
       rubric: q.rubric ?? null,
+      image_url: q.imageUrl ?? null,
     }));
     const { error: qErr } = await supabase.from("worksheet_questions").insert(rows);
     if (qErr) throw new Error(qErr.message);
