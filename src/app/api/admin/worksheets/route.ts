@@ -29,7 +29,22 @@ export async function POST(req: NextRequest) {
     const id = await createWorksheetAdmin(body);
     return NextResponse.json({ ok: true, id });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "저장 중 오류가 발생했어요.";
-    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
+    const raw = e instanceof Error ? e.message : "저장 중 오류가 발생했어요.";
+    // Detect common missing-table case and give a more actionable hint.
+    if (
+      raw.includes("public.worksheets") ||
+      raw.includes("schema cache") ||
+      raw.includes("worksheet_questions")
+    ) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "데이터베이스 테이블이 아직 만들어지지 않았어요. Supabase SQL Editor 에서 scripts/migrations/2026-05-22-worksheets.sql 를 실행한 뒤 다시 시도해 주세요.",
+        },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json({ ok: false, error: raw }, { status: 500 });
   }
 }
