@@ -9,6 +9,7 @@ import {
   QTYPE_LABEL,
   TYPE_EMOJI,
   TYPE_LABEL,
+  type Question,
   type QuestionOption,
   type QuestionType,
   type WorksheetDraft,
@@ -33,6 +34,18 @@ interface DraftQ {
   sampleAnswer?: string;
   rubric?: string;
   imageUrl?: string;
+}
+
+export interface WorksheetEditorInitial {
+  id: number;
+  title: string;
+  intro?: string | null;
+  bookId?: number | null;
+  source?: string | null;
+  externalUrl?: string | null;
+  passage?: string | null;
+  passageImageUrl?: string | null;
+  questions: Question[];
 }
 
 const newUid = () => Math.random().toString(36).slice(2);
@@ -71,24 +84,37 @@ function makeBlankQ(t: QuestionType): DraftQ {
 export function WorksheetEditor({
   type,
   books,
+  initial,
 }: {
   type: WorksheetType;
   books: BookOption[] | null;
+  initial?: WorksheetEditorInitial;
 }) {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [intro, setIntro] = useState("");
-  const [bookId, setBookId] = useState<number | null>(null);
+  const isEdit = !!initial;
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [intro, setIntro] = useState(initial?.intro ?? "");
+  const [bookId, setBookId] = useState<number | null>(initial?.bookId ?? null);
   const [bookFilter, setBookFilter] = useState("");
-  const [source, setSource] = useState("");
-  const [externalUrl, setExternalUrl] = useState("");
-  const [passage, setPassage] = useState("");
+  const [source, setSource] = useState(initial?.source ?? "");
+  const [externalUrl, setExternalUrl] = useState(initial?.externalUrl ?? "");
+  const [passage, setPassage] = useState(initial?.passage ?? "");
   const [passageImageUrl, setPassageImageUrl] = useState<string | undefined>(
-    undefined
+    initial?.passageImageUrl ?? undefined
   );
-  const [questions, setQuestions] = useState<DraftQ[]>([
-    makeBlankQ("multiple_choice"),
-  ]);
+  const [questions, setQuestions] = useState<DraftQ[]>(
+    initial
+      ? initial.questions.map((q) => ({
+          uid: newUid(),
+          type: q.type,
+          prompt: q.prompt,
+          options: q.options ? q.options.map((o) => ({ ...o })) : undefined,
+          sampleAnswer: q.sampleAnswer,
+          rubric: q.rubric,
+          imageUrl: q.imageUrl,
+        }))
+      : [makeBlankQ("multiple_choice")]
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -214,8 +240,12 @@ export function WorksheetEditor({
           imageUrl: q.imageUrl,
         })),
       };
-      const resp = await fetch("/api/admin/worksheets", {
-        method: "POST",
+      const url = isEdit
+        ? `/api/admin/worksheets/${initial!.id}`
+        : "/api/admin/worksheets";
+      const method = isEdit ? "PUT" : "POST";
+      const resp = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(draft),
       });
@@ -225,7 +255,9 @@ export function WorksheetEditor({
         setSaving(false);
         return;
       }
-      router.push(`/worksheet/${type}/${data.id}`);
+      const finalId = isEdit ? initial!.id : data.id;
+      router.push(`/worksheet/${type}/${finalId}`);
+      router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "저장 중 오류가 발생했어요.");
       setSaving(false);
@@ -250,7 +282,9 @@ export function WorksheetEditor({
         <p className="text-xs font-bold text-accent-600">
           {TYPE_EMOJI[type]} {TYPE_LABEL[type]}
         </p>
-        <h1 className="text-2xl font-bold text-fg-strong">새 활동지 만들기</h1>
+        <h1 className="text-2xl font-bold text-fg-strong">
+          {isEdit ? "활동지 수정" : "새 활동지 만들기"}
+        </h1>
       </div>
 
       <Card as="section" className="px-5 py-5 space-y-4">
@@ -604,7 +638,11 @@ export function WorksheetEditor({
 
       <div className="flex gap-2 pb-8">
         <Button onClick={save} disabled={saving} className="flex-1">
-          {saving ? "저장 중…" : "활동지 저장 후 공개"}
+          {saving
+            ? "저장 중…"
+            : isEdit
+              ? "수정 저장"
+              : "활동지 저장 후 공개"}
         </Button>
       </div>
     </div>

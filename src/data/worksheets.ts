@@ -106,6 +106,76 @@ export async function listAllWorksheetsAdmin(): Promise<Worksheet[]> {
   return (data as WorksheetRow[]).map(fromWorksheetRow);
 }
 
+/** Admin fetch full worksheet (ignores published). */
+export async function getWorksheetAdmin(
+  id: number
+): Promise<WorksheetWithQuestions | null> {
+  const { getAdminSupabase } = await import("./supabase-admin");
+  const supabase = getAdminSupabase();
+  const { data: wsRow } = await supabase
+    .from("worksheets")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (!wsRow) return null;
+  const ws = fromWorksheetRow(wsRow as WorksheetRow);
+  const { data: qRows } = await supabase
+    .from("worksheet_questions")
+    .select("*")
+    .eq("worksheet_id", id)
+    .order("position");
+  const questions = ((qRows as QuestionRow[]) ?? []).map(fromQuestionRow);
+  return { ...ws, questions };
+}
+
+/** Admin update — replaces the worksheet's metadata + ALL questions
+ *  (delete-then-insert keeps semantics simple and reliable). */
+export async function updateWorksheetAdmin(
+  id: number,
+  draft: WorksheetDraft
+): Promise<void> {
+  const { getAdminSupabase } = await import("./supabase-admin");
+  const supabase = getAdminSupabase();
+
+  const { error: wsErr } = await supabase
+    .from("worksheets")
+    .update({
+      title: draft.title,
+      intro: draft.intro ?? null,
+      book_id: draft.bookId ?? null,
+      source: draft.source ?? null,
+      external_url: draft.externalUrl ?? null,
+      passage: draft.passage ?? null,
+      passage_image_url: draft.passageImageUrl ?? null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+  if (wsErr) throw new Error(wsErr.message);
+
+  const { error: delErr } = await supabase
+    .from("worksheet_questions")
+    .delete()
+    .eq("worksheet_id", id);
+  if (delErr) throw new Error(delErr.message);
+
+  if (draft.questions.length > 0) {
+    const rows = draft.questions.map((q, idx) => ({
+      worksheet_id: id,
+      position: idx,
+      type: q.type,
+      prompt: q.prompt,
+      options: q.options ?? null,
+      sample_answer: q.sampleAnswer ?? null,
+      rubric: q.rubric ?? null,
+      image_url: q.imageUrl ?? null,
+    }));
+    const { error: insErr } = await supabase
+      .from("worksheet_questions")
+      .insert(rows);
+    if (insErr) throw new Error(insErr.message);
+  }
+}
+
 /** Admin create. */
 export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<number> {
   const { getAdminSupabase } = await import("./supabase-admin");

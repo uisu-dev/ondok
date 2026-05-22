@@ -15,19 +15,22 @@ import {
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 
-const FONT_CLASS: Record<FontSize, string> = {
-  sm: "text-sm",
-  md: "text-base",
-  lg: "text-lg",
-  xl: "text-xl",
+// Inline px sizes — avoids any Tailwind class detection edge cases and
+// guarantees the toggle visibly scales text on every browser.
+const FONT_PX: Record<FontSize, number> = {
+  sm: 14,
+  md: 16,
+  lg: 19,
+  xl: 22,
 };
 
-const FONT_BUTTONS: { key: FontSize; size: string }[] = [
-  { key: "sm", size: "text-[11px]" },
-  { key: "md", size: "text-sm" },
-  { key: "lg", size: "text-base" },
-  { key: "xl", size: "text-lg" },
-];
+// Indicator letters in the toggle buttons grow with the size they represent.
+const FONT_BUTTON_INDICATOR_PX: Record<FontSize, number> = {
+  sm: 12,
+  md: 14,
+  lg: 16,
+  xl: 18,
+};
 
 const STORAGE_KEY = "ondok:worksheet-fontsize";
 
@@ -45,7 +48,7 @@ export function WorksheetSolver({
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY) as FontSize | null;
-      if (saved && saved in FONT_CLASS) setFontSize(saved);
+      if (saved && saved in FONT_PX) setFontSize(saved);
     } catch {
       /* ignore */
     }
@@ -93,18 +96,19 @@ export function WorksheetSolver({
           </button>
           <div className="flex items-center gap-1 ml-auto">
             <span className="text-xs text-fg-muted mr-1">글자 크기</span>
-            {FONT_BUTTONS.map((b) => {
-              const active = b.key === fontSize;
+            {(Object.keys(FONT_PX) as FontSize[]).map((key) => {
+              const active = key === fontSize;
               return (
                 <button
-                  key={b.key}
-                  onClick={() => changeFontSize(b.key)}
-                  className={`${b.size} font-bold w-8 h-8 rounded-button border ${
+                  key={key}
+                  onClick={() => changeFontSize(key)}
+                  style={{ fontSize: `${FONT_BUTTON_INDICATOR_PX[key]}px` }}
+                  className={`font-bold w-9 h-9 rounded-button border leading-none ${
                     active
                       ? "border-accent-500 bg-accent-50 text-accent-700"
                       : "border-border bg-surface text-fg-muted hover:border-accent-300"
                   }`}
-                  aria-label={`글자 크기 ${b.key}`}
+                  aria-label={`글자 크기 ${key}`}
                   aria-pressed={active}
                 >
                   가
@@ -200,7 +204,8 @@ export function WorksheetSolver({
           )}
           {worksheet.type === "written" && worksheet.passage && (
             <div
-              className={`text-fg-strong leading-relaxed whitespace-pre-wrap break-words ${FONT_CLASS[fontSize]}`}
+              style={{ fontSize: `${FONT_PX[fontSize]}px` }}
+              className="text-fg-strong leading-relaxed whitespace-pre-wrap break-words"
             >
               {worksheet.passage}
             </div>
@@ -218,6 +223,7 @@ export function WorksheetSolver({
             onAnswer={(v) => setAnswer(idx, v)}
             revealed={!!reveal[idx]}
             onToggleReveal={() => toggleReveal(idx)}
+            fontPx={FONT_PX[fontSize]}
           />
         ))}
       </div>
@@ -236,6 +242,7 @@ function QuestionCard({
   onAnswer,
   revealed,
   onToggleReveal,
+  fontPx,
 }: {
   index: number;
   question: Question;
@@ -243,17 +250,27 @@ function QuestionCard({
   onAnswer: (v: string) => void;
   revealed: boolean;
   onToggleReveal: () => void;
+  fontPx: number;
 }) {
+  // Slightly bump prompt size vs body content for visual hierarchy.
+  const promptPx = fontPx + 1;
+  const optionPx = fontPx;
   return (
     <Card
       as="article"
       className="px-5 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
     >
       <div className="flex items-baseline gap-2">
-        <span className="text-base font-bold text-accent-700 print:text-fg-strong">
+        <span
+          style={{ fontSize: `${promptPx}px` }}
+          className="font-bold text-accent-700 print:text-fg-strong"
+        >
           {index + 1}.
         </span>
-        <p className="text-base font-semibold text-fg-strong flex-1 whitespace-pre-wrap">
+        <p
+          style={{ fontSize: `${promptPx}px` }}
+          className="font-semibold text-fg-strong flex-1 whitespace-pre-wrap leading-snug"
+        >
           {question.prompt}
         </p>
         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-chip bg-surface-muted text-fg-muted print:hidden">
@@ -294,10 +311,16 @@ function QuestionCard({
                   onChange={() => onAnswer(opt.label)}
                   className="mt-1 print:hidden"
                 />
-                <span className="font-semibold text-fg-strong shrink-0">
+                <span
+                  style={{ fontSize: `${optionPx}px` }}
+                  className="font-semibold text-fg-strong shrink-0"
+                >
                   {opt.label}
                 </span>
-                <span className="flex-1 text-fg whitespace-pre-wrap">
+                <span
+                  style={{ fontSize: `${optionPx}px` }}
+                  className="flex-1 text-fg whitespace-pre-wrap"
+                >
                   {opt.text}
                 </span>
                 {showCorrect && (

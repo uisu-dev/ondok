@@ -100,6 +100,12 @@ export default async function AdminDashboard() {
                     >
                       미리보기 →
                     </Link>
+                    <Link
+                      href={`/admin/edit/${w.id}`}
+                      className="font-semibold text-accent-600 hover:text-accent-700"
+                    >
+                      수정
+                    </Link>
                     <AdminRowActions id={w.id} published={w.published} />
                   </div>
                 </Card>
