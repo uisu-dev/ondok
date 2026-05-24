@@ -7,7 +7,12 @@ import {
   type WorksheetType,
 } from "@/lib/worksheet-types";
 import { listPublishedWorksheets } from "@/data/worksheets";
-import { analyzeSago, formatSagoStatsLine } from "@/lib/sago-analyze";
+import {
+  analyzeSago,
+  difficultyClass,
+  difficultyOf,
+  formatSagoStatsLine,
+} from "@/lib/sago-analyze";
 
 export const dynamic = "force-dynamic";
 
@@ -104,10 +109,11 @@ export default async function WorksheetListPage({
         ) : (
           <div className="space-y-2">
             {items.map((w) => {
-              const sagoLine =
+              const stats =
                 (t === "written" || t === "exam") && w.passage
-                  ? formatSagoStatsLine(analyzeSago(w.passage))
+                  ? analyzeSago(w.passage)
                   : null;
+              const diff = stats ? difficultyOf(stats) : null;
               return (
                 <Link
                   key={w.id}
@@ -124,10 +130,21 @@ export default async function WorksheetListPage({
                         {w.intro}
                       </p>
                     )}
-                    {sagoLine && (
-                      <p className="text-xs font-semibold text-accent-700 bg-accent-50 inline-block px-2 py-0.5 rounded-chip mt-1">
-                        📊 {sagoLine}
-                      </p>
+                    {(stats || diff) && (
+                      <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                        {stats && (
+                          <span className="text-xs font-semibold text-accent-700 bg-accent-50 inline-block px-2 py-0.5 rounded-chip">
+                            📊 {formatSagoStatsLine(stats)}
+                          </span>
+                        )}
+                        {diff && (
+                          <span
+                            className={`text-xs font-bold px-2 py-0.5 rounded-chip ${difficultyClass(diff)}`}
+                          >
+                            난이도 {diff}
+                          </span>
+                        )}
+                      </div>
                     )}
                     <p className="text-xs text-fg-subtle pt-1">
                       {new Date(w.createdAt).toLocaleDateString("ko-KR", {

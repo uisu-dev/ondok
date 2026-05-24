@@ -72,3 +72,32 @@ export function formatSagoStatsLine(stats: SagoStats): string {
   const g = stats.byGrade;
   return `사고도구어 ${stats.total}개 · 1급 ${g[1]} · 2급 ${g[2]} · 3급 ${g[3]} · 4급 ${g[4]}`;
 }
+
+export type Difficulty = "하" | "중" | "상";
+
+/**
+ * 사고도구어 분포로 활동지 난이도를 어림셈.
+ * 가중평균 등급 = (1*g1 + 2*g2 + 3*g3 + 4*g4) / total
+ *   < 2.0  → 하  (1·2급이 압도적)
+ *   < 2.8  → 중  (중학 수준 어휘가 다수)
+ *   ≥ 2.8  → 상  (3·4급 비중 큼)
+ */
+export function difficultyOf(stats: SagoStats): Difficulty | null {
+  if (stats.total === 0) return null;
+  const g = stats.byGrade;
+  const avg =
+    (g[1] * 1 + g[2] * 2 + g[3] * 3 + g[4] * 4) / stats.total;
+  if (avg >= 2.8) return "상";
+  if (avg >= 2.0) return "중";
+  return "하";
+}
+
+/** 난이도 chip 에 쓰일 색 클래스 (학습 안내용, 위험 표시 아님). */
+export function difficultyClass(diff: Difficulty): string {
+  // 하 = 초록, 중 = 주황, 상 = 보라 (책 분류 색에서 차용)
+  return diff === "하"
+    ? "bg-[color-mix(in_oklab,var(--color-cat-sci)_14%,white)] text-[var(--color-cat-sci)]"
+    : diff === "중"
+      ? "bg-[color-mix(in_oklab,var(--color-cat-soc)_16%,white)] text-[var(--color-cat-soc)]"
+      : "bg-[color-mix(in_oklab,var(--color-cat-lit)_14%,white)] text-[var(--color-cat-lit)]";
+}

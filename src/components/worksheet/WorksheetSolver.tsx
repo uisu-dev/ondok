@@ -12,7 +12,12 @@ import {
   type Question,
   type WorksheetWithQuestions,
 } from "@/lib/worksheet-types";
-import { analyzeSago, formatSagoStatsLine } from "@/lib/sago-analyze";
+import {
+  analyzeSago,
+  difficultyClass,
+  difficultyOf,
+  formatSagoStatsLine,
+} from "@/lib/sago-analyze";
 import { buildYouTubeEmbedUrl, extractYouTubeId } from "@/lib/youtube";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
@@ -83,6 +88,16 @@ export function WorksheetSolver({
         : null,
     [worksheet.type, worksheet.passage]
   );
+  const difficulty = useMemo(
+    () => (sagoStats ? difficultyOf(sagoStats) : null),
+    [sagoStats]
+  );
+
+  const hasOxQuestions = worksheet.questions.some(
+    (q) => q.type === "true_false"
+  );
+  const hasModelAnswer = !!worksheet.sampleAnswer?.trim();
+  const hasRevealableContent = hasOxQuestions || hasModelAnswer;
 
   const youtubeId = useMemo(
     () => extractYouTubeId(worksheet.youtubeUrl ?? null),
@@ -142,11 +157,20 @@ export function WorksheetSolver({
             {worksheet.intro}
           </p>
         )}
-        {sagoStats && sagoStats.total > 0 && (
-          <p className="text-xs font-semibold text-accent-700 bg-accent-50 inline-block px-2.5 py-1 rounded-chip">
-            📊 {formatSagoStatsLine(sagoStats)}
-          </p>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {sagoStats && sagoStats.total > 0 && (
+            <span className="text-xs font-semibold text-accent-700 bg-accent-50 inline-block px-2.5 py-1 rounded-chip">
+              📊 {formatSagoStatsLine(sagoStats)}
+            </span>
+          )}
+          {difficulty && (
+            <span
+              className={`text-xs font-bold px-2.5 py-1 rounded-chip ${difficultyClass(difficulty)}`}
+            >
+              난이도 {difficulty}
+            </span>
+          )}
+        </div>
         {teacherMode && (
           <p className="text-xs font-bold text-cat-hum bg-[color-mix(in_oklab,var(--color-cat-hum)_10%,white)] inline-block px-2 py-1 rounded-chip">
             👨‍🏫 교사용 인쇄 모드 — 모범 답안·정답 포함
@@ -165,28 +189,6 @@ export function WorksheetSolver({
           >
             👨‍🏫 교사용 인쇄 (정답·해설 포함)
           </button>
-          <div className="flex items-center gap-1 ml-auto">
-            <span className="text-xs text-fg-muted mr-1">글자 크기</span>
-            {(Object.keys(FONT_PX) as FontSize[]).map((key) => {
-              const active = key === fontSize;
-              return (
-                <button
-                  key={key}
-                  onClick={() => changeFontSize(key)}
-                  style={{ fontSize: `${FONT_BUTTON_INDICATOR_PX[key]}px` }}
-                  className={`font-bold w-9 h-9 rounded-button border leading-none ${
-                    active
-                      ? "border-accent-500 bg-accent-50 text-accent-700"
-                      : "border-border bg-surface text-fg-muted hover:border-accent-300"
-                  }`}
-                  aria-label={`글자 크기 ${key}`}
-                  aria-pressed={active}
-                >
-                  가
-                </button>
-              );
-            })}
-          </div>
         </div>
       </Card>
 
@@ -248,9 +250,33 @@ export function WorksheetSolver({
           as="section"
           className="passage-card px-6 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong"
         >
-          <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
-            지문
-          </p>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
+              지문
+            </p>
+            <div className="flex items-center gap-1 print:hidden">
+              <span className="text-xs text-fg-muted mr-1">글자 크기</span>
+              {(Object.keys(FONT_PX) as FontSize[]).map((key) => {
+                const active = key === fontSize;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => changeFontSize(key)}
+                    style={{ fontSize: `${FONT_BUTTON_INDICATOR_PX[key]}px` }}
+                    className={`font-bold w-8 h-8 rounded-button border leading-none ${
+                      active
+                        ? "border-accent-500 bg-accent-50 text-accent-700"
+                        : "border-border bg-surface text-fg-muted hover:border-accent-300"
+                    }`}
+                    aria-label={`글자 크기 ${key}`}
+                    aria-pressed={active}
+                  >
+                    가
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           {worksheet.passageImageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -283,41 +309,52 @@ export function WorksheetSolver({
             revealed={!!reveal[idx]}
             onToggleReveal={() => toggleReveal(idx)}
             teacherMode={teacherMode}
+            globalReveal={showSampleAnswer}
           />
         ))}
       </div>
 
-      {worksheet.sampleAnswer && (
+      {hasRevealableContent && (
         <Card
           as="section"
           className="px-6 py-5 space-y-2 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
         >
           <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
-            모범 답안
+            {hasModelAnswer ? "모범 답안" : "정답 확인"}
           </p>
           {teacherMode || showSampleAnswer ? (
-            <div
-              className="text-sm leading-relaxed whitespace-pre-wrap"
-              style={{ color: "#000" }}
-            >
-              {worksheet.sampleAnswer}
-            </div>
+            <>
+              {hasModelAnswer && (
+                <div
+                  className="text-sm leading-relaxed whitespace-pre-wrap"
+                  style={{ color: "#000" }}
+                >
+                  {worksheet.sampleAnswer}
+                </div>
+              )}
+              {hasOxQuestions && (
+                <p className="text-xs text-fg-muted print:hidden">
+                  ↑ 위 OX 문항에서 정답이 강조 표시됐어요.
+                </p>
+              )}
+            </>
           ) : allAnswered ? (
             <div className="print:hidden">
               <p className="text-sm text-fg-muted mb-2">
-                모든 문항에 답을 입력했어요. 모범 답안을 확인해 보세요.
+                모든 문항에 답을 입력했어요. 정답을 확인해 보세요.
               </p>
               <button
                 onClick={() => setShowSampleAnswer(true)}
                 className="text-sm font-semibold px-3 py-1.5 rounded-button bg-accent-500 text-fg-inverse hover:bg-accent-600"
               >
-                🔓 모범 답안 보기
+                🔓 {hasModelAnswer ? "모범 답안 보기" : "정답 확인"}
               </button>
             </div>
           ) : (
             <div className="print:hidden">
               <p className="text-sm text-fg-muted">
-                🔒 모범 답안은 모든 문제를 풀고 나면 공개돼요. (
+                🔒 {hasModelAnswer ? "모범 답안" : "정답"}은 모든 문제를 풀고
+                나면 공개돼요. (
                 <strong className="text-fg-strong">
                   {answeredCount} / {totalQuestions}
                 </strong>{" "}
@@ -362,6 +399,7 @@ function QuestionCard({
   revealed,
   onToggleReveal,
   teacherMode,
+  globalReveal,
 }: {
   index: number;
   question: Question;
@@ -370,9 +408,12 @@ function QuestionCard({
   revealed: boolean;
   onToggleReveal: () => void;
   teacherMode: boolean;
+  globalReveal: boolean;
 }) {
-  // 교사용 인쇄 모드에서는 모든 정답·예시답안·채점기준을 자동 노출.
+  // 교사용 인쇄 모드 또는 활동지 전체 정답 공개 시 정답/예시답안을 자동 노출.
   const showAnswer = revealed || teacherMode;
+  // OX 는 개별 토글 없이 globalReveal/teacherMode 로만 노출
+  const showOxAnswer = teacherMode || globalReveal;
   return (
     <Card
       as="article"
@@ -546,12 +587,12 @@ function QuestionCard({
                   onClick={onToggleReveal}
                   className="text-xs font-semibold text-accent-600 hover:text-accent-700"
                 >
-                  {showAnswer ? "채점 기준 가리기" : "채점 기준 보기"}
+                  {showAnswer ? "모범 답안 가리기" : "모범 답안 보기"}
                 </button>
               </div>
               {showAnswer && (
-                <p className="mt-1 px-3 py-2 rounded-button bg-surface-muted text-xs text-fg leading-relaxed whitespace-pre-wrap print:bg-transparent print:border print:border-border-strong">
-                  채점 기준: {question.rubric}
+                <p className="mt-1 px-3 py-2 rounded-button bg-surface-muted text-sm text-fg leading-relaxed whitespace-pre-wrap print:bg-transparent print:border print:border-border-strong">
+                  모범 답안: {question.rubric}
                 </p>
               )}
             </>

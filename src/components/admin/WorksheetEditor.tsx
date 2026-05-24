@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ImageUpload } from "@/components/admin/ImageUpload";
-import { analyzeSago, formatSagoStatsLine } from "@/lib/sago-analyze";
+import {
+  analyzeSago,
+  difficultyClass,
+  difficultyOf,
+  formatSagoStatsLine,
+} from "@/lib/sago-analyze";
 import { extractYouTubeId } from "@/lib/youtube";
 import {
   QTYPE_LABEL,
@@ -424,9 +429,21 @@ export function WorksheetEditor({
                 줄바꿈과 단락 앞 띄어쓰기가 그대로 학생 화면에 반영돼요.
               </p>
               {passage.trim() && (
-                <p className="text-xs font-semibold text-accent-600 mt-1.5">
-                  📊 {formatSagoStatsLine(sagoStats)}
-                </p>
+                <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                  <span className="text-xs font-semibold text-accent-600">
+                    📊 {formatSagoStatsLine(sagoStats)}
+                  </span>
+                  {(() => {
+                    const d = difficultyOf(sagoStats);
+                    return d ? (
+                      <span
+                        className={`text-xs font-bold px-2 py-0.5 rounded-chip ${difficultyClass(d)}`}
+                      >
+                        난이도 {d}
+                      </span>
+                    ) : null;
+                  })()}
+                </div>
               )}
             </div>
             <ImageUpload
@@ -648,12 +665,13 @@ export function WorksheetEditor({
             {q.type === "essay" && (
               <div>
                 <label className="block text-xs font-bold text-fg-strong mb-1">
-                  평가 기준 / 채점 가이드 (선택)
+                  모범 답안 (선택)
                 </label>
                 <textarea
                   value={q.rubric ?? ""}
                   onChange={(e) => updateQ(q.uid, { rubric: e.target.value })}
                   rows={3}
+                  placeholder="이 서술형 문항의 모범 답안이나 채점 시 봐야 할 핵심 포인트를 적어 주세요."
                   className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none"
                 />
               </div>
