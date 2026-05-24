@@ -7,6 +7,7 @@ import {
   type WorksheetType,
 } from "@/lib/worksheet-types";
 import { listPublishedWorksheets } from "@/data/worksheets";
+import { analyzeSago, formatSagoStatsLine } from "@/lib/sago-analyze";
 
 export const dynamic = "force-dynamic";
 
@@ -102,32 +103,43 @@ export default async function WorksheetListPage({
           </>
         ) : (
           <div className="space-y-2">
-            {items.map((w) => (
-              <Link
-                key={w.id}
-                href={`/worksheet/${t}/${w.id}`}
-                className="block group"
-              >
-                <Card
-                  interactive
-                  className="px-5 py-4 space-y-1 border border-transparent group-hover:border-accent-300"
+            {items.map((w) => {
+              const sagoLine =
+                (t === "written" || t === "exam") && w.passage
+                  ? formatSagoStatsLine(analyzeSago(w.passage))
+                  : null;
+              return (
+                <Link
+                  key={w.id}
+                  href={`/worksheet/${t}/${w.id}`}
+                  className="block group"
                 >
-                  <p className="text-base font-bold text-fg-strong">{w.title}</p>
-                  {w.intro && (
-                    <p className="text-sm text-fg-muted line-clamp-2">
-                      {w.intro}
+                  <Card
+                    interactive
+                    className="px-5 py-4 space-y-1 border border-transparent group-hover:border-accent-300"
+                  >
+                    <p className="text-base font-bold text-fg-strong">{w.title}</p>
+                    {w.intro && (
+                      <p className="text-sm text-fg-muted line-clamp-2">
+                        {w.intro}
+                      </p>
+                    )}
+                    {sagoLine && (
+                      <p className="text-xs font-semibold text-accent-700 bg-accent-50 inline-block px-2 py-0.5 rounded-chip mt-1">
+                        📊 {sagoLine}
+                      </p>
+                    )}
+                    <p className="text-xs text-fg-subtle pt-1">
+                      {new Date(w.createdAt).toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     </p>
-                  )}
-                  <p className="text-xs text-fg-subtle pt-1">
-                    {new Date(w.createdAt).toLocaleDateString("ko-KR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                </Card>
-              </Link>
-            ))}
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

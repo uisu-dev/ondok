@@ -20,6 +20,7 @@ export interface Question {
   sampleAnswer?: string;
   rubric?: string;
   imageUrl?: string;
+  passage?: string | null; // 문항별 지문(원문 인용, 선택) — 주로 추천도서 활동지에 사용
 }
 
 export interface Worksheet {
@@ -29,9 +30,10 @@ export interface Worksheet {
   intro?: string | null;
   bookId?: number | null;
   source?: string | null;
-  externalUrl?: string | null;
+  externalUrl?: string | null; // deprecated — UI에서 더 이상 노출 안 함, 기존 데이터 보존용
   passage?: string | null;
   passageImageUrl?: string | null;
+  youtubeUrl?: string | null;
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -47,9 +49,10 @@ export interface WorksheetDraft {
   intro?: string;
   bookId?: number | null;
   source?: string;
-  externalUrl?: string;
+  externalUrl?: string; // kept for backward compat; UI no longer surfaces
   passage?: string;
   passageImageUrl?: string;
+  youtubeUrl?: string;
   questions: Omit<Question, "id">[];
 }
 

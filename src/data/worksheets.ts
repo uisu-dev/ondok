@@ -17,6 +17,7 @@ interface WorksheetRow {
   external_url: string | null;
   passage: string | null;
   passage_image_url: string | null;
+  youtube_url: string | null;
   published: boolean;
   created_at: string;
   updated_at: string;
@@ -32,6 +33,7 @@ interface QuestionRow {
   sample_answer: string | null;
   rubric: string | null;
   image_url: string | null;
+  passage: string | null;
 }
 
 function fromWorksheetRow(row: WorksheetRow): Worksheet {
@@ -45,6 +47,7 @@ function fromWorksheetRow(row: WorksheetRow): Worksheet {
     externalUrl: row.external_url,
     passage: row.passage,
     passageImageUrl: row.passage_image_url,
+    youtubeUrl: row.youtube_url,
     published: row.published,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -61,6 +64,7 @@ function fromQuestionRow(row: QuestionRow): Question {
     sampleAnswer: row.sample_answer ?? undefined,
     rubric: row.rubric ?? undefined,
     imageUrl: row.image_url ?? undefined,
+    passage: row.passage,
   };
 }
 
@@ -147,6 +151,7 @@ export async function updateWorksheetAdmin(
       external_url: draft.externalUrl ?? null,
       passage: draft.passage ?? null,
       passage_image_url: draft.passageImageUrl ?? null,
+      youtube_url: draft.youtubeUrl ?? null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -168,6 +173,7 @@ export async function updateWorksheetAdmin(
       sample_answer: q.sampleAnswer ?? null,
       rubric: q.rubric ?? null,
       image_url: q.imageUrl ?? null,
+      passage: q.passage ?? null,
     }));
     const { error: insErr } = await supabase
       .from("worksheet_questions")
@@ -191,6 +197,7 @@ export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<numbe
       external_url: draft.externalUrl ?? null,
       passage: draft.passage ?? null,
       passage_image_url: draft.passageImageUrl ?? null,
+      youtube_url: draft.youtubeUrl ?? null,
     })
     .select("id")
     .single();
@@ -206,6 +213,7 @@ export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<numbe
       sample_answer: q.sampleAnswer ?? null,
       rubric: q.rubric ?? null,
       image_url: q.imageUrl ?? null,
+      passage: q.passage ?? null,
     }));
     const { error: qErr } = await supabase.from("worksheet_questions").insert(rows);
     if (qErr) throw new Error(qErr.message);

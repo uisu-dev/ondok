@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -12,6 +12,8 @@ import {
   type Question,
   type WorksheetWithQuestions,
 } from "@/lib/worksheet-types";
+import { analyzeSago, formatSagoStatsLine } from "@/lib/sago-analyze";
+import { buildYouTubeEmbedUrl, extractYouTubeId } from "@/lib/youtube";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 
@@ -70,6 +72,21 @@ export function WorksheetSolver({
     setReveal((prev) => ({ ...prev, [qIdx]: !prev[qIdx] }));
   }
 
+  // 사고도구어 통계 — 지문이 텍스트로 있을 때만 의미 있음.
+  const sagoStats = useMemo(
+    () =>
+      (worksheet.type === "written" || worksheet.type === "exam") &&
+      worksheet.passage
+        ? analyzeSago(worksheet.passage)
+        : null,
+    [worksheet.type, worksheet.passage]
+  );
+
+  const youtubeId = useMemo(
+    () => extractYouTubeId(worksheet.youtubeUrl ?? null),
+    [worksheet.youtubeUrl]
+  );
+
   return (
     <>
       <Card
@@ -85,6 +102,11 @@ export function WorksheetSolver({
         {worksheet.intro && (
           <p className="text-sm text-fg-muted leading-relaxed whitespace-pre-wrap">
             {worksheet.intro}
+          </p>
+        )}
+        {sagoStats && sagoStats.total > 0 && (
+          <p className="text-xs font-semibold text-accent-700 bg-accent-50 inline-block px-2.5 py-1 rounded-chip">
+            📊 {formatSagoStatsLine(sagoStats)}
           </p>
         )}
         <div className="flex flex-wrap items-center gap-3 pt-2 print:hidden">
@@ -159,40 +181,27 @@ export function WorksheetSolver({
         </Card>
       )}
 
-      {worksheet.type === "exam" && (worksheet.source || worksheet.externalUrl) && (
+      {worksheet.type === "exam" && worksheet.source && (
         <Card
           as="section"
-          className="px-5 py-4 space-y-1 print:shadow-none print:rounded-none print:border print:border-fg-strong"
+          className="px-5 py-4 print:shadow-none print:rounded-none print:border print:border-fg-strong"
         >
-          {worksheet.source && (
-            <p className="text-sm font-semibold text-fg-strong">
-              출처: {worksheet.source}
-            </p>
-          )}
-          {worksheet.externalUrl && (
-            <a
-              href={worksheet.externalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-semibold text-accent-600 hover:text-accent-700 break-all print:text-fg-strong"
-            >
-              지문 보기 → {worksheet.externalUrl}
-            </a>
-          )}
+          <p className="text-sm font-semibold text-fg-strong">
+            출처: {worksheet.source}
+          </p>
         </Card>
       )}
 
       {(worksheet.passageImageUrl ||
-        (worksheet.type === "written" && worksheet.passage)) && (
+        ((worksheet.type === "written" || worksheet.type === "exam") &&
+          worksheet.passage)) && (
         <Card
           as="section"
           className="px-6 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
         >
-          {worksheet.type === "written" && (
-            <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
-              지문
-            </p>
-          )}
+          <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
+            지문
+          </p>
           {worksheet.passageImageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -202,14 +211,15 @@ export function WorksheetSolver({
               className="block w-full max-h-[480px] object-contain rounded-button bg-surface-muted print:max-h-[60vh]"
             />
           )}
-          {worksheet.type === "written" && worksheet.passage && (
-            <div
-              style={{ fontSize: `${FONT_PX[fontSize]}px`, color: "#000" }}
-              className="leading-relaxed whitespace-pre-wrap break-words"
-            >
-              {worksheet.passage}
-            </div>
-          )}
+          {(worksheet.type === "written" || worksheet.type === "exam") &&
+            worksheet.passage && (
+              <div
+                style={{ fontSize: `${FONT_PX[fontSize]}px`, color: "#000" }}
+                className="leading-relaxed whitespace-pre-wrap break-words"
+              >
+                {worksheet.passage}
+              </div>
+            )}
         </Card>
       )}
 
@@ -226,6 +236,25 @@ export function WorksheetSolver({
           />
         ))}
       </div>
+
+      {youtubeId && (
+        <Card
+          as="section"
+          className="px-5 py-5 space-y-3 print:hidden"
+        >
+          <p className="text-xs font-bold text-accent-600">관련 영상</p>
+          <div className="relative w-full aspect-video rounded-button overflow-hidden bg-fg-strong">
+            <iframe
+              src={buildYouTubeEmbedUrl(youtubeId)}
+              title="관련 영상"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+        </Card>
+      )}
 
       <p className="text-xs text-fg-subtle text-center print:hidden">
         ⌨️ 작성한 답은 페이지를 떠나면 사라져요. 인쇄해서 종이로 활용하셔도 좋아요.
@@ -256,6 +285,20 @@ function QuestionCard({
       as="article"
       className="px-5 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
     >
+      {question.passage && (
+        <div className="bg-surface-muted rounded-button px-4 py-3 space-y-1 print:bg-transparent print:border print:border-border-strong">
+          <p className="text-[10px] font-bold text-accent-600 print:text-fg-strong">
+            지문
+          </p>
+          <div
+            className="text-sm leading-relaxed whitespace-pre-wrap break-words"
+            style={{ color: "#000" }}
+          >
+            {question.passage}
+          </div>
+        </div>
+      )}
+
       <div className="flex items-baseline gap-2">
         <span className="text-base font-bold text-accent-700 print:text-fg-strong">
           {index + 1}.

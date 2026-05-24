@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { analyzeSago, formatSagoStatsLine } from "@/lib/sago-analyze";
+import { extractYouTubeId } from "@/lib/youtube";
 import {
   QTYPE_LABEL,
   TYPE_EMOJI,
@@ -34,6 +36,7 @@ interface DraftQ {
   sampleAnswer?: string;
   rubric?: string;
   imageUrl?: string;
+  passage?: string;
 }
 
 export interface WorksheetEditorInitial {
@@ -45,6 +48,7 @@ export interface WorksheetEditorInitial {
   externalUrl?: string | null;
   passage?: string | null;
   passageImageUrl?: string | null;
+  youtubeUrl?: string | null;
   questions: Question[];
 }
 
@@ -97,11 +101,11 @@ export function WorksheetEditor({
   const [bookId, setBookId] = useState<number | null>(initial?.bookId ?? null);
   const [bookFilter, setBookFilter] = useState("");
   const [source, setSource] = useState(initial?.source ?? "");
-  const [externalUrl, setExternalUrl] = useState(initial?.externalUrl ?? "");
   const [passage, setPassage] = useState(initial?.passage ?? "");
   const [passageImageUrl, setPassageImageUrl] = useState<string | undefined>(
     initial?.passageImageUrl ?? undefined
   );
+  const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? "");
   const [questions, setQuestions] = useState<DraftQ[]>(
     initial
       ? initial.questions.map((q) => ({
@@ -112,11 +116,15 @@ export function WorksheetEditor({
           sampleAnswer: q.sampleAnswer,
           rubric: q.rubric,
           imageUrl: q.imageUrl,
+          passage: q.passage ?? "",
         }))
       : [makeBlankQ("multiple_choice")]
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Live 사고도구어 통계 (지문이 있는 타입만 의미가 있음)
+  const sagoStats = useMemo(() => analyzeSago(passage), [passage]);
 
   function addQ(t: QuestionType) {
     setQuestions((qs) => [...qs, makeBlankQ(t)]);
@@ -221,15 +229,25 @@ export function WorksheetEditor({
 
     setSaving(true);
     try {
+      const yt = youtubeUrl.trim();
+      if (yt && !extractYouTubeId(yt)) {
+        setError(
+          "YouTube 링크 형식이 올바르지 않아요. (예: https://www.youtube.com/watch?v=... 또는 https://youtu.be/...)"
+        );
+        setSaving(false);
+        return;
+      }
       const draft: WorksheetDraft = {
         type,
         title: title.trim(),
         intro: intro.trim() || undefined,
         bookId: type === "books" ? bookId : undefined,
         source: type === "exam" ? source.trim() || undefined : undefined,
-        externalUrl: type === "exam" ? externalUrl.trim() || undefined : undefined,
-        passage: type === "written" ? passage : undefined,
-        passageImageUrl: type === "written" ? passageImageUrl : undefined,
+        // 지문 본문/이미지는 written + exam 둘 다 지원
+        passage: type === "written" || type === "exam" ? passage : undefined,
+        passageImageUrl:
+          type === "written" || type === "exam" ? passageImageUrl : undefined,
+        youtubeUrl: yt || undefined,
         questions: questions.map((q, i) => ({
           position: i,
           type: q.type,
@@ -238,6 +256,8 @@ export function WorksheetEditor({
           sampleAnswer: q.sampleAnswer?.trim() || undefined,
           rubric: q.rubric?.trim() || undefined,
           imageUrl: q.imageUrl,
+          // 추천도서 타입에서만 문항별 지문 노출하지만, 기존 데이터는 그대로 전송
+          passage: q.passage?.trim() || undefined,
         })),
       };
       const url = isEdit
@@ -366,62 +386,70 @@ export function WorksheetEditor({
         )}
 
         {type === "exam" && (
-          <>
-            <div>
-              <label className="block text-xs font-bold text-fg-strong mb-1">
-                출처 *
-              </label>
-              <input
-                type="text"
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-                placeholder="예: 2024학년도 수능 국어 비문학 16-18번"
-                className="w-full h-11 px-3 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-fg-strong mb-1">
-                지문 외부 링크 (평가원 PDF 등, 선택)
-              </label>
-              <input
-                type="url"
-                value={externalUrl}
-                onChange={(e) => setExternalUrl(e.target.value)}
-                placeholder="https://..."
-                className="w-full h-11 px-3 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none"
-              />
-              <p className="text-xs text-fg-subtle mt-1">
-                지문 본문은 사이트에 옮기지 않고 외부 링크로 안내합니다.
-              </p>
-            </div>
-          </>
+          <div>
+            <label className="block text-xs font-bold text-fg-strong mb-1">
+              출처 *
+            </label>
+            <input
+              type="text"
+              value={source}
+              onChange={(e) => setSource(e.target.value)}
+              placeholder="예: 2024학년도 수능 국어 비문학 16-18번"
+              className="w-full h-11 px-3 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none"
+            />
+          </div>
         )}
 
-        {type === "written" && (
+        {(type === "written" || type === "exam") && (
           <>
             <div>
               <label className="block text-xs font-bold text-fg-strong mb-1">
-                자체 지문 *
+                지문 {type === "written" ? "*" : "(선택)"}
               </label>
               <textarea
                 value={passage}
                 onChange={(e) => setPassage(e.target.value)}
                 rows={10}
-                placeholder="사고도구어가 자연스럽게 등장하는 짧은 글을 작성해 주세요. (예: 100~400자)"
+                placeholder={
+                  type === "written"
+                    ? "사고도구어가 자연스럽게 등장하는 짧은 글을 작성해 주세요. (예: 100~400자)"
+                    : "지문 텍스트가 있다면 입력하세요. 이미지로만 제시할 거라면 비워두셔도 됩니다."
+                }
                 className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none leading-relaxed"
               />
               <p className="text-xs text-fg-subtle mt-1">
                 줄바꿈과 단락 앞 띄어쓰기가 그대로 학생 화면에 반영돼요.
               </p>
+              {passage.trim() && (
+                <p className="text-xs font-semibold text-accent-600 mt-1.5">
+                  📊 {formatSagoStatsLine(sagoStats)}
+                </p>
+              )}
             </div>
             <ImageUpload
               url={passageImageUrl}
               onChange={setPassageImageUrl}
               label="지문 이미지 (선택)"
-              hint="지문 위에 표시될 그림입니다. 큰 이미지는 자동으로 줄어들어요."
+              hint="지문 위에 표시될 그림/스캔이에요. 큰 이미지는 자동으로 줄어들어요."
             />
           </>
         )}
+
+        <div>
+          <label className="block text-xs font-bold text-fg-strong mb-1">
+            관련 YouTube 영상 링크 (선택)
+          </label>
+          <input
+            type="url"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            placeholder="https://www.youtube.com/watch?v=... 또는 https://youtu.be/..."
+            className="w-full h-11 px-3 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none"
+          />
+          <p className="text-xs text-fg-subtle mt-1">
+            학생 활동지 페이지 아래에 영상이 임베드돼서 같이 시청할 수 있어요.
+          </p>
+        </div>
       </Card>
 
       <div className="space-y-3">
@@ -460,6 +488,21 @@ export function WorksheetEditor({
                 </button>
               </div>
             </div>
+
+            {type === "books" && (
+              <div>
+                <label className="block text-xs font-bold text-fg-strong mb-1">
+                  지문 (선택) — 책의 일부 발췌
+                </label>
+                <textarea
+                  value={q.passage ?? ""}
+                  onChange={(e) => updateQ(q.uid, { passage: e.target.value })}
+                  rows={4}
+                  placeholder="책에서 인용할 짧은 부분을 적어 주세요. 학생 화면에서 발문 위에 표시됩니다."
+                  className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none leading-relaxed text-sm"
+                />
+              </div>
+            )}
 
             <div>
               <label className="block text-xs font-bold text-fg-strong mb-1">

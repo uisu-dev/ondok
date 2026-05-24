@@ -47,6 +47,7 @@ export default async function EditWorksheetPage({
     externalUrl: ws.externalUrl,
     passage: ws.passage,
     passageImageUrl: ws.passageImageUrl,
+    youtubeUrl: ws.youtubeUrl,
     questions: ws.questions,
   };
 
