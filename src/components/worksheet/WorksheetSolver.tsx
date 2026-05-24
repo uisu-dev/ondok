@@ -246,7 +246,7 @@ export function WorksheetSolver({
           worksheet.passage)) && (
         <Card
           as="section"
-          className="px-6 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
+          className="passage-card px-6 py-5 space-y-3 print:shadow-none print:rounded-none print:border print:border-fg-strong"
         >
           <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
             지문
