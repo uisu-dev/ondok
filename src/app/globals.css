@@ -71,13 +71,46 @@
 
 @media print {
   @page {
-    margin: 1.6cm 1.4cm;
+    margin: 1.2cm 1.3cm;
     size: A4;
   }
   html, body {
     background: white !important;
     color: black !important;
   }
-  /* Card shadows look bad on paper — keep border only */
-  /* Tailwind print: utilities (print:hidden, print:break-inside-avoid, etc.) handle the rest */
+  /* 사이트 와이드 max-w 제거 → 종이 한 폭에 꽉 차게 */
+  main > div {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  /* 카드 간 여백을 약간만 두기 */
+  main > div > * + * {
+    margin-top: 0.4cm !important;
+  }
+  /* 카드 내부 여백도 살짝 더 좁게 (인쇄 잉크 절약 + 컨텐츠 우선) */
+  section, article {
+    padding: 0.4cm 0.5cm !important;
+  }
+  /* 이미지는 페이지 폭에 자연스럽게 맞추고, 절대로 두 페이지에 걸쳐 잘리지 않게 */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    /* 라운드/배경 제거: 사용자가 인쇄 시 본 '여백 띠' 원인 */
+    border-radius: 0 !important;
+    background: transparent !important;
+    display: block;
+  }
+  /* 카드의 그림자/라운드는 인쇄에서 의미 없으므로 제거 */
+  .shadow-card, .shadow-card-hover {
+    box-shadow: none !important;
+  }
+  /* 문항 카드는 한 문항이 가능하면 한 페이지 안에 머물도록 */
+  article {
+    break-inside: avoid-page;
+  }
 }

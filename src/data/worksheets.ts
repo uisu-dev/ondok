@@ -18,6 +18,7 @@ interface WorksheetRow {
   passage: string | null;
   passage_image_url: string | null;
   youtube_url: string | null;
+  sample_answer: string | null;
   published: boolean;
   created_at: string;
   updated_at: string;
@@ -48,6 +49,7 @@ function fromWorksheetRow(row: WorksheetRow): Worksheet {
     passage: row.passage,
     passageImageUrl: row.passage_image_url,
     youtubeUrl: row.youtube_url,
+    sampleAnswer: row.sample_answer,
     published: row.published,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -152,6 +154,7 @@ export async function updateWorksheetAdmin(
       passage: draft.passage ?? null,
       passage_image_url: draft.passageImageUrl ?? null,
       youtube_url: draft.youtubeUrl ?? null,
+      sample_answer: draft.sampleAnswer ?? null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -198,6 +201,7 @@ export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<numbe
       passage: draft.passage ?? null,
       passage_image_url: draft.passageImageUrl ?? null,
       youtube_url: draft.youtubeUrl ?? null,
+      sample_answer: draft.sampleAnswer ?? null,
     })
     .select("id")
     .single();

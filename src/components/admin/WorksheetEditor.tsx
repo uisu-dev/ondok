@@ -49,6 +49,7 @@ export interface WorksheetEditorInitial {
   passage?: string | null;
   passageImageUrl?: string | null;
   youtubeUrl?: string | null;
+  sampleAnswer?: string | null;
   questions: Question[];
 }
 
@@ -106,6 +107,7 @@ export function WorksheetEditor({
     initial?.passageImageUrl ?? undefined
   );
   const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? "");
+  const [sampleAnswer, setSampleAnswer] = useState(initial?.sampleAnswer ?? "");
   const [questions, setQuestions] = useState<DraftQ[]>(
     initial
       ? initial.questions.map((q) => ({
@@ -248,6 +250,7 @@ export function WorksheetEditor({
         passageImageUrl:
           type === "written" || type === "exam" ? passageImageUrl : undefined,
         youtubeUrl: yt || undefined,
+        sampleAnswer: sampleAnswer.trim() || undefined,
         questions: questions.map((q, i) => ({
           position: i,
           type: q.type,
@@ -448,6 +451,23 @@ export function WorksheetEditor({
           />
           <p className="text-xs text-fg-subtle mt-1">
             학생 활동지 페이지 아래에 영상이 임베드돼서 같이 시청할 수 있어요.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-fg-strong mb-1">
+            모범 답안 (선택)
+          </label>
+          <textarea
+            value={sampleAnswer}
+            onChange={(e) => setSampleAnswer(e.target.value)}
+            rows={6}
+            placeholder="활동지 전체에 대한 모범 답안 또는 풀이/해설을 적어 주세요. 학생은 모든 문제를 풀어야 공개됩니다."
+            className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none leading-relaxed"
+          />
+          <p className="text-xs text-fg-subtle mt-1">
+            학생은 모든 문항에 답을 입력한 뒤에만 ‘모범 답안 보기’ 버튼이 풀려요.
+            교사용 인쇄에는 자동으로 포함됩니다.
           </p>
         </div>
       </Card>

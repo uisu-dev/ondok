@@ -46,6 +46,8 @@ export function WorksheetSolver({
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reveal, setReveal] = useState<Record<number, boolean>>({});
   const [fontSize, setFontSize] = useState<FontSize>("md");
+  const [teacherMode, setTeacherMode] = useState(false); // 교사용 인쇄 시 일시적으로 true
+  const [showSampleAnswer, setShowSampleAnswer] = useState(false);
 
   useEffect(() => {
     try {
@@ -87,6 +89,42 @@ export function WorksheetSolver({
     [worksheet.youtubeUrl]
   );
 
+  // 모든 문항에 답이 입력됐는지
+  const totalQuestions = worksheet.questions.length;
+  const answeredCount = useMemo(() => {
+    let n = 0;
+    worksheet.questions.forEach((_, idx) => {
+      const v = answers[idx];
+      if (v && v.trim()) n++;
+    });
+    return n;
+  }, [answers, worksheet.questions]);
+  const allAnswered = totalQuestions > 0 && answeredCount === totalQuestions;
+
+  /**
+   * 인쇄 시:
+   *  1) document.title 을 "[타입 라벨] - [활동지 제목]" 으로 임시 교체
+   *     → 브라우저의 "PDF로 저장" 기본 파일명에 그대로 반영됨
+   *  2) teacherMode 인지에 따라 모범 답안/정답을 자동 노출
+   *  3) 인쇄 종료(또는 인쇄 미리보기 닫힘) 후 원래 title / mode 복원
+   */
+  async function runPrint(mode: "student" | "teacher") {
+    if (typeof window === "undefined") return;
+    const suffix = mode === "teacher" ? " (교사용)" : "";
+    const filename = `${TYPE_LABEL[worksheet.type]} - ${worksheet.title}${suffix}`;
+    const previousTitle = document.title;
+    document.title = filename;
+    if (mode === "teacher") setTeacherMode(true);
+    // 다음 paint 까지 기다려 변경된 상태가 인쇄에 반영되게 함
+    await new Promise((r) => setTimeout(r, 80));
+    window.print();
+    // 인쇄 다이얼로그가 끝난 뒤 복원
+    setTimeout(() => {
+      document.title = previousTitle;
+      if (mode === "teacher") setTeacherMode(false);
+    }, 700);
+  }
+
   return (
     <>
       <Card
@@ -109,12 +147,23 @@ export function WorksheetSolver({
             📊 {formatSagoStatsLine(sagoStats)}
           </p>
         )}
-        <div className="flex flex-wrap items-center gap-3 pt-2 print:hidden">
+        {teacherMode && (
+          <p className="text-xs font-bold text-cat-hum bg-[color-mix(in_oklab,var(--color-cat-hum)_10%,white)] inline-block px-2 py-1 rounded-chip">
+            👨‍🏫 교사용 인쇄 모드 — 모범 답안·정답 포함
+          </p>
+        )}
+        <div className="flex flex-wrap items-center gap-2 pt-2 print:hidden">
           <button
-            onClick={() => typeof window !== "undefined" && window.print()}
-            className="text-xs font-semibold text-accent-600 hover:text-accent-700"
+            onClick={() => runPrint("student")}
+            className="text-xs font-semibold px-3 py-1.5 rounded-button bg-accent-50 text-accent-700 hover:bg-accent-100"
           >
-            🖨 인쇄하기
+            🖨 학생용 인쇄
+          </button>
+          <button
+            onClick={() => runPrint("teacher")}
+            className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
+          >
+            👨‍🏫 교사용 인쇄 (정답·해설 포함)
           </button>
           <div className="flex items-center gap-1 ml-auto">
             <span className="text-xs text-fg-muted mr-1">글자 크기</span>
@@ -208,7 +257,7 @@ export function WorksheetSolver({
               src={worksheet.passageImageUrl}
               alt="지문 이미지"
               loading="lazy"
-              className="block w-full max-h-[480px] object-contain rounded-button bg-surface-muted print:max-h-[60vh]"
+              className="block mx-auto max-h-[480px] w-auto max-w-full object-contain rounded-button bg-surface-muted print:max-h-[140mm]"
             />
           )}
           {(worksheet.type === "written" || worksheet.type === "exam") &&
@@ -233,9 +282,51 @@ export function WorksheetSolver({
             onAnswer={(v) => setAnswer(idx, v)}
             revealed={!!reveal[idx]}
             onToggleReveal={() => toggleReveal(idx)}
+            teacherMode={teacherMode}
           />
         ))}
       </div>
+
+      {worksheet.sampleAnswer && (
+        <Card
+          as="section"
+          className="px-6 py-5 space-y-2 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
+        >
+          <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
+            모범 답안
+          </p>
+          {teacherMode || showSampleAnswer ? (
+            <div
+              className="text-sm leading-relaxed whitespace-pre-wrap"
+              style={{ color: "#000" }}
+            >
+              {worksheet.sampleAnswer}
+            </div>
+          ) : allAnswered ? (
+            <div className="print:hidden">
+              <p className="text-sm text-fg-muted mb-2">
+                모든 문항에 답을 입력했어요. 모범 답안을 확인해 보세요.
+              </p>
+              <button
+                onClick={() => setShowSampleAnswer(true)}
+                className="text-sm font-semibold px-3 py-1.5 rounded-button bg-accent-500 text-fg-inverse hover:bg-accent-600"
+              >
+                🔓 모범 답안 보기
+              </button>
+            </div>
+          ) : (
+            <div className="print:hidden">
+              <p className="text-sm text-fg-muted">
+                🔒 모범 답안은 모든 문제를 풀고 나면 공개돼요. (
+                <strong className="text-fg-strong">
+                  {answeredCount} / {totalQuestions}
+                </strong>{" "}
+                완료)
+              </p>
+            </div>
+          )}
+        </Card>
+      )}
 
       {youtubeId && (
         <Card
@@ -270,6 +361,7 @@ function QuestionCard({
   onAnswer,
   revealed,
   onToggleReveal,
+  teacherMode,
 }: {
   index: number;
   question: Question;
@@ -277,9 +369,10 @@ function QuestionCard({
   onAnswer: (v: string) => void;
   revealed: boolean;
   onToggleReveal: () => void;
+  teacherMode: boolean;
 }) {
-  // Question text uses default size (independent of the 글자 크기 toggle which
-  // is scoped to the passage only — per user spec).
+  // 교사용 인쇄 모드에서는 모든 정답·예시답안·채점기준을 자동 노출.
+  const showAnswer = revealed || teacherMode;
   return (
     <Card
       as="article"
@@ -317,7 +410,7 @@ function QuestionCard({
           src={question.imageUrl}
           alt="문제 이미지"
           loading="lazy"
-          className="block w-full max-h-[360px] object-contain rounded-button bg-surface-muted print:max-h-[40vh]"
+          className="block mx-auto max-h-[360px] w-auto max-w-full object-contain rounded-button bg-surface-muted print:max-h-[100mm]"
         />
       )}
 
@@ -325,7 +418,7 @@ function QuestionCard({
         <div className="space-y-1.5">
           {question.options.map((opt, i) => {
             const selected = answer === opt.label;
-            const showCorrect = revealed && opt.correct;
+            const showCorrect = showAnswer && opt.correct;
             return (
               <label
                 key={i}
@@ -374,7 +467,7 @@ function QuestionCard({
           <div className="grid grid-cols-2 gap-3">
             {question.options.map((opt, i) => {
               const selected = answer === opt.label;
-              const showCorrect = revealed && opt.correct;
+              const showCorrect = showAnswer && opt.correct;
               const isO = opt.label === "O";
               return (
                 <button
@@ -418,19 +511,21 @@ function QuestionCard({
             className="w-full h-11 px-3 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none print:bg-transparent print:border-0 print:border-b-2 print:border-fg-strong print:rounded-none print:h-10"
           />
           {question.sampleAnswer && (
-            <div className="print:hidden">
-              <button
-                onClick={onToggleReveal}
-                className="text-xs font-semibold text-accent-600 hover:text-accent-700"
-              >
-                {revealed ? "예시 답안 가리기" : "예시 답안 보기"}
-              </button>
-              {revealed && (
-                <p className="mt-1 px-3 py-2 rounded-button bg-[color-mix(in_oklab,var(--color-cat-sci)_8%,white)] text-sm text-fg whitespace-pre-wrap">
+            <>
+              <div className="print:hidden">
+                <button
+                  onClick={onToggleReveal}
+                  className="text-xs font-semibold text-accent-600 hover:text-accent-700"
+                >
+                  {showAnswer ? "예시 답안 가리기" : "예시 답안 보기"}
+                </button>
+              </div>
+              {showAnswer && (
+                <p className="mt-1 px-3 py-2 rounded-button bg-[color-mix(in_oklab,var(--color-cat-sci)_8%,white)] text-sm text-fg whitespace-pre-wrap print:bg-transparent print:border print:border-border-strong">
                   예시 답안: {question.sampleAnswer}
                 </p>
               )}
-            </div>
+            </>
           )}
         </div>
       )}
@@ -445,19 +540,21 @@ function QuestionCard({
             className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none leading-relaxed print:bg-transparent print:border print:border-fg-strong print:h-32"
           />
           {question.rubric && (
-            <div className="print:hidden">
-              <button
-                onClick={onToggleReveal}
-                className="text-xs font-semibold text-accent-600 hover:text-accent-700"
-              >
-                {revealed ? "채점 기준 가리기" : "채점 기준 보기"}
-              </button>
-              {revealed && (
-                <p className="mt-1 px-3 py-2 rounded-button bg-surface-muted text-xs text-fg leading-relaxed whitespace-pre-wrap">
+            <>
+              <div className="print:hidden">
+                <button
+                  onClick={onToggleReveal}
+                  className="text-xs font-semibold text-accent-600 hover:text-accent-700"
+                >
+                  {showAnswer ? "채점 기준 가리기" : "채점 기준 보기"}
+                </button>
+              </div>
+              {showAnswer && (
+                <p className="mt-1 px-3 py-2 rounded-button bg-surface-muted text-xs text-fg leading-relaxed whitespace-pre-wrap print:bg-transparent print:border print:border-border-strong">
                   채점 기준: {question.rubric}
                 </p>
               )}
-            </div>
+            </>
           )}
         </div>
       )}

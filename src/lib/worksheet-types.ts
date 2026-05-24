@@ -34,6 +34,7 @@ export interface Worksheet {
   passage?: string | null;
   passageImageUrl?: string | null;
   youtubeUrl?: string | null;
+  sampleAnswer?: string | null; // 활동지 전체 모범 답안 (학생은 모두 풀어야 공개)
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -53,6 +54,7 @@ export interface WorksheetDraft {
   passage?: string;
   passageImageUrl?: string;
   youtubeUrl?: string;
+  sampleAnswer?: string;
   questions: Omit<Question, "id">[];
 }
 
