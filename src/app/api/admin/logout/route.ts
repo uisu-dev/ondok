@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
-import { clearAdminCookie } from "@/lib/admin-auth";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST() {
-  await clearAdminCookie();
+  try {
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+  } catch {
+    // Logout should be idempotent even if auth env is missing locally.
+  }
+
   return NextResponse.json({ ok: true });
 }

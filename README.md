@@ -63,15 +63,22 @@ node scripts/xlsx-to-json.mjs "path/to/file.xlsx"
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJ...
+# 또는 새 Supabase publishable key 사용:
+# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+ADMIN_EMAILS=teacher@example.com
 ```
 
-6. `npm run dev` 재시작.
+6. **Auth → Users**에서 관리자 이메일/비밀번호 계정을 만들고, 그 이메일을
+   `ADMIN_EMAILS`에 추가합니다. 여러 명이면 쉼표로 구분합니다. 대신
+   `app_metadata.role = "admin"` 또는 `app_metadata.roles = ["admin"]`으로도
+   관리자 권한을 줄 수 있습니다.
+7. `npm run dev` 재시작.
 
 ## Vercel 배포
 
 1. GitHub에 푸시 (`origin/main`).
 2. https://vercel.com 에서 **New Project → Import Git Repository**.
-3. **Environment Variables**에 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` 추가.
+3. **Environment Variables**에 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`(또는 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`), `ADMIN_EMAILS` 추가.
 4. Deploy.
 
 빌드 캐시 + 정적 페이지 prerender 덕분에 첫 배포 후에는 초당 수많은 요청도 무리 없이 처리됩니다.

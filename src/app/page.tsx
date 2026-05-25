@@ -123,13 +123,18 @@ export default function HomePage() {
     <main className="flex-1 w-full">
       <div className="mx-auto max-w-[720px] px-6 py-10 space-y-8">
         {/* Hero */}
-        <Card as="section" className="px-6 py-9 text-center space-y-3">
+        <Card as="section" className="px-6 py-8 text-center space-y-3">
           <p className="text-sm font-semibold tracking-wide text-accent-600">
             충남교육청 자료 기반 문해력 성장 공간
           </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-fg-strong leading-tight">
-            <span className="text-accent-600">온독 플러스</span>
-          </h1>
+          {/* h1 은 시각적으로는 로고 이미지로 보여주고, SEO / 스크린리더는 alt 텍스트가 처리 */}
+          <h1 className="sr-only">온독 플러스</h1>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/ondok-plus-logo.png"
+            alt="온독 플러스"
+            className="block mx-auto w-full max-w-[360px] h-auto"
+          />
           <p className="text-base text-fg-muted leading-relaxed max-w-[460px] mx-auto pt-1">
             온독지수 추천도서{" "}
             <strong className="text-fg-strong">214권</strong>과 사고도구어{" "}

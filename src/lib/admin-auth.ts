@@ -1,70 +1,49 @@
-import { cookies } from "next/headers";
-import { createHmac, timingSafeEqual } from "node:crypto";
+import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 
-const COOKIE_NAME = "ondok_admin";
-const TOKEN = "admin-v1";
-
-function sign(value: string): string {
-  const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret) throw new Error("ADMIN_SESSION_SECRET is not configured");
-  return createHmac("sha256", secret).update(value).digest("hex");
+function getAllowedAdminEmails(): Set<string> {
+  return new Set(
+    (process.env.ADMIN_EMAILS ?? "")
+      .split(",")
+      .map((email) => email.trim().toLowerCase())
+      .filter(Boolean)
+  );
 }
 
-/** Server-side check: is the current request from an admin? */
+function hasAdminRole(user: User): boolean {
+  const role = user.app_metadata?.role;
+  const roles = user.app_metadata?.roles;
+  const isAdmin = user.app_metadata?.is_admin;
+
+  return (
+    role === "admin" ||
+    (Array.isArray(roles) && roles.includes("admin")) ||
+    isAdmin === true
+  );
+}
+
+export function isAuthorizedAdmin(user: User): boolean {
+  const allowedEmails = getAllowedAdminEmails();
+  if (hasAdminRole(user)) return true;
+  return user.email ? allowedEmails.has(user.email.toLowerCase()) : false;
+}
+
+export async function getAdminUser(): Promise<User | null> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error || !user || !isAuthorizedAdmin(user)) return null;
+    return user;
+  } catch {
+    return null;
+  }
+}
+
+/** Server-side check: is the current request from an authorized admin? */
 export async function isAdmin(): Promise<boolean> {
-  let secret: string | undefined;
-  try {
-    secret = process.env.ADMIN_SESSION_SECRET;
-  } catch {
-    return false;
-  }
-  if (!secret) return false;
-  const cookieStore = await cookies();
-  const c = cookieStore.get(COOKIE_NAME);
-  if (!c?.value) return false;
-  let expected: string;
-  try {
-    expected = sign(TOKEN);
-  } catch {
-    return false;
-  }
-  try {
-    const a = Buffer.from(c.value, "utf8");
-    const b = Buffer.from(expected, "utf8");
-    if (a.length !== b.length) return false;
-    return timingSafeEqual(a, b);
-  } catch {
-    return false;
-  }
-}
-
-export async function setAdminCookie(): Promise<void> {
-  const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, sign(TOKEN), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 12, // 12시간
-  });
-}
-
-export async function clearAdminCookie(): Promise<void> {
-  const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_NAME);
-}
-
-/** Verify the user-typed password against env. Constant-time.
- *  Trims env value to guard against accidental whitespace in deploy UIs. */
-export function verifyAdminPassword(input: string): boolean {
-  const pass = process.env.ADMIN_PASSWORD?.trim();
-  if (!pass) return false;
-  const a = Buffer.from(input, "utf8");
-  const b = Buffer.from(pass, "utf8");
-  if (a.length !== b.length) return false;
-  try {
-    return timingSafeEqual(a, b);
-  } catch {
-    return false;
-  }
+  return (await getAdminUser()) !== null;
 }
