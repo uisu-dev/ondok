@@ -52,7 +52,6 @@ export function WorksheetSolver({
   const [reveal, setReveal] = useState<Record<number, boolean>>({});
   const [fontSize, setFontSize] = useState<FontSize>("md");
   const [teacherMode, setTeacherMode] = useState(false); // 교사용 인쇄 시 일시적으로 true
-  const [showSampleAnswer, setShowSampleAnswer] = useState(false);
 
   useEffect(() => {
     try {
@@ -93,28 +92,11 @@ export function WorksheetSolver({
     [sagoStats]
   );
 
-  const hasOxQuestions = worksheet.questions.some(
-    (q) => q.type === "true_false"
-  );
-  const hasModelAnswer = !!worksheet.sampleAnswer?.trim();
-  const hasRevealableContent = hasOxQuestions || hasModelAnswer;
 
   const youtubeId = useMemo(
     () => extractYouTubeId(worksheet.youtubeUrl ?? null),
     [worksheet.youtubeUrl]
   );
-
-  // 모든 문항에 답이 입력됐는지
-  const totalQuestions = worksheet.questions.length;
-  const answeredCount = useMemo(() => {
-    let n = 0;
-    worksheet.questions.forEach((_, idx) => {
-      const v = answers[idx];
-      if (v && v.trim()) n++;
-    });
-    return n;
-  }, [answers, worksheet.questions]);
-  const allAnswered = totalQuestions > 0 && answeredCount === totalQuestions;
 
   /**
    * 인쇄 시:
@@ -309,61 +291,9 @@ export function WorksheetSolver({
             revealed={!!reveal[idx]}
             onToggleReveal={() => toggleReveal(idx)}
             teacherMode={teacherMode}
-            globalReveal={showSampleAnswer}
           />
         ))}
       </div>
-
-      {hasRevealableContent && (
-        <Card
-          as="section"
-          className="px-6 py-5 space-y-2 print:shadow-none print:rounded-none print:border print:border-fg-strong print:break-inside-avoid"
-        >
-          <p className="text-xs font-bold text-accent-600 print:text-fg-strong">
-            {hasModelAnswer ? "모범 답안" : "정답 확인"}
-          </p>
-          {teacherMode || showSampleAnswer ? (
-            <>
-              {hasModelAnswer && (
-                <div
-                  className="text-sm leading-relaxed whitespace-pre-wrap"
-                  style={{ color: "#000" }}
-                >
-                  {worksheet.sampleAnswer}
-                </div>
-              )}
-              {hasOxQuestions && (
-                <p className="text-xs text-fg-muted print:hidden">
-                  ↑ 위 OX 문항에서 정답이 강조 표시됐어요.
-                </p>
-              )}
-            </>
-          ) : allAnswered ? (
-            <div className="print:hidden">
-              <p className="text-sm text-fg-muted mb-2">
-                모든 문항에 답을 입력했어요. 정답을 확인해 보세요.
-              </p>
-              <button
-                onClick={() => setShowSampleAnswer(true)}
-                className="text-sm font-semibold px-3 py-1.5 rounded-button bg-accent-500 text-fg-inverse hover:bg-accent-600"
-              >
-                🔓 {hasModelAnswer ? "모범 답안 보기" : "정답 확인"}
-              </button>
-            </div>
-          ) : (
-            <div className="print:hidden">
-              <p className="text-sm text-fg-muted">
-                🔒 {hasModelAnswer ? "모범 답안" : "정답"}은 모든 문제를 풀고
-                나면 공개돼요. (
-                <strong className="text-fg-strong">
-                  {answeredCount} / {totalQuestions}
-                </strong>{" "}
-                완료)
-              </p>
-            </div>
-          )}
-        </Card>
-      )}
 
       {youtubeId && (
         <Card
@@ -399,7 +329,6 @@ function QuestionCard({
   revealed,
   onToggleReveal,
   teacherMode,
-  globalReveal,
 }: {
   index: number;
   question: Question;
@@ -408,12 +337,11 @@ function QuestionCard({
   revealed: boolean;
   onToggleReveal: () => void;
   teacherMode: boolean;
-  globalReveal: boolean;
 }) {
-  // 교사용 인쇄 모드 또는 활동지 전체 정답 공개 시 정답/예시답안을 자동 노출.
+  // 교사용 인쇄 모드에서만 정답·예시답안을 자동 노출.
   const showAnswer = revealed || teacherMode;
-  // OX 는 개별 토글 없이 globalReveal/teacherMode 로만 노출
-  const showOxAnswer = teacherMode || globalReveal;
+  // OX 는 개별 토글이 없어, 교사용 인쇄 모드에서만 정답 강조됨.
+  const showOxAnswer = teacherMode;
   return (
     <Card
       as="article"
