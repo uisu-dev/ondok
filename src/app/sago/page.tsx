@@ -40,6 +40,47 @@ const GRADE_INFO: Record<Grade, { label: string; subtitle: string; description: 
   },
 };
 
+function csvCell(value: string): string {
+  const s = String(value).replace(/"/g, '""');
+  return /[",\n\r]/.test(s) ? `"${s}"` : s;
+}
+
+function downloadCsv(
+  words: WordEntry[],
+  defs: Record<string, Record<string, string>>,
+  filename = "사고도구어_표준국어대사전_뜻풀이.csv"
+) {
+  const header = ["등급", "단어", "동음이의번호", "표제어", "뜻 풀이"];
+  const lines = [header.map(csvCell).join(",")];
+  for (const w of words) {
+    const def = (defs[String(w.grade)] ?? {})[w.raw] ?? "";
+    lines.push(
+      [
+        `${w.grade}급`,
+        w.word,
+        w.suffix !== null ? String(w.suffix) : "",
+        w.raw,
+        def,
+      ]
+        .map(csvCell)
+        .join(",")
+    );
+  }
+  // UTF-8 BOM so Excel reads the Korean text without 깨짐
+  const BOM = "﻿";
+  const blob = new Blob([BOM + lines.join("\r\n")], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 export default function SagoPage() {
   const [grade, setGrade] = useState<Grade>(1);
   const [query, setQuery] = useState("");
@@ -99,6 +140,25 @@ export default function SagoPage() {
             충청남도교육청은 초·중·고 교과서 361권의 어휘를 빅데이터로 분석해
             사고도구어 1,387개를 추출하고, 학년 발달 단계에 따라 4개 등급으로
             나누었어요. 등급 탭을 눌러 단어를 살펴보세요.
+          </p>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => downloadCsv(allWords, definitionsData.definitions as Record<string, Record<string, string>>)}
+              className="text-xs font-semibold px-3 py-1.5 rounded-button bg-accent-50 text-accent-700 hover:bg-accent-100"
+            >
+              📥 전체 단어 목록 다운로드 (CSV · 1,384개)
+            </button>
+            <button
+              type="button"
+              onClick={() => downloadCsv(wordsOfGrade, definitionsData.definitions as Record<string, Record<string, string>>, `사고도구어_${grade}급_뜻풀이.csv`)}
+              className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
+            >
+              📥 {grade}급만 다운로드 ({wordsOfGrade.length}개)
+            </button>
+          </div>
+          <p className="text-xs text-fg-subtle">
+            Excel·번호스·구글 스프레드시트에서 바로 열어볼 수 있어요.
           </p>
         </Card>
 
