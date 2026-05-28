@@ -52,6 +52,7 @@ export function WorksheetSolver({
   const [reveal, setReveal] = useState<Record<number, boolean>>({});
   const [fontSize, setFontSize] = useState<FontSize>("md");
   const [teacherMode, setTeacherMode] = useState(false); // 교사용 인쇄 시 일시적으로 true
+  const [showSagoModal, setShowSagoModal] = useState(false);
 
   useEffect(() => {
     try {
@@ -61,6 +62,21 @@ export function WorksheetSolver({
       /* ignore */
     }
   }, []);
+
+  // 사고도구어 모달: ESC 로 닫기 + 배경 스크롤 잠금
+  useEffect(() => {
+    if (!showSagoModal) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowSagoModal(false);
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [showSagoModal]);
 
   function changeFontSize(s: FontSize) {
     setFontSize(s);
@@ -141,9 +157,15 @@ export function WorksheetSolver({
         )}
         <div className="flex flex-wrap items-center gap-2">
           {sagoStats && sagoStats.total > 0 && (
-            <span className="text-xs font-semibold text-accent-700 bg-accent-50 inline-block px-2.5 py-1 rounded-chip">
+            <button
+              type="button"
+              onClick={() => setShowSagoModal(true)}
+              className="text-xs font-semibold text-accent-700 bg-accent-50 px-2.5 py-1 rounded-chip hover:bg-accent-100 transition-colors print:cursor-default print:hover:bg-accent-50"
+              aria-label="이 지문에 사용된 사고도구어 자세히 보기"
+            >
               📊 {formatSagoStatsLine(sagoStats)}
-            </span>
+              <span className="ml-1 text-accent-600 print:hidden">▸</span>
+            </button>
           )}
           {difficulty && (
             <span
@@ -317,6 +339,75 @@ export function WorksheetSolver({
       <p className="text-xs text-fg-subtle text-center print:hidden">
         ⌨️ 작성한 답은 페이지를 떠나면 사라져요. 인쇄해서 종이로 활용하셔도 좋아요.
       </p>
+
+      {showSagoModal && sagoStats && (
+        <div
+          className="fixed inset-0 z-50 bg-fg-strong/50 flex items-end sm:items-center justify-center p-0 sm:p-4 print:hidden"
+          onClick={() => setShowSagoModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sago-modal-title"
+        >
+          <div
+            className="bg-surface rounded-t-card sm:rounded-card shadow-card-hover w-full sm:max-w-md max-h-[85vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+              <div>
+                <p
+                  id="sago-modal-title"
+                  className="text-base font-bold text-fg-strong"
+                >
+                  이 지문에 쓰인 사고도구어
+                </p>
+                <p className="text-xs text-fg-muted mt-0.5">
+                  {formatSagoStatsLine(sagoStats)}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSagoModal(false)}
+                aria-label="닫기"
+                className="shrink-0 w-9 h-9 rounded-button hover:bg-surface-muted text-fg-muted text-lg leading-none"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+              {([1, 2, 3, 4] as const).map((g) => {
+                const words = sagoStats.matches.filter((m) => m.grade === g);
+                if (words.length === 0) return null;
+                return (
+                  <section key={g}>
+                    <p className="text-xs font-bold text-accent-600 mb-2">
+                      {g}급 · {words.length}개
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {words.map((m, i) => (
+                        <span
+                          key={i}
+                          className="text-sm bg-surface-muted text-fg-strong px-2.5 py-1 rounded-chip"
+                          title={m.count > 1 ? `${m.count}회 등장` : "1회 등장"}
+                        >
+                          {m.word}
+                          {m.count > 1 && (
+                            <span className="ml-1 text-xs text-fg-muted font-semibold">
+                              ×{m.count}
+                            </span>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+            <div className="px-5 py-3 border-t border-border text-xs text-fg-subtle">
+              표제어 기준 substring 매칭 결과예요. ‘×N’은 본문 내 등장 횟수.
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
