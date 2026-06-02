@@ -48,7 +48,7 @@ function csvCell(value: string): string {
 function downloadCsv(
   words: WordEntry[],
   defs: Record<string, Record<string, string>>,
-  filename = "사고도구어_표준국어대사전_뜻풀이.csv"
+  filename = "사고도구어_기초사전_뜻풀이.csv"
 ) {
   const header = ["등급", "단어", "동음이의번호", "표제어", "뜻 풀이"];
   const lines = [header.map(csvCell).join(",")];
@@ -151,7 +151,7 @@ export default function SagoPage() {
             </button>
             <button
               type="button"
-              onClick={() => downloadCsv(wordsOfGrade, definitionsData.definitions as Record<string, Record<string, string>>, `사고도구어_${grade}급_뜻풀이.csv`)}
+              onClick={() => downloadCsv(wordsOfGrade, definitionsData.definitions as Record<string, Record<string, string>>, `사고도구어_${grade}급_기초사전_뜻풀이.csv`)}
               className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
             >
               📥 {grade}급만 다운로드 ({wordsOfGrade.length}개)
@@ -228,7 +228,7 @@ export default function SagoPage() {
           ) : (
             filtered.map((w) => {
               const def = definitions[w.raw] ?? "";
-              const dictUrl = `https://stdict.korean.go.kr/search/searchResult.do?pageSize=10&searchKeyword=${encodeURIComponent(w.word)}`;
+              const krdictUrl = `https://krdict.korean.go.kr/kor/dicSearch/search?nation=kor&nationCode=6&ParaWordNo=&mainSearchWord=${encodeURIComponent(w.word)}`;
               return (
                 <Card
                   key={w.raw}
@@ -257,12 +257,12 @@ export default function SagoPage() {
                   )}
                   <div className="pt-0.5">
                     <a
-                      href={dictUrl}
+                      href={krdictUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs text-fg-subtle hover:text-accent-600 inline-flex items-center gap-0.5"
                     >
-                      표준국어대사전에서 모든 뜻 보기 →
+                      한국어 기초사전에서 모든 뜻 보기 →
                     </a>
                   </div>
                 </Card>
@@ -277,14 +277,14 @@ export default function SagoPage() {
           <br />
           뜻 출처:{" "}
           <a
-            href="https://stdict.korean.go.kr"
+            href="https://krdict.korean.go.kr"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-fg-muted"
           >
-            국립국어원 표준국어대사전
+            국립국어원 한국어 기초사전
           </a>
-          {" "}(Open API)
+          {" "}— 기초사전 미수록 단어는 표준국어대사전 풀이로 보완
         </p>
 
         <OnthinkingBanner />
