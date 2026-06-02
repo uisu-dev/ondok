@@ -15,6 +15,7 @@ import {
 import {
   analyzeSago,
   difficultyClass,
+  difficultyLabel,
   difficultyOf,
   formatSagoStatsLine,
 } from "@/lib/sago-analyze";
@@ -171,7 +172,7 @@ export function WorksheetSolver({
             <span
               className={`text-xs font-bold px-2.5 py-1 rounded-chip ${difficultyClass(difficulty)}`}
             >
-              난이도 {difficulty}
+              난이도 {difficultyLabel(difficulty)}
             </span>
           )}
         </div>

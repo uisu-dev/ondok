@@ -73,31 +73,59 @@ export function formatSagoStatsLine(stats: SagoStats): string {
   return `사고도구어 ${stats.total}개 · 1급 ${g[1]} · 2급 ${g[2]} · 3급 ${g[3]} · 4급 ${g[4]}`;
 }
 
-export type Difficulty = "하" | "중" | "상";
+export type SchoolLevel = "초등" | "중등" | "고등";
+export type Rank = "하" | "중" | "상";
+
+export interface Difficulty {
+  level: SchoolLevel;
+  rank: Rank;
+}
 
 /**
- * 사고도구어 분포로 활동지 난이도를 어림셈.
- * 가중평균 등급 = (1*g1 + 2*g2 + 3*g3 + 4*g4) / total
- *   < 2.0  → 하  (1·2급이 압도적)
- *   < 2.8  → 중  (중학 수준 어휘가 다수)
- *   ≥ 2.8  → 상  (3·4급 비중 큼)
+ * 사고도구어 분포로 학교급(초·중·고) × 단계(상·중·하) 9단계 난이도를 매김.
+ *
+ * 가중평균 등급 = (1·g1 + 2·g2 + 3·g3 + 4·g4) / total
+ *   사고도구어 등급별 발달 대응 (충남교육청 기준):
+ *     1급 → 초등 저학년 (1~4학년)
+ *     2급 → 초등 고학년 (5~6학년)
+ *     3급 → 중학교
+ *     4급 → 고등학교
+ *
+ * 경계는 인접 학교급 사이를 자연스럽게 이어지도록 설정.
  */
 export function difficultyOf(stats: SagoStats): Difficulty | null {
   if (stats.total === 0) return null;
   const g = stats.byGrade;
-  const avg =
-    (g[1] * 1 + g[2] * 2 + g[3] * 3 + g[4] * 4) / stats.total;
-  if (avg >= 2.8) return "상";
-  if (avg >= 2.0) return "중";
-  return "하";
+  const avg = (g[1] * 1 + g[2] * 2 + g[3] * 3 + g[4] * 4) / stats.total;
+
+  // 초등 영역 (1·2급 위주)
+  if (avg <= 1.5) return { level: "초등", rank: "하" };
+  if (avg <= 1.9) return { level: "초등", rank: "중" };
+  if (avg <= 2.3) return { level: "초등", rank: "상" };
+  // 중등 영역 (3급 위주)
+  if (avg <= 2.6) return { level: "중등", rank: "하" };
+  if (avg <= 2.9) return { level: "중등", rank: "중" };
+  if (avg <= 3.2) return { level: "중등", rank: "상" };
+  // 고등 영역 (4급 위주)
+  if (avg <= 3.5) return { level: "고등", rank: "하" };
+  if (avg <= 3.8) return { level: "고등", rank: "중" };
+  return { level: "고등", rank: "상" };
 }
 
-/** 난이도 chip 에 쓰일 색 클래스 (학습 안내용, 위험 표시 아님). */
+/** "초등 하" 형식의 한 줄 라벨. */
+export function difficultyLabel(diff: Difficulty): string {
+  return `${diff.level} ${diff.rank}`;
+}
+
+/** 난이도 chip 색 — 학교급별로 색이 다르고, 단계는 그대로 표기. */
 export function difficultyClass(diff: Difficulty): string {
-  // 하 = 초록, 중 = 주황, 상 = 보라 (책 분류 색에서 차용)
-  return diff === "하"
-    ? "bg-[color-mix(in_oklab,var(--color-cat-sci)_14%,white)] text-[var(--color-cat-sci)]"
-    : diff === "중"
-      ? "bg-[color-mix(in_oklab,var(--color-cat-soc)_16%,white)] text-[var(--color-cat-soc)]"
-      : "bg-[color-mix(in_oklab,var(--color-cat-lit)_14%,white)] text-[var(--color-cat-lit)]";
+  // 초등 = 초록, 중등 = 주황, 고등 = 보라 (책 분류 색에서 차용)
+  switch (diff.level) {
+    case "초등":
+      return "bg-[color-mix(in_oklab,var(--color-cat-sci)_14%,white)] text-[var(--color-cat-sci)]";
+    case "중등":
+      return "bg-[color-mix(in_oklab,var(--color-cat-soc)_16%,white)] text-[var(--color-cat-soc)]";
+    case "고등":
+      return "bg-[color-mix(in_oklab,var(--color-cat-lit)_14%,white)] text-[var(--color-cat-lit)]";
+  }
 }

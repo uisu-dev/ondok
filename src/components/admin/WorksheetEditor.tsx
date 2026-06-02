@@ -8,6 +8,7 @@ import { ImageUpload } from "@/components/admin/ImageUpload";
 import {
   analyzeSago,
   difficultyClass,
+  difficultyLabel,
   difficultyOf,
   formatSagoStatsLine,
 } from "@/lib/sago-analyze";
@@ -439,7 +440,7 @@ export function WorksheetEditor({
                       <span
                         className={`text-xs font-bold px-2 py-0.5 rounded-chip ${difficultyClass(d)}`}
                       >
-                        난이도 {d}
+                        난이도 {difficultyLabel(d)}
                       </span>
                     ) : null;
                   })()}

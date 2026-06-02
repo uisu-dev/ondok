@@ -10,6 +10,7 @@ import { listPublishedWorksheets } from "@/data/worksheets";
 import {
   analyzeSago,
   difficultyClass,
+  difficultyLabel,
   difficultyOf,
   formatSagoStatsLine,
 } from "@/lib/sago-analyze";
@@ -141,7 +142,7 @@ export default async function WorksheetListPage({
                           <span
                             className={`text-xs font-bold px-2 py-0.5 rounded-chip ${difficultyClass(diff)}`}
                           >
-                            난이도 {diff}
+                            난이도 {difficultyLabel(diff)}
                           </span>
                         )}
                       </div>
