@@ -86,29 +86,45 @@ export default function SagoPage() {
   const [query, setQuery] = useState("");
 
   const allWords = sagoData.words as WordEntry[];
-  const definitions = (
-    definitionsData.definitions as Record<string, Record<string, string>>
-  )[String(grade)] ?? {};
+  const allDefs = definitionsData.definitions as Record<
+    string,
+    Record<string, string>
+  >;
+  const definitionsCurrent = allDefs[String(grade)] ?? {};
+  const getDefinitionFor = (w: WordEntry) =>
+    allDefs[String(w.grade)]?.[w.raw] ?? "";
 
   const wordsOfGrade = useMemo(
     () => allWords.filter((w) => w.grade === grade),
     [allWords, grade]
   );
 
+  const trimmedQuery = query.trim();
+  const isSearching = trimmedQuery.length > 0;
+
+  /** 검색 모드일 때는 1~4급 전체에서 검색. 비검색 모드는 현재 등급만 표시. */
   const filtered = useMemo(() => {
-    const q = query.trim();
-    if (!q) return wordsOfGrade;
-    return wordsOfGrade.filter(
+    if (!isSearching) return wordsOfGrade;
+    return allWords.filter(
       (w) =>
-        w.word.includes(q) ||
-        (definitions[w.raw] ?? "").includes(q)
+        w.word.includes(trimmedQuery) ||
+        getDefinitionFor(w).includes(trimmedQuery)
     );
-  }, [wordsOfGrade, query, definitions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allWords, wordsOfGrade, isSearching, trimmedQuery]);
+
+  /** 검색 결과의 등급별 분포 */
+  const filteredByGrade = useMemo(() => {
+    const c: Record<1 | 2 | 3 | 4, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
+    for (const w of filtered) c[w.grade as 1 | 2 | 3 | 4]++;
+    return c;
+  }, [filtered]);
 
   const definedCount = useMemo(
     () =>
-      wordsOfGrade.filter((w) => (definitions[w.raw] ?? "").trim()).length,
-    [wordsOfGrade, definitions]
+      wordsOfGrade.filter((w) => (definitionsCurrent[w.raw] ?? "").trim())
+        .length,
+    [wordsOfGrade, definitionsCurrent]
   );
 
   const info = GRADE_INFO[grade];
@@ -139,7 +155,8 @@ export default function SagoPage() {
           <p className="text-sm text-fg-muted leading-relaxed">
             충청남도교육청은 초·중·고 교과서 361권의 어휘를 빅데이터로 분석해
             사고도구어 1,387개를 추출하고, 학년 발달 단계에 따라 4개 등급으로
-            나누었어요. 등급 탭을 눌러 단어를 살펴보세요.
+            나누었어요. 아래 검색창에서 1~4급을 한 번에 찾거나, 등급 탭으로
+            살펴볼 수 있어요.
           </p>
           <div className="flex flex-wrap gap-2 pt-1">
             <button
@@ -162,58 +179,69 @@ export default function SagoPage() {
           </p>
         </Card>
 
-        {/* Grade tabs */}
-        <div className="grid grid-cols-4 gap-2">
-          {([1, 2, 3, 4] as Grade[]).map((g) => {
-            const active = g === grade;
-            return (
-              <button
-                key={g}
-                onClick={() => setGrade(g)}
-                className={`min-h-[56px] rounded-button border-2 font-bold transition-colors ${
-                  active
-                    ? "border-accent-500 bg-accent-50 text-accent-700"
-                    : "border-border bg-surface text-fg-strong hover:border-accent-300"
-                }`}
-              >
-                <div className="text-base">{g}급</div>
-                <div className="text-[10px] font-medium text-fg-muted">
-                  {sagoData.totals[String(g) as "1" | "2" | "3" | "4"]}개
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Grade meta */}
-        <Card as="section" className="px-6 py-5 space-y-1">
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-lg font-bold text-fg-strong">{info.label}</h2>
-            <span className="text-sm text-fg-muted">· {info.subtitle}</span>
-          </div>
-          <p className="text-sm text-fg-muted leading-relaxed">
-            {info.description}
-          </p>
-          {definedCount < wordsOfGrade.length && (
-            <p className="text-xs text-fg-subtle pt-2">
-              뜻 정리 진행도: {definedCount} / {wordsOfGrade.length}
-            </p>
-          )}
-        </Card>
-
-        {/* Search */}
-        <div>
+        {/* Search — 1~4급 전체에서 찾기 */}
+        <div className="space-y-2">
           <label className="block">
             <span className="sr-only">단어 검색</span>
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="단어로 검색 (예: 비교, 분석)"
+              placeholder="1~4급 단어·뜻 한 번에 검색 (예: 비교, 분석)"
               className="w-full h-12 px-4 rounded-button bg-surface border border-border text-fg-strong placeholder:text-fg-subtle focus:border-accent-500 focus:outline-none"
             />
           </label>
+          {isSearching && (
+            <p className="text-xs text-fg-muted px-1">
+              ‘{trimmedQuery}’ 결과 <strong className="text-fg-strong">{filtered.length}개</strong>
+              {" · "}
+              1급 {filteredByGrade[1]} · 2급 {filteredByGrade[2]} · 3급{" "}
+              {filteredByGrade[3]} · 4급 {filteredByGrade[4]}
+            </p>
+          )}
         </div>
+
+        {/* Grade tabs / meta — 검색 안 할 때만 노출 */}
+        {!isSearching && (
+          <>
+            <div className="grid grid-cols-4 gap-2">
+              {([1, 2, 3, 4] as Grade[]).map((g) => {
+                const active = g === grade;
+                return (
+                  <button
+                    key={g}
+                    onClick={() => setGrade(g)}
+                    className={`min-h-[56px] rounded-button border-2 font-bold transition-colors ${
+                      active
+                        ? "border-accent-500 bg-accent-50 text-accent-700"
+                        : "border-border bg-surface text-fg-strong hover:border-accent-300"
+                    }`}
+                  >
+                    <div className="text-base">{g}급</div>
+                    <div className="text-[10px] font-medium text-fg-muted">
+                      {sagoData.totals[String(g) as "1" | "2" | "3" | "4"]}개
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <Card as="section" className="px-6 py-5 space-y-1">
+              <div className="flex items-baseline gap-2">
+                <h2 className="text-lg font-bold text-fg-strong">{info.label}</h2>
+                <span className="text-sm text-fg-muted">· {info.subtitle}</span>
+              </div>
+              <p className="text-sm text-fg-muted leading-relaxed">
+                {info.description}
+              </p>
+              {definedCount < wordsOfGrade.length && (
+                <p className="text-xs text-fg-subtle pt-2">
+                  뜻 정리 진행도: {definedCount} / {wordsOfGrade.length}
+                </p>
+              )}
+            </Card>
+          </>
+        )}
 
         {/* Word list */}
         <div className="space-y-2">
@@ -227,11 +255,12 @@ export default function SagoPage() {
             </Card>
           ) : (
             filtered.map((w) => {
-              const def = definitions[w.raw] ?? "";
+              const def = getDefinitionFor(w);
+              const wordGradeInfo = GRADE_INFO[w.grade as Grade];
               const krdictUrl = `https://krdict.korean.go.kr/kor/dicSearch/search?nation=kor&nationCode=6&ParaWordNo=&mainSearchWord=${encodeURIComponent(w.word)}`;
               return (
                 <Card
-                  key={w.raw}
+                  key={`${w.grade}-${w.raw}`}
                   as="article"
                   className="px-5 py-4 space-y-1.5"
                 >
@@ -245,7 +274,7 @@ export default function SagoPage() {
                       </span>
                     )}
                     <Chip tone="accent" className="ml-auto">
-                      {info.label}
+                      {wordGradeInfo.label}
                     </Chip>
                   </div>
                   {def ? (
