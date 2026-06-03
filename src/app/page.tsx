@@ -44,6 +44,13 @@ const LITERACY_PATHS: PathCard[] = [
     hint: "1급 43 · 2급 293 · 3급 585 · 4급 466",
   },
   {
+    href: "/sago/learn",
+    emoji: "🎯",
+    title: "사고도구어 학습",
+    subtitle: "뜻을 보고 단어를 맞히는 랜덤 객관식",
+    hint: "아는 단어 체크 · 학습 진행도 추적",
+  },
+  {
     href: "/worksheet",
     emoji: "✏️",
     title: "사고도구어 활동지",

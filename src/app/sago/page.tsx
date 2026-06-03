@@ -159,19 +159,25 @@ export default function SagoPage() {
             살펴볼 수 있어요.
           </p>
           <div className="flex flex-wrap gap-2 pt-1">
+            <Link
+              href="/sago/learn"
+              className="text-xs font-semibold px-3 py-1.5 rounded-button bg-accent-500 text-fg-inverse hover:bg-accent-600"
+            >
+              🎯 학습 시작하기 (랜덤 객관식)
+            </Link>
             <button
               type="button"
               onClick={() => downloadCsv(allWords, definitionsData.definitions as Record<string, Record<string, string>>)}
               className="text-xs font-semibold px-3 py-1.5 rounded-button bg-accent-50 text-accent-700 hover:bg-accent-100"
             >
-              📥 전체 단어 목록 다운로드 (CSV · 1,384개)
+              📥 전체 다운로드 (CSV · 1,384개)
             </button>
             <button
               type="button"
               onClick={() => downloadCsv(wordsOfGrade, definitionsData.definitions as Record<string, Record<string, string>>, `사고도구어_${grade}급_기초사전_뜻풀이.csv`)}
               className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
             >
-              📥 {grade}급만 다운로드 ({wordsOfGrade.length}개)
+              📥 {grade}급만 ({wordsOfGrade.length}개)
             </button>
           </div>
           <p className="text-xs text-fg-subtle">
