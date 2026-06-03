@@ -93,12 +93,6 @@ export default function WorksheetHub() {
             </Link>
           ))}
         </div>
-
-        <p className="text-xs text-fg-subtle text-center pt-2 leading-relaxed">
-          저작권 안전선: 추천도서·모의고사 활동지는 본문을 사이트에 옮기지
-          않고, 학생이 외부에서 본문을 보고 와서 우리가 만든 활동만 풀어요.
-          자체 지문은 우리가 직접 씁니다.
-        </p>
       </div>
     </main>
   );
