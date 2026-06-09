@@ -10,7 +10,9 @@ import {
   difficultyClass,
   difficultyLabel,
   difficultyOf,
+  DIFFICULTY_OPTIONS,
   formatSagoStatsLine,
+  parseDifficulty,
 } from "@/lib/sago-analyze";
 import { extractYouTubeId } from "@/lib/youtube";
 import {
@@ -56,6 +58,7 @@ export interface WorksheetEditorInitial {
   passageImageUrl?: string | null;
   youtubeUrl?: string | null;
   sampleAnswer?: string | null;
+  difficultyOverride?: string | null;
   questions: Question[];
 }
 
@@ -113,6 +116,9 @@ export function WorksheetEditor({
     initial?.passageImageUrl ?? undefined
   );
   const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? "");
+  const [difficultyOverride, setDifficultyOverride] = useState<string | null>(
+    initial?.difficultyOverride ?? null
+  );
   const [questions, setQuestions] = useState<DraftQ[]>(
     initial
       ? initial.questions.map((q) => ({
@@ -257,6 +263,7 @@ export function WorksheetEditor({
         youtubeUrl: yt || undefined,
         // 기존 활동지의 worksheet-level sampleAnswer 는 그대로 유지 (수정 시 손실 방지)
         sampleAnswer: initial?.sampleAnswer ?? undefined,
+        difficultyOverride: difficultyOverride,
         questions: questions.map((q, i) => ({
           position: i,
           type: q.type,
@@ -432,15 +439,16 @@ export function WorksheetEditor({
               {passage.trim() && (
                 <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                   <span className="text-xs font-semibold text-accent-600">
-                    📊 {formatSagoStatsLine(sagoStats)}
+                    📊 {formatSagoStatsLine(sagoStats)} · 글자수{" "}
+                    {passage.replace(/\s+/g, "").length}
                   </span>
                   {(() => {
-                    const d = difficultyOf(sagoStats);
+                    const d = difficultyOf(sagoStats, passage);
                     return d ? (
                       <span
                         className={`text-xs font-bold px-2 py-0.5 rounded-chip ${difficultyClass(d)}`}
                       >
-                        난이도 {difficultyLabel(d)}
+                        자동 산출: {difficultyLabel(d)}
                       </span>
                     ) : null;
                   })()}
@@ -455,6 +463,41 @@ export function WorksheetEditor({
             />
           </>
         )}
+
+        <div>
+          <label className="block text-xs font-bold text-fg-strong mb-1">
+            난이도 수동 지정 (선택)
+          </label>
+          <select
+            value={difficultyOverride ?? ""}
+            onChange={(e) =>
+              setDifficultyOverride(e.target.value ? e.target.value : null)
+            }
+            className="w-full h-11 px-3 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none text-sm"
+          >
+            <option value="">자동 산출 사용</option>
+            {DIFFICULTY_OPTIONS.map((d) => {
+              const label = `${d.level} ${d.rank}`;
+              return (
+                <option key={label} value={label}>
+                  {label}
+                </option>
+              );
+            })}
+          </select>
+          <p className="text-xs text-fg-subtle mt-1">
+            ‘자동 산출’은 지문의 사고도구어 등급 비중·글자 수·표본 크기로 9단계
+            중 하나를 자동으로 매겨요. 어색하다고 느껴지면 직접 지정할 수 있어요.
+            {difficultyOverride && (
+              <>
+                {" "}
+                현재 수동 지정값(
+                <strong className="text-fg-strong">{difficultyOverride}</strong>
+                )이 자동 산출 대신 학생/목록에 표시됩니다.
+              </>
+            )}
+          </p>
+        </div>
 
         <div>
           <label className="block text-xs font-bold text-fg-strong mb-1">

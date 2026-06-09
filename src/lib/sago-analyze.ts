@@ -81,36 +81,109 @@ export interface Difficulty {
   rank: Rank;
 }
 
-/**
- * 사고도구어 분포로 학교급(초·중·고) × 단계(상·중·하) 9단계 난이도를 매김.
- *
- * 가중평균 등급 = (1·g1 + 2·g2 + 3·g3 + 4·g4) / total
- *   사고도구어 등급별 발달 대응 (충남교육청 기준):
- *     1급 → 초등 저학년 (1~4학년)
- *     2급 → 초등 고학년 (5~6학년)
- *     3급 → 중학교
- *     4급 → 고등학교
- *
- * 경계는 인접 학교급 사이를 자연스럽게 이어지도록 설정.
- */
-export function difficultyOf(stats: SagoStats): Difficulty | null {
-  if (stats.total === 0) return null;
-  const g = stats.byGrade;
-  const avg = (g[1] * 1 + g[2] * 2 + g[3] * 3 + g[4] * 4) / stats.total;
+const LEVEL_ORDER: Record<SchoolLevel, number> = {
+  초등: 1,
+  중등: 2,
+  고등: 3,
+};
+const ORDER_TO_LEVEL: Record<1 | 2 | 3, SchoolLevel> = {
+  1: "초등",
+  2: "중등",
+  3: "고등",
+};
 
-  // 초등 영역 (1·2급 위주)
-  if (avg <= 1.5) return { level: "초등", rank: "하" };
-  if (avg <= 1.9) return { level: "초등", rank: "중" };
-  if (avg <= 2.3) return { level: "초등", rank: "상" };
-  // 중등 영역 (3급 위주)
-  if (avg <= 2.6) return { level: "중등", rank: "하" };
-  if (avg <= 2.9) return { level: "중등", rank: "중" };
-  if (avg <= 3.2) return { level: "중등", rank: "상" };
-  // 고등 영역 (4급 위주)
-  if (avg <= 3.5) return { level: "고등", rank: "하" };
-  if (avg <= 3.8) return { level: "고등", rank: "중" };
-  return { level: "고등", rank: "상" };
+/**
+ * 학교급(초·중·고) × 단계(상·중·하) 9단계 난이도 산출.
+ *
+ * 세 가지 시그널을 결합:
+ *   1) 가중평균 등급 (사고도구어 등급별 비중)
+ *   2) 지문 분량 (글자 수)  — 짧은 글은 학교급 상한이 됨
+ *   3) 사고도구어 표본 크기 — 너무 적으면 추정이 부정확하므로 상한
+ *
+ * 짧고 단어 적은 글이 한두 개의 어려운 단어 때문에 중·고등으로 오판되는
+ * 문제를 보완. 분량·표본의 캡이 평균보다 낮으면 캡 학교급의 '상'으로 맞춤.
+ */
+export function difficultyOf(
+  stats: SagoStats,
+  passage?: string | null
+): Difficulty | null {
+  if (stats.total === 0) return null;
+
+  const g = stats.byGrade;
+  const sagoCount = stats.total;
+  const avg = (g[1] * 1 + g[2] * 2 + g[3] * 3 + g[4] * 4) / sagoCount;
+  const charCount = passage ? passage.replace(/\s+/g, "").length : 0;
+
+  // 1) 가중평균 기반 학교급 + 단계
+  let avgLevel: SchoolLevel;
+  let avgRank: Rank;
+  if (avg <= 1.5) {
+    avgLevel = "초등";
+    avgRank = "하";
+  } else if (avg <= 1.9) {
+    avgLevel = "초등";
+    avgRank = "중";
+  } else if (avg <= 2.3) {
+    avgLevel = "초등";
+    avgRank = "상";
+  } else if (avg <= 2.6) {
+    avgLevel = "중등";
+    avgRank = "하";
+  } else if (avg <= 2.9) {
+    avgLevel = "중등";
+    avgRank = "중";
+  } else if (avg <= 3.2) {
+    avgLevel = "중등";
+    avgRank = "상";
+  } else if (avg <= 3.5) {
+    avgLevel = "고등";
+    avgRank = "하";
+  } else if (avg <= 3.8) {
+    avgLevel = "고등";
+    avgRank = "중";
+  } else {
+    avgLevel = "고등";
+    avgRank = "상";
+  }
+
+  // 2) 분량 상한 — 지문 글자 수(공백 제외)에 따라 최대 학교급 제한
+  //    초등 글 = 50~150자, 중등 글 = 150~400자, 고등 글 = 400자 이상
+  //    (지문 텍스트가 없으면 상한 없음)
+  const lengthCap: SchoolLevel | null =
+    charCount === 0 ? null : charCount < 150 ? "초등" : charCount < 400 ? "중등" : "고등";
+
+  // 3) 표본 크기 상한 — 사고도구어 수가 너무 적으면 평균이 부정확
+  const sampleCap: SchoolLevel =
+    sagoCount < 3 ? "초등" : sagoCount < 8 ? "중등" : "고등";
+
+  // 두 상한 중 더 낮은 것이 실효 상한
+  const capOrder = Math.min(
+    lengthCap ? LEVEL_ORDER[lengthCap] : 3,
+    LEVEL_ORDER[sampleCap]
+  ) as 1 | 2 | 3;
+  const effectiveCap = ORDER_TO_LEVEL[capOrder];
+
+  // 평균 학교급이 상한을 넘으면 상한 학교급의 '상' 으로 표기
+  if (LEVEL_ORDER[avgLevel] > capOrder) {
+    return { level: effectiveCap, rank: "상" };
+  }
+  return { level: avgLevel, rank: avgRank };
 }
+
+/** "초등 하" 등의 문자열을 Difficulty 객체로 파싱. 잘못된 형식은 null. */
+export function parseDifficulty(s: string | null | undefined): Difficulty | null {
+  if (!s) return null;
+  const m = s.trim().match(/^(초등|중등|고등)\s+([하중상])$/);
+  if (!m) return null;
+  return { level: m[1] as SchoolLevel, rank: m[2] as Rank };
+}
+
+/** 사용 가능한 9단계 라벨 배열 (UI select 등에서 사용). */
+export const DIFFICULTY_OPTIONS: Difficulty[] = (
+  ["초등", "중등", "고등"] as SchoolLevel[]
+).flatMap((level) =>
+  (["하", "중", "상"] as Rank[]).map((rank) => ({ level, rank }))
+);
 
 /** "초등 하" 형식의 한 줄 라벨. */
 export function difficultyLabel(diff: Difficulty): string {

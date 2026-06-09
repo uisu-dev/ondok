@@ -18,6 +18,7 @@ import {
   difficultyLabel,
   difficultyOf,
   formatSagoStatsLine,
+  parseDifficulty,
 } from "@/lib/sago-analyze";
 import { buildYouTubeEmbedUrl, extractYouTubeId } from "@/lib/youtube";
 
@@ -104,10 +105,13 @@ export function WorksheetSolver({
         : null,
     [worksheet.type, worksheet.passage]
   );
-  const difficulty = useMemo(
-    () => (sagoStats ? difficultyOf(sagoStats) : null),
-    [sagoStats]
-  );
+  const difficulty = useMemo(() => {
+    // 관리자 수동 오버라이드가 있으면 우선 사용
+    const override = parseDifficulty(worksheet.difficultyOverride);
+    if (override) return override;
+    if (sagoStats) return difficultyOf(sagoStats, worksheet.passage);
+    return null;
+  }, [worksheet.difficultyOverride, worksheet.passage, sagoStats]);
 
 
   const youtubeId = useMemo(

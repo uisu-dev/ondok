@@ -35,6 +35,7 @@ export interface Worksheet {
   passageImageUrl?: string | null;
   youtubeUrl?: string | null;
   sampleAnswer?: string | null; // 활동지 전체 모범 답안 (학생은 모두 풀어야 공개)
+  difficultyOverride?: string | null; // '초등 하'/'중등 중' 등. NULL 이면 자동 산출
   published: boolean;
   createdAt: string;
   updatedAt: string;
@@ -55,6 +56,7 @@ export interface WorksheetDraft {
   passageImageUrl?: string;
   youtubeUrl?: string;
   sampleAnswer?: string;
+  difficultyOverride?: string | null;
   questions: Omit<Question, "id">[];
 }
 

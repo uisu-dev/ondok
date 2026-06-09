@@ -13,6 +13,7 @@ import {
   difficultyLabel,
   difficultyOf,
   formatSagoStatsLine,
+  parseDifficulty,
 } from "@/lib/sago-analyze";
 
 export const dynamic = "force-dynamic";
@@ -114,7 +115,9 @@ export default async function WorksheetListPage({
                 (t === "written" || t === "exam") && w.passage
                   ? analyzeSago(w.passage)
                   : null;
-              const diff = stats ? difficultyOf(stats) : null;
+              const diff =
+                parseDifficulty(w.difficultyOverride) ??
+                (stats ? difficultyOf(stats, w.passage) : null);
               return (
                 <Link
                   key={w.id}
