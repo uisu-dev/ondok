@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { isAdmin } from "@/lib/admin-auth";
+import { canAccessAdmin } from "@/lib/auth";
 import { listAllWorksheetsAdmin } from "@/data/worksheets";
 import { Card } from "@/components/ui/Card";
 import { buttonClass } from "@/components/ui/Button";
@@ -12,7 +12,14 @@ import type { Worksheet } from "@/lib/worksheet-types";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  if (!(await isAdmin())) redirect("/admin/login");
+  const access = await canAccessAdmin();
+  if (!access.ok) {
+    // 로그인은 되었는데 학생인 경우 → mypage 로
+    if (access.user && access.user.profile?.role === "student") {
+      redirect("/mypage?msg=teacher-required");
+    }
+    redirect("/admin/login");
+  }
 
   let worksheets: Worksheet[] = [];
   let envError: string | null = null;

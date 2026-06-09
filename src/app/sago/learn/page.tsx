@@ -84,19 +84,52 @@ export default function SagoLearnPage() {
   const [selected, setSelected] = useState<WordEntry | null>(null);
   const [streak, setStreak] = useState({ correct: 0, total: 0 });
   const [hydrated, setHydrated] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
 
-  // localStorage 로드 (마운트 시 1회)
+  // localStorage 로드 (즉시) → DB 가져와서 머지 (지연)
   useEffect(() => {
+    let local: Record<string, boolean> = {};
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setKnown(JSON.parse(raw));
+      if (raw) local = JSON.parse(raw);
     } catch {
       /* ignore */
     }
+    setKnown(local);
     setHydrated(true);
+
+    // DB sync (로그인된 경우)
+    (async () => {
+      try {
+        const res = await fetch("/api/sago/progress", { cache: "no-store" });
+        const json = await res.json();
+        if (!json.ok) return;
+        if (!json.signedIn) {
+          setSignedIn(false);
+          return;
+        }
+        setSignedIn(true);
+        const dbKeys: string[] = json.keys ?? [];
+        // 머지: 로컬 ∪ DB → setKnown. 로컬에만 있던 것은 다음 토글 때 자동으로 DB 로 가지 않으므로
+        // 여기서 한 번 push.
+        const merged: Record<string, boolean> = { ...local };
+        for (const k of dbKeys) merged[k] = true;
+        setKnown(merged);
+        const localOnly = Object.keys(local).filter((k) => !dbKeys.includes(k));
+        if (localOnly.length > 0) {
+          fetch("/api/sago/progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ add: localOnly }),
+          }).catch(() => {});
+        }
+      } catch {
+        /* offline / 비설정 → localStorage 만 사용 */
+      }
+    })();
   }, []);
 
-  // 변경 시 자동 저장
+  // 변경 시 localStorage 자동 저장
   useEffect(() => {
     if (!hydrated) return;
     try {
@@ -140,12 +173,20 @@ export default function SagoLearnPage() {
 
   function toggleKnown(w: WordEntry) {
     const k = keyOf(w);
+    const wasKnown = !!known[k];
     setKnown((prev) => {
       const next = { ...prev };
-      if (next[k]) delete next[k];
+      if (wasKnown) delete next[k];
       else next[k] = true;
       return next;
     });
+    if (signedIn) {
+      fetch("/api/sago/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(wasKnown ? { remove: [k] } : { add: [k] }),
+      }).catch(() => {});
+    }
   }
 
   function resetAll() {
@@ -155,6 +196,9 @@ export default function SagoLearnPage() {
       return;
     setKnown({});
     setStreak({ correct: 0, total: 0 });
+    if (signedIn) {
+      fetch("/api/sago/progress", { method: "DELETE" }).catch(() => {});
+    }
   }
 
   // 통계
@@ -379,8 +423,15 @@ export default function SagoLearnPage() {
         </div>
 
         <p className="text-xs text-fg-subtle text-center leading-relaxed">
-          ※ 학습 기록은 현재 브라우저에만 저장돼요. 회원가입 기능이 추가되면
-          계정으로 옮길 수 있어요.
+          {signedIn
+            ? "✓ 로그인된 계정에 학습 기록이 자동 저장돼요."
+            : "※ 현재 브라우저에만 저장돼요. "}
+          {!signedIn && (
+            <Link href="/login?next=/sago/learn" className="text-accent-600 font-semibold">
+              로그인
+            </Link>
+          )}
+          {!signedIn && " 하면 모든 기기에서 진도가 동기화돼요."}
         </p>
       </div>
     </main>

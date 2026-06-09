@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { isAdmin } from "@/lib/admin-auth";
+import { canAccessAdmin } from "@/lib/auth";
 import { Card } from "@/components/ui/Card";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { TYPE_LABEL, TYPE_EMOJI } from "@/lib/worksheet-types";
@@ -14,7 +14,7 @@ const DESCRIPTIONS: Record<string, string> = {
 };
 
 export default async function NewWorksheetTypePage() {
-  if (!(await isAdmin())) redirect("/admin/login");
+  if (!(await canAccessAdmin()).ok) redirect("/admin/login");
   const types = (["books", "exam", "written"] as const).map((t) => ({
     key: t,
     emoji: TYPE_EMOJI[t],

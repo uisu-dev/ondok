@@ -1,6 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { isAdmin } from "@/lib/admin-auth";
+import { canAccessAdmin } from "@/lib/auth";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { WorksheetEditor } from "@/components/admin/WorksheetEditor";
 import booksSeed from "@/data/books-seed.json";
@@ -16,7 +16,7 @@ export default async function NewWorksheetPage({
 }: {
   params: Promise<{ type: string }>;
 }) {
-  if (!(await isAdmin())) redirect("/admin/login");
+  if (!(await canAccessAdmin()).ok) redirect("/admin/login");
   const { type } = await params;
   if (!VALID.has(type as WorksheetType)) notFound();
   const t = type as WorksheetType;

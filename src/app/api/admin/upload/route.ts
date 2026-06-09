@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/admin-auth";
+import { canAccessAdmin } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
 
 export const runtime = "nodejs";
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const BUCKET = "worksheet-images";
 
 export async function POST(req: NextRequest) {
-  if (!(await isAdmin())) {
+  if (!(await canAccessAdmin()).ok) {
     return NextResponse.json(
       { ok: false, error: "관리자 권한이 필요합니다." },
       { status: 401 }

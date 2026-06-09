@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/admin-auth";
+import { canAccessAdmin } from "@/lib/auth";
 import { createWorksheetAdmin } from "@/data/worksheets";
 import type { WorksheetDraft } from "@/lib/worksheet-types";
 
 export async function POST(req: NextRequest) {
-  if (!(await isAdmin())) {
+  if (!(await canAccessAdmin()).ok) {
     return NextResponse.json(
       { ok: false, error: "관리자 권한이 필요합니다." },
       { status: 401 }

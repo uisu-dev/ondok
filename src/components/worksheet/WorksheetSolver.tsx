@@ -46,9 +46,12 @@ const STORAGE_KEY = "ondok:worksheet-fontsize";
 export function WorksheetSolver({
   worksheet,
   book,
+  canPrintTeacher = true,
 }: {
   worksheet: WorksheetWithQuestions;
   book: Book | null;
+  /** 교사용 인쇄 권한. 학생/비로그인이면 false → 버튼 숨김. */
+  canPrintTeacher?: boolean;
 }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [reveal, setReveal] = useState<Record<number, boolean>>({});
@@ -192,12 +195,14 @@ export function WorksheetSolver({
           >
             🖨 학생용 인쇄
           </button>
-          <button
-            onClick={() => runPrint("teacher")}
-            className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
-          >
-            👨‍🏫 교사용 인쇄 (정답·해설 포함)
-          </button>
+          {canPrintTeacher && (
+            <button
+              onClick={() => runPrint("teacher")}
+              className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
+            >
+              👨‍🏫 교사용 인쇄 (정답·해설 포함)
+            </button>
+          )}
         </div>
       </Card>
 

@@ -5,6 +5,7 @@ import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import type { WorksheetType } from "@/lib/worksheet-types";
 import { WorksheetSolver } from "@/components/worksheet/WorksheetSolver";
+import { canAccessAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,9 @@ export default async function WorksheetSolvePage({
       ? (booksSeed as Book[]).find((b) => b.id === ws.bookId) ?? null
       : null;
 
+  // 교사용 인쇄(정답 포함)는 교원/관리자/슈퍼관리자만.
+  const canPrintTeacher = (await canAccessAdmin()).ok;
+
   return (
     <main className="flex-1 w-full print:bg-white">
       <div className="mx-auto max-w-[760px] px-6 py-8 space-y-5 print:px-0 print:py-0 print:max-w-none">
@@ -39,7 +43,11 @@ export default async function WorksheetSolvePage({
             ← 활동지 목록
           </Link>
         </div>
-        <WorksheetSolver worksheet={ws} book={book} />
+        <WorksheetSolver
+          worksheet={ws}
+          book={book}
+          canPrintTeacher={canPrintTeacher}
+        />
       </div>
     </main>
   );

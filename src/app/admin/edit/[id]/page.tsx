@@ -1,6 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { isAdmin } from "@/lib/admin-auth";
+import { canAccessAdmin } from "@/lib/auth";
 import { getWorksheetAdmin } from "@/data/worksheets";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import {
@@ -17,7 +17,7 @@ export default async function EditWorksheetPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!(await isAdmin())) redirect("/admin/login");
+  if (!(await canAccessAdmin()).ok) redirect("/admin/login");
   const { id } = await params;
   const num = Number(id);
   if (!Number.isFinite(num)) notFound();

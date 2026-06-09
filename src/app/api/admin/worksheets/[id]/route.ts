@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/admin-auth";
+import { canAccessAdmin } from "@/lib/auth";
 import {
   deleteWorksheetAdmin,
   setWorksheetPublished,
@@ -11,7 +11,7 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await isAdmin())) {
+  if (!(await canAccessAdmin()).ok) {
     return NextResponse.json({ ok: false, error: "권한 없음" }, { status: 401 });
   }
   const { id } = await params;
@@ -32,7 +32,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await isAdmin())) {
+  if (!(await canAccessAdmin()).ok) {
     return NextResponse.json({ ok: false, error: "권한 없음" }, { status: 401 });
   }
   const { id } = await params;
@@ -62,7 +62,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await isAdmin())) {
+  if (!(await canAccessAdmin()).ok) {
     return NextResponse.json({ ok: false, error: "권한 없음" }, { status: 401 });
   }
   const { id } = await params;
