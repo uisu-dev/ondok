@@ -106,6 +106,9 @@ export async function signUp(input: {
       { onConflict: "id" }
     );
   if (upErr) {
+    // 보상 트랜잭션: profile 채우기 실패 시 방금 만든 auth.users 도 롤백.
+    // 그래야 '아이디는 점유됐는데 프로필은 비어있는' 끊긴 상태가 안 남음.
+    await admin.auth.admin.deleteUser(userId).catch(() => {});
     return { ok: false, message: upErr.message };
   }
 
