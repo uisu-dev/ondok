@@ -93,6 +93,17 @@ export async function canAccessAdmin(): Promise<{
   return { ok: false, reason: "none", user };
 }
 
+/**
+ * 모든 활동지(타인 작성 포함)를 관리할 수 있는지.
+ * - HMAC 슈퍼관리자 + admin role: 전체 관리 가능
+ * - teacher: 본인이 만든 것만 (false)
+ */
+export function hasFullWorksheetAccess(
+  reason: "hmac" | "teacher" | "admin" | "none"
+): boolean {
+  return reason === "hmac" || reason === "admin";
+}
+
 /** 교원 승인(role 변경) 권한 — 슈퍼관리자 또는 admin role 만. */
 export async function canApproveTeachers(): Promise<boolean> {
   if (await isHmacAdmin()) return true;

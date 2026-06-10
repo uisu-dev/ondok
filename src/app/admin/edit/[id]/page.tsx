@@ -1,6 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { canAccessAdmin } from "@/lib/auth";
+import { canAccessAdmin, hasFullWorksheetAccess } from "@/lib/auth";
 import { getWorksheetAdmin } from "@/data/worksheets";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import {
@@ -26,8 +26,8 @@ export default async function EditWorksheetPage({
   const ws = await getWorksheetAdmin(num);
   if (!ws) notFound();
 
-  // 교원/관리자 사용자는 본인이 만든 활동지만 수정 가능 (HMAC 슈퍼관리자는 모두 가능)
-  if (access.reason !== "hmac" && ws.createdBy !== access.user?.id) {
+  // 교원은 본인이 만든 활동지만 수정 가능. HMAC 슈퍼관리자·admin 은 전체 가능.
+  if (!hasFullWorksheetAccess(access.reason) && ws.createdBy !== access.user?.id) {
     redirect("/admin?msg=not-owner");
   }
 

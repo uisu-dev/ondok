@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { canAccessAdmin } from "@/lib/auth";
+import { canAccessAdmin, hasFullWorksheetAccess } from "@/lib/auth";
 import {
   listAllWorksheetsAdmin,
   listMyWorksheetsAdmin,
@@ -27,8 +27,8 @@ export default async function AdminDashboard() {
   let worksheets: Worksheet[] = [];
   let envError: string | null = null;
   try {
-    // HMAC 슈퍼관리자는 전부, 교원/관리자 사용자는 본인이 만든 것만
-    if (access.reason === "hmac" || !access.user?.id) {
+    // HMAC 슈퍼관리자·admin 은 전부, 교원은 본인이 만든 것만
+    if (hasFullWorksheetAccess(access.reason) || !access.user?.id) {
       worksheets = await listAllWorksheetsAdmin();
     } else {
       worksheets = await listMyWorksheetsAdmin(access.user.id);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { canAccessAdmin } from "@/lib/auth";
+import { canAccessAdmin, hasFullWorksheetAccess } from "@/lib/auth";
 import {
   deleteWorksheetAdmin,
   getWorksheetOwner,
@@ -16,7 +16,7 @@ import type { WorksheetDraft } from "@/lib/worksheet-types";
 async function gateWorksheet(id: number): Promise<{ ok: true } | { ok: false; status: number; error: string }> {
   const access = await canAccessAdmin();
   if (!access.ok) return { ok: false, status: 401, error: "권한 없음" };
-  if (access.reason === "hmac") return { ok: true };
+  if (hasFullWorksheetAccess(access.reason)) return { ok: true };
   const owner = await getWorksheetOwner(id);
   if (owner === undefined) return { ok: false, status: 404, error: "활동지를 찾을 수 없어요." };
   if (owner === access.user?.id) return { ok: true };
