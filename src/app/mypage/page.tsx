@@ -40,6 +40,14 @@ export default async function MyPage() {
   // 즐겨찾기 (책 + 활동지)
   let favBooks: Book[] = [];
   let favWorksheets: Array<{ id: number; type: string; title: string }> = [];
+  // 내가 푼 활동지
+  let solvedWorksheets: Array<{
+    id: number;
+    type: string;
+    title: string;
+    answeredCount: number;
+    updatedAt: string;
+  }> = [];
   try {
     const admin = getAdminSupabase();
     const { data: progress } = await admin
@@ -92,6 +100,35 @@ export default async function MyPage() {
           }>;
         }
       }
+    }
+
+    // 내가 푼 활동지 (답안 저장된 것)
+    const { data: responses } = await admin
+      .from("worksheet_responses")
+      .select("worksheet_id, answered_count, updated_at")
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: false });
+    if (responses && responses.length > 0) {
+      const rIds = responses.map((r) => Number(r.worksheet_id));
+      const { data: rws } = await admin
+        .from("worksheets")
+        .select("id, type, title")
+        .in("id", rIds);
+      const rmap = new Map<number, { type: string; title: string }>();
+      for (const w of rws ?? []) rmap.set(w.id, { type: w.type, title: w.title });
+      solvedWorksheets = responses
+        .map((r) => {
+          const w = rmap.get(Number(r.worksheet_id));
+          if (!w) return null;
+          return {
+            id: Number(r.worksheet_id),
+            type: w.type,
+            title: w.title,
+            answeredCount: r.answered_count as number,
+            updatedAt: r.updated_at as string,
+          };
+        })
+        .filter(Boolean) as typeof solvedWorksheets;
     }
   } catch {
     /* service role 미설정 시 무시 */
@@ -275,6 +312,61 @@ export default async function MyPage() {
                     </span>
                     <span className="text-[10px] text-fg-subtle whitespace-nowrap">
                       {TYPE_LABEL[w.type as keyof typeof TYPE_LABEL] ?? w.type}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+
+        {/* 내가 푼 활동지 */}
+        <Card as="section" className="px-6 py-6 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-fg-muted">학습 기록</p>
+              <p className="text-lg font-bold text-fg-strong mt-1">
+                ✍️ 내가 푼 활동지{" "}
+                {solvedWorksheets.length > 0 ? `· ${solvedWorksheets.length}건` : ""}
+              </p>
+            </div>
+            <Link
+              href="/worksheet"
+              className="h-9 px-3 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-semibold flex items-center"
+            >
+              활동지 풀러 가기
+            </Link>
+          </div>
+          {solvedWorksheets.length === 0 ? (
+            <p className="text-xs text-fg-subtle">
+              활동지를 풀고 답을 작성하면 자동으로 저장돼요. 여기서 다시 이어 볼 수 있어요.
+            </p>
+          ) : (
+            <ul className="space-y-1.5">
+              {solvedWorksheets.map((w) => (
+                <li key={w.id}>
+                  <Link
+                    href={`/worksheet/${w.type}/${w.id}`}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-button hover:bg-surface-muted transition-colors"
+                  >
+                    <span aria-hidden className="text-base">
+                      {TYPE_EMOJI[w.type as keyof typeof TYPE_EMOJI] ?? "📄"}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold text-fg-strong truncate">
+                        {w.title}
+                      </span>
+                      <span className="block text-[10px] text-fg-subtle">
+                        답안 {w.answeredCount}개 ·{" "}
+                        {new Date(w.updatedAt).toLocaleDateString("ko-KR", {
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                        저장
+                      </span>
+                    </span>
+                    <span className="text-[10px] font-semibold text-accent-600 whitespace-nowrap">
+                      이어 보기 →
                     </span>
                   </Link>
                 </li>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -47,17 +47,25 @@ export function WorksheetSolver({
   worksheet,
   book,
   canPrintTeacher = true,
+  canSaveAnswers = false,
+  initialAnswers = {},
 }: {
   worksheet: WorksheetWithQuestions;
   book: Book | null;
   /** 교사용 인쇄 권한. 학생/비로그인이면 false → 버튼 숨김. */
   canPrintTeacher?: boolean;
+  /** 로그인 사용자면 true — 답안 자동 저장 활성화. */
+  canSaveAnswers?: boolean;
+  /** DB 에 저장돼 있던 기존 답안 (position → 텍스트). */
+  initialAnswers?: Record<number, string>;
 }) {
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [answers, setAnswers] = useState<Record<number, string>>(initialAnswers);
   const [reveal, setReveal] = useState<Record<number, boolean>>({});
   const [fontSize, setFontSize] = useState<FontSize>("md");
   const [teacherMode, setTeacherMode] = useState(false); // 교사용 인쇄 시 일시적으로 true
   const [showSagoModal, setShowSagoModal] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const dirtyRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -93,8 +101,28 @@ export function WorksheetSolver({
   }
 
   function setAnswer(qIdx: number, value: string) {
+    dirtyRef.current = true;
     setAnswers((prev) => ({ ...prev, [qIdx]: value }));
   }
+
+  // 로그인 사용자: 답안이 바뀌면 1초 디바운스 후 자동 저장.
+  useEffect(() => {
+    if (!canSaveAnswers || !dirtyRef.current) return;
+    setSaveState("saving");
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/worksheet-responses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ worksheet_id: worksheet.id, answers }),
+        });
+        setSaveState(res.ok ? "saved" : "idle");
+      } catch {
+        setSaveState("idle");
+      }
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [answers, canSaveAnswers, worksheet.id]);
   function toggleReveal(qIdx: number) {
     setReveal((prev) => ({ ...prev, [qIdx]: !prev[qIdx] }));
   }
@@ -346,9 +374,29 @@ export function WorksheetSolver({
         </Card>
       )}
 
-      <p className="text-xs text-fg-subtle text-center print:hidden">
-        ⌨️ 작성한 답은 페이지를 떠나면 사라져요. 인쇄해서 종이로 활용하셔도 좋아요.
-      </p>
+      {canSaveAnswers ? (
+        <p className="text-xs text-center print:hidden">
+          {saveState === "saving" ? (
+            <span className="text-fg-muted">💾 저장 중…</span>
+          ) : saveState === "saved" ? (
+            <span className="text-cat-sci font-semibold">
+              ✓ 작성한 답안이 저장됐어요. 마이페이지에서 다시 볼 수 있어요.
+            </span>
+          ) : (
+            <span className="text-fg-subtle">
+              ⌨️ 답을 입력하면 자동으로 저장돼요. 마이페이지에서 다시 볼 수 있어요.
+            </span>
+          )}
+        </p>
+      ) : (
+        <p className="text-xs text-fg-subtle text-center print:hidden">
+          ⌨️ 작성한 답은 페이지를 떠나면 사라져요.{" "}
+          <a href="/login" className="text-accent-600 font-semibold">
+            로그인
+          </a>
+          하면 답안이 자동 저장돼요.
+        </p>
+      )}
 
       {showSagoModal && sagoStats && (
         <div
