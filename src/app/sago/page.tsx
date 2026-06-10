@@ -195,11 +195,6 @@ export default function SagoPage() {
               </>
             )}
           </div>
-          {canDownload && (
-            <p className="text-xs text-fg-subtle">
-              Excel·넘버스·구글 스프레드시트에서 바로 열어볼 수 있어요. (교원 전용)
-            </p>
-          )}
         </Card>
 
         {/* Search — 1~4급 전체에서 찾기 */}
@@ -280,7 +275,9 @@ export default function SagoPage() {
             filtered.map((w) => {
               const def = getDefinitionFor(w);
               const wordGradeInfo = GRADE_INFO[w.grade as Grade];
-              const krdictUrl = `https://krdict.korean.go.kr/kor/dicSearch/search?nation=kor&nationCode=6&ParaWordNo=&mainSearchWord=${encodeURIComponent(w.word)}`;
+              // krdict 은 단어 텍스트 검색을 외부 GET 링크로 지원하지 않음(숫자 ID 필요).
+              // 한국어기초사전 풀이를 포함하는 네이버 국어사전 검색으로 연결.
+              const dictUrl = `https://ko.dict.naver.com/#/search?query=${encodeURIComponent(w.word)}`;
               return (
                 <Card
                   key={`${w.grade}-${w.raw}`}
@@ -309,12 +306,12 @@ export default function SagoPage() {
                   )}
                   <div className="pt-0.5">
                     <a
-                      href={krdictUrl}
+                      href={dictUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs text-fg-subtle hover:text-accent-600 inline-flex items-center gap-0.5"
                     >
-                      한국어 기초사전에서 모든 뜻 보기 →
+                      국어사전에서 모든 뜻 보기 →
                     </a>
                   </div>
                 </Card>
