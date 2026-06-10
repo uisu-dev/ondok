@@ -21,6 +21,7 @@ import { careerByKey } from "@/lib/careers";
 import { splitIntoParagraphs } from "@/lib/text";
 import { getAllBooks, logQuiz } from "@/data/books";
 import { HeartButton } from "@/components/HeartButton";
+import { bookSearchUrl } from "@/lib/book-link";
 
 export default function ResultPage() {
   const [recs, setRecs] = useState<Recommendation[] | null>(null);
@@ -295,12 +296,12 @@ function BookCard({
         )}
         <div className="pt-1">
           <a
-            href={book.naverLink}
+            href={bookSearchUrl(book)}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-semibold text-accent-600 hover:text-accent-700"
           >
-            네이버에서 보기 →
+            네이버 도서 검색 →
           </a>
         </div>
       </div>

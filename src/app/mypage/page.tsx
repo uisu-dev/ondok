@@ -10,6 +10,7 @@ import { ChangePasswordCard } from "./ChangePasswordCard";
 import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
+import { bookSearchUrl } from "@/lib/book-link";
 
 export const dynamic = "force-dynamic";
 
@@ -250,7 +251,7 @@ export default async function MyPage() {
               {favBooks.map((b) => (
                 <a
                   key={b.id}
-                  href={b.naverLink}
+                  href={bookSearchUrl(b)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block group"

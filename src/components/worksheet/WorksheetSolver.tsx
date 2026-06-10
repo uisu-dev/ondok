@@ -21,6 +21,7 @@ import {
   parseDifficulty,
 } from "@/lib/sago-analyze";
 import { buildYouTubeEmbedUrl, extractYouTubeId } from "@/lib/youtube";
+import { bookSearchUrl } from "@/lib/book-link";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 
@@ -263,12 +264,12 @@ export function WorksheetSolver({
               {book.author} · {book.publisher} · {book.year}
             </p>
             <a
-              href={book.naverLink}
+              href={bookSearchUrl(book)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-semibold text-accent-600 hover:text-accent-700 inline-block print:hidden"
             >
-              네이버에서 보기 →
+              네이버 도서 검색 →
             </a>
           </div>
         </Card>

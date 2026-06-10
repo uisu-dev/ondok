@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { OnthinkingBanner } from "@/components/OnthinkingBanner";
 import { getPopularBooks, getPopularWorksheets } from "@/data/popular";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
+import { bookSearchUrl } from "@/lib/book-link";
 
 export const dynamic = "force-dynamic";
 
@@ -173,7 +174,7 @@ export default async function HomePage() {
               {popularBooks.map(({ book, count }, i) => (
                 <a
                   key={book.id}
-                  href={book.naverLink}
+                  href={bookSearchUrl(book)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block group shrink-0 w-[112px]"
