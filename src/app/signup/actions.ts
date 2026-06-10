@@ -2,11 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { getAdminSupabase } from "@/data/supabase-admin";
-import {
-  isValidLoginId,
-  isReservedLoginId,
-  loginIdToEmail,
-} from "@/lib/login-id";
+import { isValidLoginId, loginIdToEmail } from "@/lib/login-id";
 
 type SignupResult = { ok: true } | { ok: false; message: string };
 
@@ -26,9 +22,6 @@ export async function signUp(input: {
       ok: false,
       message: "아이디는 영문 소문자로 시작하는 4~20자입니다.",
     };
-  }
-  if (isReservedLoginId(loginId)) {
-    return { ok: false, message: "사용할 수 없는 아이디입니다." };
   }
   if (password.length < 8) {
     return { ok: false, message: "비밀번호는 8자 이상 입력해 주세요." };
