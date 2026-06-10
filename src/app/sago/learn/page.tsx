@@ -86,58 +86,54 @@ export default function SagoLearnPage() {
   const [hydrated, setHydrated] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
 
-  // localStorage 로드 (즉시) → DB 가져와서 머지 (지연)
+  // 진도 로드.
+  //  - 로그인 사용자: DB 가 단일 소스. localStorage 를 읽지도 쓰지도 않는다.
+  //    (같은 브라우저에서 계정을 바꿔도 앞 계정 기록이 섞이지 않도록)
+  //  - 비로그인(게스트): localStorage 만 사용.
   useEffect(() => {
-    let local: Record<string, boolean> = {};
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) local = JSON.parse(raw);
-    } catch {
-      /* ignore */
-    }
-    setKnown(local);
-    setHydrated(true);
-
-    // DB sync (로그인된 경우)
     (async () => {
+      let isSignedIn = false;
+      let dbKeys: string[] = [];
       try {
         const res = await fetch("/api/sago/progress", { cache: "no-store" });
         const json = await res.json();
-        if (!json.ok) return;
-        if (!json.signedIn) {
-          setSignedIn(false);
-          return;
-        }
-        setSignedIn(true);
-        const dbKeys: string[] = json.keys ?? [];
-        // 머지: 로컬 ∪ DB → setKnown. 로컬에만 있던 것은 다음 토글 때 자동으로 DB 로 가지 않으므로
-        // 여기서 한 번 push.
-        const merged: Record<string, boolean> = { ...local };
-        for (const k of dbKeys) merged[k] = true;
-        setKnown(merged);
-        const localOnly = Object.keys(local).filter((k) => !dbKeys.includes(k));
-        if (localOnly.length > 0) {
-          fetch("/api/sago/progress", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ add: localOnly }),
-          }).catch(() => {});
+        if (json.ok && json.signedIn) {
+          isSignedIn = true;
+          dbKeys = json.keys ?? [];
         }
       } catch {
-        /* offline / 비설정 → localStorage 만 사용 */
+        /* 오프라인/미설정 → 게스트 취급 */
       }
+
+      if (isSignedIn) {
+        setSignedIn(true);
+        const m: Record<string, boolean> = {};
+        for (const k of dbKeys) m[k] = true;
+        setKnown(m);
+      } else {
+        setSignedIn(false);
+        let local: Record<string, boolean> = {};
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) local = JSON.parse(raw);
+        } catch {
+          /* ignore */
+        }
+        setKnown(local);
+      }
+      setHydrated(true);
     })();
   }, []);
 
-  // 변경 시 localStorage 자동 저장
+  // 게스트만 localStorage 에 캐시. 로그인 사용자는 DB 가 단일 소스라 저장 안 함.
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || signedIn) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(known));
     } catch {
       /* ignore quota */
     }
-  }, [known, hydrated]);
+  }, [known, hydrated, signedIn]);
 
   // 출제 풀
   const pool = useMemo(() => {
