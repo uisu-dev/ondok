@@ -296,7 +296,7 @@ export default async function MyPage() {
           <Card as="section" className="px-6 py-6 space-y-3">
             <p className="text-xs font-semibold text-fg-muted">교원 메뉴</p>
             <p className="text-base font-bold text-fg-strong">
-              활동지 제작 + 사고도구어 데이터 관리
+              활동지 제작 및 관리
             </p>
             <div className="flex flex-wrap gap-2">
               <Link
@@ -314,9 +314,6 @@ export default async function MyPage() {
                 </Link>
               )}
             </div>
-            <p className="text-xs text-fg-subtle">
-              ※ 사이트 슈퍼관리자(uisu9060) 모드는 별도입니다. <code>/admin/login</code> 으로 들어가세요.
-            </p>
           </Card>
         )}
       </div>

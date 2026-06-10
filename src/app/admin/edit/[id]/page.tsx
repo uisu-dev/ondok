@@ -17,13 +17,19 @@ export default async function EditWorksheetPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!(await canAccessAdmin()).ok) redirect("/admin/login");
+  const access = await canAccessAdmin();
+  if (!access.ok) redirect("/admin/login");
   const { id } = await params;
   const num = Number(id);
   if (!Number.isFinite(num)) notFound();
 
   const ws = await getWorksheetAdmin(num);
   if (!ws) notFound();
+
+  // 교원/관리자 사용자는 본인이 만든 활동지만 수정 가능 (HMAC 슈퍼관리자는 모두 가능)
+  if (access.reason !== "hmac" && ws.createdBy !== access.user?.id) {
+    redirect("/admin?msg=not-owner");
+  }
 
   const books =
     ws.type === "books"

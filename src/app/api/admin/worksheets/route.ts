@@ -4,7 +4,8 @@ import { createWorksheetAdmin } from "@/data/worksheets";
 import type { WorksheetDraft } from "@/lib/worksheet-types";
 
 export async function POST(req: NextRequest) {
-  if (!(await canAccessAdmin()).ok) {
+  const access = await canAccessAdmin();
+  if (!access.ok) {
     return NextResponse.json(
       { ok: false, error: "관리자 권한이 필요합니다." },
       { status: 401 }
@@ -26,7 +27,9 @@ export async function POST(req: NextRequest) {
     );
   }
   try {
-    const id = await createWorksheetAdmin(body);
+    // HMAC 슈퍼관리자가 만들면 createdBy = null, 교원/관리자 사용자면 본인 id
+    const createdBy = access.reason === "hmac" ? null : access.user?.id ?? null;
+    const id = await createWorksheetAdmin(body, createdBy);
     return NextResponse.json({ ok: true, id });
   } catch (e: unknown) {
     const raw = e instanceof Error ? e.message : "저장 중 오류가 발생했어요.";
@@ -34,13 +37,14 @@ export async function POST(req: NextRequest) {
     if (
       raw.includes("public.worksheets") ||
       raw.includes("schema cache") ||
-      raw.includes("worksheet_questions")
+      raw.includes("worksheet_questions") ||
+      raw.includes("created_by")
     ) {
       return NextResponse.json(
         {
           ok: false,
           error:
-            "데이터베이스 테이블이 아직 만들어지지 않았어요. Supabase SQL Editor 에서 scripts/migrations/2026-05-22-worksheets.sql 를 실행한 뒤 다시 시도해 주세요.",
+            "데이터베이스 마이그레이션이 누락되었어요. Supabase SQL Editor 에서 scripts/migrations/2026-06-12-worksheet-owner.sql 까지 모두 실행해 주세요.",
         },
         { status: 500 }
       );

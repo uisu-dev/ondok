@@ -37,6 +37,7 @@ export interface Worksheet {
   sampleAnswer?: string | null; // 활동지 전체 모범 답안 (학생은 모두 풀어야 공개)
   difficultyOverride?: string | null; // '초등 하'/'중등 중' 등. NULL 이면 자동 산출
   published: boolean;
+  createdBy?: string | null; // auth.users.id — null 이면 사이트 슈퍼관리자(HMAC) 가 만든 것
   createdAt: string;
   updatedAt: string;
 }

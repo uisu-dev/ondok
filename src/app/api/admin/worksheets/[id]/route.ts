@@ -2,23 +2,38 @@ import { NextRequest, NextResponse } from "next/server";
 import { canAccessAdmin } from "@/lib/auth";
 import {
   deleteWorksheetAdmin,
+  getWorksheetOwner,
   setWorksheetPublished,
   updateWorksheetAdmin,
 } from "@/data/worksheets";
 import type { WorksheetDraft } from "@/lib/worksheet-types";
 
+/**
+ * 활동지 ID 에 대한 권한 검사 공통 함수.
+ * - HMAC 슈퍼관리자: 모든 활동지에 대해 통과
+ * - 교원/관리자 사용자: 자신이 만든(created_by = user.id) 활동지에만 통과
+ */
+async function gateWorksheet(id: number): Promise<{ ok: true } | { ok: false; status: number; error: string }> {
+  const access = await canAccessAdmin();
+  if (!access.ok) return { ok: false, status: 401, error: "권한 없음" };
+  if (access.reason === "hmac") return { ok: true };
+  const owner = await getWorksheetOwner(id);
+  if (owner === undefined) return { ok: false, status: 404, error: "활동지를 찾을 수 없어요." };
+  if (owner === access.user?.id) return { ok: true };
+  return { ok: false, status: 403, error: "자신이 만든 활동지만 관리할 수 있어요." };
+}
+
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await canAccessAdmin()).ok) {
-    return NextResponse.json({ ok: false, error: "권한 없음" }, { status: 401 });
-  }
   const { id } = await params;
   const num = Number(id);
   if (!Number.isFinite(num)) {
     return NextResponse.json({ ok: false, error: "잘못된 ID" }, { status: 400 });
   }
+  const g = await gateWorksheet(num);
+  if (!g.ok) return NextResponse.json({ ok: false, error: g.error }, { status: g.status });
   try {
     await deleteWorksheetAdmin(num);
     return NextResponse.json({ ok: true });
@@ -32,14 +47,13 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await canAccessAdmin()).ok) {
-    return NextResponse.json({ ok: false, error: "권한 없음" }, { status: 401 });
-  }
   const { id } = await params;
   const num = Number(id);
   if (!Number.isFinite(num)) {
     return NextResponse.json({ ok: false, error: "잘못된 ID" }, { status: 400 });
   }
+  const g = await gateWorksheet(num);
+  if (!g.ok) return NextResponse.json({ ok: false, error: g.error }, { status: g.status });
   let body: { published?: boolean };
   try {
     body = (await req.json()) as { published?: boolean };
@@ -62,14 +76,13 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await canAccessAdmin()).ok) {
-    return NextResponse.json({ ok: false, error: "권한 없음" }, { status: 401 });
-  }
   const { id } = await params;
   const num = Number(id);
   if (!Number.isFinite(num)) {
     return NextResponse.json({ ok: false, error: "잘못된 ID" }, { status: 400 });
   }
+  const g = await gateWorksheet(num);
+  if (!g.ok) return NextResponse.json({ ok: false, error: g.error }, { status: g.status });
   let body: WorksheetDraft;
   try {
     body = (await req.json()) as WorksheetDraft;

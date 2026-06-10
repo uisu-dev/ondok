@@ -21,6 +21,7 @@ interface WorksheetRow {
   sample_answer: string | null;
   difficulty_override: string | null;
   published: boolean;
+  created_by: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -53,6 +54,7 @@ function fromWorksheetRow(row: WorksheetRow): Worksheet {
     sampleAnswer: row.sample_answer,
     difficultyOverride: row.difficulty_override,
     published: row.published,
+    createdBy: row.created_by,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -102,7 +104,7 @@ export async function getPublishedWorksheet(id: number): Promise<WorksheetWithQu
   return { ...ws, questions };
 }
 
-/** Admin list — all worksheets regardless of published status. */
+/** Admin list — all worksheets regardless of published status (super-admin 전용). */
 export async function listAllWorksheetsAdmin(): Promise<Worksheet[]> {
   const { getAdminSupabase } = await import("./supabase-admin");
   const supabase = getAdminSupabase();
@@ -112,6 +114,32 @@ export async function listAllWorksheetsAdmin(): Promise<Worksheet[]> {
     .order("created_at", { ascending: false });
   if (error || !data) return [];
   return (data as WorksheetRow[]).map(fromWorksheetRow);
+}
+
+/** 자신이 만든 활동지만 (교원·관리자 모드용). */
+export async function listMyWorksheetsAdmin(userId: string): Promise<Worksheet[]> {
+  const { getAdminSupabase } = await import("./supabase-admin");
+  const supabase = getAdminSupabase();
+  const { data, error } = await supabase
+    .from("worksheets")
+    .select("*")
+    .eq("created_by", userId)
+    .order("created_at", { ascending: false });
+  if (error || !data) return [];
+  return (data as WorksheetRow[]).map(fromWorksheetRow);
+}
+
+/** 활동지 소유자 확인용 (created_by 만 조회). null = 존재하지 않음. */
+export async function getWorksheetOwner(id: number): Promise<string | null | undefined> {
+  const { getAdminSupabase } = await import("./supabase-admin");
+  const supabase = getAdminSupabase();
+  const { data } = await supabase
+    .from("worksheets")
+    .select("created_by")
+    .eq("id", id)
+    .maybeSingle();
+  if (!data) return undefined;
+  return (data as { created_by: string | null }).created_by;
 }
 
 /** Admin fetch full worksheet (ignores published). */
@@ -188,8 +216,11 @@ export async function updateWorksheetAdmin(
   }
 }
 
-/** Admin create. */
-export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<number> {
+/** Admin create. createdBy=null 이면 슈퍼관리자(HMAC) 가 만든 것. */
+export async function createWorksheetAdmin(
+  draft: WorksheetDraft,
+  createdBy: string | null
+): Promise<number> {
   const { getAdminSupabase } = await import("./supabase-admin");
   const supabase = getAdminSupabase();
   const { data: ws, error } = await supabase
@@ -206,6 +237,7 @@ export async function createWorksheetAdmin(draft: WorksheetDraft): Promise<numbe
       youtube_url: draft.youtubeUrl ?? null,
       sample_answer: draft.sampleAnswer ?? null,
       difficulty_override: draft.difficultyOverride ?? null,
+      created_by: createdBy,
     })
     .select("id")
     .single();

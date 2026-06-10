@@ -1,7 +1,10 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { canAccessAdmin } from "@/lib/auth";
-import { listAllWorksheetsAdmin } from "@/data/worksheets";
+import {
+  listAllWorksheetsAdmin,
+  listMyWorksheetsAdmin,
+} from "@/data/worksheets";
 import { Card } from "@/components/ui/Card";
 import { buttonClass } from "@/components/ui/Button";
 import { AdminHeader } from "@/components/admin/AdminHeader";
@@ -24,7 +27,12 @@ export default async function AdminDashboard() {
   let worksheets: Worksheet[] = [];
   let envError: string | null = null;
   try {
-    worksheets = await listAllWorksheetsAdmin();
+    // HMAC 슈퍼관리자는 전부, 교원/관리자 사용자는 본인이 만든 것만
+    if (access.reason === "hmac" || !access.user?.id) {
+      worksheets = await listAllWorksheetsAdmin();
+    } else {
+      worksheets = await listMyWorksheetsAdmin(access.user.id);
+    }
   } catch (e: unknown) {
     envError = e instanceof Error ? e.message : "Supabase 설정을 확인해 주세요.";
   }
