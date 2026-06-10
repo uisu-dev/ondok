@@ -15,6 +15,8 @@ import {
   formatSagoStatsLine,
   parseDifficulty,
 } from "@/lib/sago-analyze";
+import { HeartButton } from "@/components/HeartButton";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +59,21 @@ export default async function WorksheetListPage({
   const t = type as WorksheetType;
 
   const items = await listPublishedWorksheets(t);
+
+  // 즐겨찾기 상태 (로그인 시)
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const favIds = new Set<string>();
+  if (user) {
+    const { data: favs } = await supabase
+      .from("favorites")
+      .select("target_id")
+      .eq("user_id", user.id)
+      .eq("kind", "worksheet");
+    for (const r of favs ?? []) favIds.add(r.target_id as string);
+  }
 
   return (
     <main className="flex-1 w-full">
@@ -119,14 +136,14 @@ export default async function WorksheetListPage({
                 parseDifficulty(w.difficultyOverride) ??
                 (stats ? difficultyOf(stats, w.passage) : null);
               return (
-                <Link
+                <Card
                   key={w.id}
-                  href={`/worksheet/${t}/${w.id}`}
-                  className="block group"
+                  interactive
+                  className="px-5 py-4 flex items-start gap-3 border border-transparent hover:border-accent-300 transition-colors"
                 >
-                  <Card
-                    interactive
-                    className="px-5 py-4 space-y-1 border border-transparent group-hover:border-accent-300"
+                  <Link
+                    href={`/worksheet/${t}/${w.id}`}
+                    className="flex-1 min-w-0 space-y-1"
                   >
                     <p className="text-base font-bold text-fg-strong">{w.title}</p>
                     {w.intro && (
@@ -157,8 +174,15 @@ export default async function WorksheetListPage({
                         day: "numeric",
                       })}
                     </p>
-                  </Card>
-                </Link>
+                  </Link>
+                  <HeartButton
+                    kind="worksheet"
+                    targetId={w.id}
+                    initialFavorited={favIds.has(String(w.id))}
+                    enabled={!!user}
+                    size="sm"
+                  />
+                </Card>
               );
             })}
           </div>

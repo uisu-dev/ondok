@@ -1,10 +1,14 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { getSignedInUser } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
 import { TeacherApplicationCard } from "./TeacherApplicationCard";
 import { SignOutButton } from "./SignOutButton";
+import booksSeed from "@/data/books-seed.json";
+import type { Book } from "@/lib/types";
+import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 
 export const dynamic = "force-dynamic";
 
@@ -33,18 +37,59 @@ export default async function MyPage() {
   // 사고도구어 학습 진도 (행 개수 + 등급별 분포)
   let knownByGrade = { 1: 0, 2: 0, 3: 0, 4: 0 };
   let knownTotal = 0;
+  // 즐겨찾기 (책 + 활동지)
+  let favBooks: Book[] = [];
+  let favWorksheets: Array<{ id: number; type: string; title: string }> = [];
   try {
     const admin = getAdminSupabase();
-    const { data } = await admin
+    const { data: progress } = await admin
       .from("sago_progress")
       .select("word_key")
       .eq("user_id", user.id);
-    if (data) {
-      knownTotal = data.length;
-      for (const row of data) {
+    if (progress) {
+      knownTotal = progress.length;
+      for (const row of progress) {
         const g = Number(String(row.word_key).split(".")[0]);
         if (g >= 1 && g <= 4) {
           knownByGrade[g as 1 | 2 | 3 | 4]++;
+        }
+      }
+    }
+
+    const { data: favs } = await admin
+      .from("favorites")
+      .select("kind, target_id, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (favs) {
+      const allBooks = booksSeed as Book[];
+      for (const f of favs) {
+        if (f.kind === "book") {
+          const b = allBooks.find((x) => String(x.id) === String(f.target_id));
+          if (b) favBooks.push(b);
+        }
+      }
+      const wsIds = favs
+        .filter((f) => f.kind === "worksheet")
+        .map((f) => Number(f.target_id))
+        .filter((n) => Number.isFinite(n));
+      if (wsIds.length > 0) {
+        const { data: wss } = await admin
+          .from("worksheets")
+          .select("id, type, title, published")
+          .in("id", wsIds)
+          .eq("published", true);
+        if (wss) {
+          // favs 순서 유지
+          const map = new Map<number, { id: number; type: string; title: string }>();
+          for (const w of wss) {
+            map.set(w.id, { id: w.id, type: w.type, title: w.title });
+          }
+          favWorksheets = wsIds.map((id) => map.get(id)).filter(Boolean) as Array<{
+            id: number;
+            type: string;
+            title: string;
+          }>;
         }
       }
     }
@@ -139,6 +184,102 @@ export default async function MyPage() {
               아직 학습 기록이 없어요. <Link href="/sago/learn" className="text-accent-600 font-semibold">학습 모드</Link>에서
               아는 단어를 체크하면 자동으로 저장됩니다.
             </p>
+          )}
+        </Card>
+
+        {/* 즐겨찾기 — 책 */}
+        <Card as="section" className="px-6 py-6 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-fg-muted">즐겨찾기</p>
+              <p className="text-lg font-bold text-fg-strong mt-1">
+                ❤ 마음에 든 책 {favBooks.length > 0 ? `· ${favBooks.length}권` : ""}
+              </p>
+            </div>
+            <Link
+              href="/"
+              className="h-9 px-3 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-semibold flex items-center"
+            >
+              책 둘러보기
+            </Link>
+          </div>
+          {favBooks.length === 0 ? (
+            <p className="text-xs text-fg-subtle">
+              퀴즈 결과 화면에서 책 카드 오른쪽 위 하트 버튼을 누르면 여기에 모입니다.
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {favBooks.map((b) => (
+                <a
+                  key={b.id}
+                  href={b.naverLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group"
+                >
+                  <div className="relative w-full aspect-[3/4] rounded-button overflow-hidden bg-surface-muted">
+                    {b.coverUrl ? (
+                      <Image
+                        src={b.coverUrl}
+                        alt={`${b.title} 표지`}
+                        fill
+                        sizes="160px"
+                        className="object-cover transition-transform group-hover:scale-[1.02]"
+                        unoptimized
+                      />
+                    ) : null}
+                  </div>
+                  <p className="text-xs font-bold text-fg-strong mt-1.5 line-clamp-2 leading-snug">
+                    {b.title}
+                  </p>
+                  <p className="text-[10px] text-fg-muted truncate">{b.author}</p>
+                </a>
+              ))}
+            </div>
+          )}
+        </Card>
+
+        {/* 즐겨찾기 — 활동지 */}
+        <Card as="section" className="px-6 py-6 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-fg-muted">즐겨찾기</p>
+              <p className="text-lg font-bold text-fg-strong mt-1">
+                ❤ 좋은 활동지 {favWorksheets.length > 0 ? `· ${favWorksheets.length}건` : ""}
+              </p>
+            </div>
+            <Link
+              href="/worksheet"
+              className="h-9 px-3 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-semibold flex items-center"
+            >
+              활동지 둘러보기
+            </Link>
+          </div>
+          {favWorksheets.length === 0 ? (
+            <p className="text-xs text-fg-subtle">
+              활동지 목록에서 카드 오른쪽 하트 버튼을 누르면 여기에 모입니다.
+            </p>
+          ) : (
+            <ul className="space-y-1.5">
+              {favWorksheets.map((w) => (
+                <li key={w.id}>
+                  <Link
+                    href={`/worksheet/${w.type}/${w.id}`}
+                    className="flex items-center gap-2 px-3 py-2 rounded-button hover:bg-surface-muted transition-colors"
+                  >
+                    <span aria-hidden className="text-base">
+                      {TYPE_EMOJI[w.type as keyof typeof TYPE_EMOJI] ?? "📄"}
+                    </span>
+                    <span className="text-sm font-semibold text-fg-strong flex-1 truncate">
+                      {w.title}
+                    </span>
+                    <span className="text-[10px] text-fg-subtle whitespace-nowrap">
+                      {TYPE_LABEL[w.type as keyof typeof TYPE_LABEL] ?? w.type}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           )}
         </Card>
 

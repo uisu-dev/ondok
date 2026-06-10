@@ -185,17 +185,8 @@ export default function HomePage() {
           <p className="text-xs text-fg-subtle text-center leading-relaxed">
             도서 데이터: 충남교육청 온독지수 추천도서 목록(2026)
             <br />
-            사고도구어 데이터: 충청남도교육청 · 뜻 풀이: 국립국어원 표준국어대사전
+            사고도구어 데이터: 충청남도교육청 · 뜻 풀이: 국립국어원 한국어 기초사전
           </p>
-          <div className="text-center">
-            <Link
-              href="/admin/login"
-              className="inline-flex items-center gap-1 text-xs text-fg-subtle hover:text-fg-muted"
-            >
-              <span aria-hidden>🔐</span>
-              교사 관리자 모드
-            </Link>
-          </div>
         </div>
       </div>
     </main>

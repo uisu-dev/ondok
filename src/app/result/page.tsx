@@ -20,11 +20,14 @@ import { topicByKey } from "@/lib/interests";
 import { careerByKey } from "@/lib/careers";
 import { splitIntoParagraphs } from "@/lib/text";
 import { getAllBooks, logQuiz } from "@/data/books";
+import { HeartButton } from "@/components/HeartButton";
 
 export default function ResultPage() {
   const [recs, setRecs] = useState<Recommendation[] | null>(null);
   const [answer, setAnswer] = useState<QuizAnswer | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [favIds, setFavIds] = useState<Set<string>>(new Set());
+  const [signedIn, setSignedIn] = useState(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("ondok:answers");
@@ -52,6 +55,18 @@ export default function ResultPage() {
       const list = recommend(books, parsed, 4);
       setRecs(list);
       logQuiz(parsed, list.map((r) => r.book.id)).catch(() => {});
+
+      // 즐겨찾기 상태 가져오기
+      try {
+        const res = await fetch("/api/favorites?kind=book", { cache: "no-store" });
+        const json = await res.json();
+        if (!cancelled && json.ok) {
+          setSignedIn(!!json.signedIn);
+          setFavIds(new Set<string>(json.ids ?? []));
+        }
+      } catch {
+        /* ignore */
+      }
     })();
 
     return () => {
@@ -115,7 +130,12 @@ export default function ResultPage() {
 
             <div className="space-y-4">
               {recs.map((rec) => (
-                <BookCard key={rec.book.id} rec={rec} />
+                <BookCard
+                  key={rec.book.id}
+                  rec={rec}
+                  favorited={favIds.has(String(rec.book.id))}
+                  signedIn={signedIn}
+                />
               ))}
             </div>
           </>
@@ -197,7 +217,15 @@ function AnswerSummary({ answer }: { answer: QuizAnswer }) {
   );
 }
 
-function BookCard({ rec }: { rec: Recommendation }) {
+function BookCard({
+  rec,
+  favorited,
+  signedIn,
+}: {
+  rec: Recommendation;
+  favorited: boolean;
+  signedIn: boolean;
+}) {
   const { book } = rec;
   const [expanded, setExpanded] = useState(false);
   const paragraphs = splitIntoParagraphs(book.description, 3);
@@ -221,9 +249,18 @@ function BookCard({ rec }: { rec: Recommendation }) {
         </div>
       </div>
       <div className="flex-1 min-w-0 space-y-2">
-        <div className="flex flex-wrap gap-1.5">
-          <Chip tone={book.category}>{book.category}</Chip>
-          <Chip tone="neutral">온독지수 {book.ondokIndex}</Chip>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-wrap gap-1.5 flex-1">
+            <Chip tone={book.category}>{book.category}</Chip>
+            <Chip tone="neutral">온독지수 {book.ondokIndex}</Chip>
+          </div>
+          <HeartButton
+            kind="book"
+            targetId={book.id}
+            initialFavorited={favorited}
+            enabled={signedIn}
+            size="sm"
+          />
         </div>
         <h3 className="text-lg font-bold text-fg-strong leading-snug">
           {book.title}
