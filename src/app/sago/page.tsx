@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -84,6 +84,17 @@ function downloadCsv(
 export default function SagoPage() {
   const [grade, setGrade] = useState<Grade>(1);
   const [query, setQuery] = useState("");
+  // CSV 다운로드는 교원·관리자만. 학생은 버튼 숨김.
+  const [canDownload, setCanDownload] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/me", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.role === "teacher" || d?.role === "admin") setCanDownload(true);
+      })
+      .catch(() => {});
+  }, []);
 
   const allWords = sagoData.words as WordEntry[];
   const allDefs = definitionsData.definitions as Record<
@@ -165,24 +176,30 @@ export default function SagoPage() {
             >
               🎯 학습 시작하기 (랜덤 객관식)
             </Link>
-            <button
-              type="button"
-              onClick={() => downloadCsv(allWords, definitionsData.definitions as Record<string, Record<string, string>>)}
-              className="text-xs font-semibold px-3 py-1.5 rounded-button bg-accent-50 text-accent-700 hover:bg-accent-100"
-            >
-              📥 전체 다운로드 (CSV · 1,384개)
-            </button>
-            <button
-              type="button"
-              onClick={() => downloadCsv(wordsOfGrade, definitionsData.definitions as Record<string, Record<string, string>>, `사고도구어_${grade}급_기초사전_뜻풀이.csv`)}
-              className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
-            >
-              📥 {grade}급만 ({wordsOfGrade.length}개)
-            </button>
+            {canDownload && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => downloadCsv(allWords, definitionsData.definitions as Record<string, Record<string, string>>)}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-button bg-accent-50 text-accent-700 hover:bg-accent-100"
+                >
+                  📥 전체 다운로드 (CSV · 1,384개)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => downloadCsv(wordsOfGrade, definitionsData.definitions as Record<string, Record<string, string>>, `사고도구어_${grade}급_기초사전_뜻풀이.csv`)}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-button bg-surface-muted text-fg-strong border border-border hover:border-accent-300"
+                >
+                  📥 {grade}급만 ({wordsOfGrade.length}개)
+                </button>
+              </>
+            )}
           </div>
-          <p className="text-xs text-fg-subtle">
-            Excel·번호스·구글 스프레드시트에서 바로 열어볼 수 있어요.
-          </p>
+          {canDownload && (
+            <p className="text-xs text-fg-subtle">
+              Excel·넘버스·구글 스프레드시트에서 바로 열어볼 수 있어요. (교원 전용)
+            </p>
+          )}
         </Card>
 
         {/* Search — 1~4급 전체에서 찾기 */}
