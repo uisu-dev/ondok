@@ -6,6 +6,7 @@ import { getSignedInUser } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
 import { TeacherApplicationCard } from "./TeacherApplicationCard";
 import { SignOutButton } from "./SignOutButton";
+import { ChangePasswordCard } from "./ChangePasswordCard";
 import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
@@ -375,6 +376,9 @@ export default async function MyPage() {
           )}
         </Card>
 
+        {/* 비밀번호 변경 */}
+        <ChangePasswordCard />
+
         {/* 교원 승인 신청 */}
         {profile.role === "student" && (
           <TeacherApplicationCard
@@ -398,12 +402,20 @@ export default async function MyPage() {
                 관리자 대시보드
               </Link>
               {profile.role === "admin" && (
-                <Link
-                  href="/admin/teachers"
-                  className="h-10 px-4 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-sm font-semibold flex items-center"
-                >
-                  교원 승인 큐
-                </Link>
+                <>
+                  <Link
+                    href="/admin/teachers"
+                    className="h-10 px-4 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-sm font-semibold flex items-center"
+                  >
+                    교원 승인 큐
+                  </Link>
+                  <Link
+                    href="/admin/users"
+                    className="h-10 px-4 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-sm font-semibold flex items-center"
+                  >
+                    사용자 관리 · 비번 재설정
+                  </Link>
+                </>
               )}
             </div>
           </Card>
