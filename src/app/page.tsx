@@ -1,6 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { OnthinkingBanner } from "@/components/OnthinkingBanner";
+import { getPopularBooks, getPopularWorksheets } from "@/data/popular";
+import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
+
+export const dynamic = "force-dynamic";
 
 interface PathCard {
   href: string;
@@ -125,7 +130,12 @@ function PillarHeader({
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [popularBooks, popularWorksheets] = await Promise.all([
+    getPopularBooks(5),
+    getPopularWorksheets(5),
+  ]);
+
   return (
     <main className="flex-1 w-full">
       <div className="mx-auto max-w-[720px] px-6 py-10 space-y-8">
@@ -150,6 +160,89 @@ export default function HomePage() {
             나에게 맞는 책을 찾고 문해력을 다져요.
           </p>
         </Card>
+
+        {/* 인기: 추천 많이 받은 도서 */}
+        {popularBooks.length > 0 && (
+          <section className="space-y-3">
+            <PillarHeader
+              emoji="🔥"
+              title="지금 인기 있는 온독도서"
+              subtitle="친구들이 하트를 많이 누른 책 순서예요"
+            />
+            <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+              {popularBooks.map(({ book, count }, i) => (
+                <a
+                  key={book.id}
+                  href={book.naverLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group shrink-0 w-[112px]"
+                >
+                  <div className="relative w-full aspect-[3/4] rounded-button overflow-hidden bg-surface-muted">
+                    {book.coverUrl ? (
+                      <Image
+                        src={book.coverUrl}
+                        alt={`${book.title} 표지`}
+                        fill
+                        sizes="112px"
+                        className="object-cover transition-transform group-hover:scale-[1.02]"
+                        unoptimized
+                      />
+                    ) : null}
+                    <span className="absolute top-1 left-1 w-5 h-5 rounded-full bg-accent-600 text-white text-[10px] font-bold flex items-center justify-center">
+                      {i + 1}
+                    </span>
+                  </div>
+                  <p className="text-xs font-bold text-fg-strong mt-1.5 line-clamp-2 leading-snug">
+                    {book.title}
+                  </p>
+                  <p className="text-[10px] text-cat-hum font-semibold mt-0.5">
+                    ❤ {count}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 인기: 추천 많이 받은 활동지 */}
+        {popularWorksheets.length > 0 && (
+          <section className="space-y-3">
+            <PillarHeader
+              emoji="⭐"
+              title="인기 활동지"
+              subtitle="많은 학생이 담아둔 활동지예요"
+            />
+            <div className="space-y-2">
+              {popularWorksheets.map((w, i) => (
+                <Link key={w.id} href={`/worksheet/${w.type}/${w.id}`} className="block group">
+                  <Card
+                    interactive
+                    className="px-4 py-3 flex items-center gap-3 border border-transparent group-hover:border-accent-300"
+                  >
+                    <span className="shrink-0 w-6 h-6 rounded-full bg-accent-100 text-accent-700 text-xs font-bold flex items-center justify-center">
+                      {i + 1}
+                    </span>
+                    <span aria-hidden className="text-lg shrink-0">
+                      {TYPE_EMOJI[w.type]}
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-bold text-fg-strong truncate">
+                        {w.title}
+                      </span>
+                      <span className="block text-[10px] text-fg-subtle">
+                        {TYPE_LABEL[w.type]}
+                      </span>
+                    </span>
+                    <span className="text-xs text-cat-hum font-semibold whitespace-nowrap">
+                      ❤ {w.count}
+                    </span>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Pillar 1: 온독도서 추천 */}
         <section className="space-y-3">
