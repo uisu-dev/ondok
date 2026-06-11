@@ -74,7 +74,7 @@ function fromQuestionRow(row: QuestionRow): Question {
   };
 }
 
-/** Public list — only published worksheets (RLS-enforced). */
+/** Public list — only published worksheets. RLS + 명시적 필터 이중 안전. */
 export async function listPublishedWorksheets(type: WorksheetType): Promise<Worksheet[]> {
   const supabase = getSupabase();
   if (!supabase) return [];
@@ -82,6 +82,7 @@ export async function listPublishedWorksheets(type: WorksheetType): Promise<Work
     .from("worksheets")
     .select("*")
     .eq("type", type)
+    .eq("published", true)
     .order("created_at", { ascending: false });
   if (error || !data) return [];
   return (data as WorksheetRow[]).map(fromWorksheetRow);
@@ -186,6 +187,10 @@ export async function updateWorksheetAdmin(
       youtube_url: draft.youtubeUrl ?? null,
       sample_answer: draft.sampleAnswer ?? null,
       difficulty_override: draft.difficultyOverride ?? null,
+      // draft.published 가 명시되면 반영 (수정 화면의 공개 토글)
+      ...(typeof draft.published === "boolean"
+        ? { published: draft.published }
+        : {}),
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -237,6 +242,8 @@ export async function createWorksheetAdmin(
       youtube_url: draft.youtubeUrl ?? null,
       sample_answer: draft.sampleAnswer ?? null,
       difficulty_override: draft.difficultyOverride ?? null,
+      // 신규 활동지는 교원이 명시적으로 공개하지 않는 한 비공개로 생성
+      published: draft.published ?? false,
       created_by: createdBy,
     })
     .select("id")

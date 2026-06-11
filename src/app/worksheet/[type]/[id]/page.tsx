@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPublishedWorksheet } from "@/data/worksheets";
+import { getPublishedWorksheet, getWorksheetAdmin } from "@/data/worksheets";
 import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import type { WorksheetType } from "@/lib/worksheet-types";
 import { WorksheetSolver } from "@/components/worksheet/WorksheetSolver";
-import { canAccessAdmin } from "@/lib/auth";
+import { canAccessAdmin, hasFullWorksheetAccess } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -22,8 +22,23 @@ export default async function WorksheetSolvePage({
   const numId = Number(id);
   if (!Number.isFinite(numId)) notFound();
 
-  const ws = await getPublishedWorksheet(numId);
+  const access = await canAccessAdmin();
+
+  let ws = await getPublishedWorksheet(numId);
+  // 비공개 활동지는 작성 교원·관리자만 미리볼 수 있음 (학생·타인은 notFound).
+  if (!ws && access.ok) {
+    const adminWs = await getWorksheetAdmin(numId);
+    if (
+      adminWs &&
+      (hasFullWorksheetAccess(access.reason) ||
+        adminWs.createdBy === access.user?.id)
+    ) {
+      ws = adminWs;
+    }
+  }
   if (!ws || ws.type !== type) notFound();
+
+  const isPrivatePreview = !ws.published;
 
   const book =
     ws.bookId != null
@@ -31,7 +46,7 @@ export default async function WorksheetSolvePage({
       : null;
 
   // 교사용 인쇄(정답 포함)는 교원/관리자/슈퍼관리자만.
-  const canPrintTeacher = (await canAccessAdmin()).ok;
+  const canPrintTeacher = access.ok;
 
   // 로그인 사용자면 기존에 저장한 답안을 불러와 채워줌.
   const supabase = await createClient();
@@ -62,6 +77,14 @@ export default async function WorksheetSolvePage({
             ← 활동지 목록
           </Link>
         </div>
+        {isPrivatePreview && (
+          <div className="rounded-button bg-cat-hum/10 border border-cat-hum/30 px-4 py-3 print:hidden">
+            <p className="text-sm font-bold text-cat-hum">🔒 비공개 활동지 (미리보기)</p>
+            <p className="text-xs text-fg-muted mt-0.5">
+              아직 학생·다른 사용자에게는 보이지 않아요. 대시보드에서 ‘공개로’ 전환하면 활동지 목록에 노출됩니다.
+            </p>
+          </div>
+        )}
         <WorksheetSolver
           worksheet={ws}
           book={book}

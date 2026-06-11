@@ -56,6 +56,7 @@ export default async function EditWorksheetPage({
     youtubeUrl: ws.youtubeUrl,
     sampleAnswer: ws.sampleAnswer,
     difficultyOverride: ws.difficultyOverride,
+    published: ws.published,
     questions: ws.questions,
   };
 

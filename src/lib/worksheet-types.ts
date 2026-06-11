@@ -58,6 +58,7 @@ export interface WorksheetDraft {
   youtubeUrl?: string;
   sampleAnswer?: string;
   difficultyOverride?: string | null;
+  published?: boolean; // 교원이 공개 여부 선택. 신규는 기본 비공개(false).
   questions: Omit<Question, "id">[];
 }
 

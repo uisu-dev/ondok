@@ -59,6 +59,7 @@ export interface WorksheetEditorInitial {
   youtubeUrl?: string | null;
   sampleAnswer?: string | null;
   difficultyOverride?: string | null;
+  published?: boolean;
   questions: Question[];
 }
 
@@ -118,6 +119,10 @@ export function WorksheetEditor({
   const [youtubeUrl, setYoutubeUrl] = useState(initial?.youtubeUrl ?? "");
   const [difficultyOverride, setDifficultyOverride] = useState<string | null>(
     initial?.difficultyOverride ?? null
+  );
+  // 공개 여부 — 신규는 기본 비공개, 수정은 기존 상태 유지
+  const [published, setPublished] = useState<boolean>(
+    initial?.published ?? false
   );
   const [questions, setQuestions] = useState<DraftQ[]>(
     initial
@@ -264,6 +269,7 @@ export function WorksheetEditor({
         // 기존 활동지의 worksheet-level sampleAnswer 는 그대로 유지 (수정 시 손실 방지)
         sampleAnswer: initial?.sampleAnswer ?? undefined,
         difficultyOverride: difficultyOverride,
+        published,
         questions: questions.map((q, i) => ({
           position: i,
           type: q.type,
@@ -739,6 +745,44 @@ export function WorksheetEditor({
         </div>
       </div>
 
+      {/* 공개 여부 선택 */}
+      <Card as="section" className="px-5 py-4 space-y-3">
+        <p className="text-sm font-bold text-fg-strong">공개 설정</p>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setPublished(false)}
+            className={`px-4 py-3 rounded-button border-2 text-left transition-colors ${
+              !published
+                ? "border-accent-500 bg-accent-50"
+                : "border-border bg-surface hover:border-accent-300"
+            }`}
+          >
+            <p className="text-sm font-bold text-fg-strong">🔒 비공개</p>
+            <p className="text-xs text-fg-muted mt-0.5">
+              나만 볼 수 있어요. 다른 사람 목록엔 안 보여요.
+            </p>
+          </button>
+          <button
+            type="button"
+            onClick={() => setPublished(true)}
+            className={`px-4 py-3 rounded-button border-2 text-left transition-colors ${
+              published
+                ? "border-accent-500 bg-accent-50"
+                : "border-border bg-surface hover:border-accent-300"
+            }`}
+          >
+            <p className="text-sm font-bold text-fg-strong">🌐 공개</p>
+            <p className="text-xs text-fg-muted mt-0.5">
+              모든 사람이 활동지 목록에서 볼 수 있어요.
+            </p>
+          </button>
+        </div>
+        <p className="text-xs text-fg-subtle">
+          공개 여부는 저장 후 대시보드에서 언제든 바꿀 수 있어요.
+        </p>
+      </Card>
+
       {error && (
         <Card as="section" className="px-5 py-4 bg-surface-muted">
           <p className="text-sm font-semibold text-cat-hum">{error}</p>
@@ -749,9 +793,13 @@ export function WorksheetEditor({
         <Button onClick={save} disabled={saving} className="flex-1">
           {saving
             ? "저장 중…"
-            : isEdit
-              ? "수정 저장"
-              : "활동지 저장 후 공개"}
+            : published
+              ? isEdit
+                ? "수정 저장 (공개)"
+                : "활동지 저장 후 공개"
+              : isEdit
+                ? "수정 저장 (비공개)"
+                : "비공개로 저장"}
         </Button>
       </div>
     </div>
