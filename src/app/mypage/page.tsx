@@ -400,7 +400,7 @@ export default async function MyPage() {
                 href="/admin"
                 className="h-10 px-4 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-sm font-semibold flex items-center"
               >
-                관리자 대시보드
+                활동지 관리
               </Link>
               {profile.role === "admin" && (
                 <>
