@@ -10,7 +10,6 @@ import { ChangePasswordCard } from "./ChangePasswordCard";
 import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
-import { bookSearchUrl } from "@/lib/book-link";
 
 export const dynamic = "force-dynamic";
 
@@ -249,13 +248,7 @@ export default async function MyPage() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {favBooks.map((b) => (
-                <a
-                  key={b.id}
-                  href={bookSearchUrl(b)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block group"
-                >
+                <Link key={b.id} href={`/book/${b.id}`} className="block group">
                   <div className="relative w-full aspect-[3/4] rounded-button overflow-hidden bg-surface-muted">
                     {b.coverUrl ? (
                       <Image
@@ -272,7 +265,7 @@ export default async function MyPage() {
                     {b.title}
                   </p>
                   <p className="text-[10px] text-fg-muted truncate">{b.author}</p>
-                </a>
+                </Link>
               ))}
             </div>
           )}

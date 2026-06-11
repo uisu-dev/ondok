@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/Card";
 import { OnthinkingBanner } from "@/components/OnthinkingBanner";
 import { getPopularBooks, getPopularWorksheets } from "@/data/popular";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
-import { bookSearchUrl } from "@/lib/book-link";
 
 export const dynamic = "force-dynamic";
 
@@ -172,11 +171,9 @@ export default async function HomePage() {
             />
             <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
               {popularBooks.map(({ book, count }, i) => (
-                <a
+                <Link
                   key={book.id}
-                  href={bookSearchUrl(book)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={`/book/${book.id}`}
                   className="block group shrink-0 w-[112px]"
                 >
                   <div className="relative w-full aspect-[3/4] rounded-button overflow-hidden bg-surface-muted">
@@ -200,7 +197,7 @@ export default async function HomePage() {
                   <p className="text-[10px] text-cat-hum font-semibold mt-0.5">
                     ❤ {count}
                   </p>
-                </a>
+                </Link>
               ))}
             </div>
           </section>
