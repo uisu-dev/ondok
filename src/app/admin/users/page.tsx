@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { canApproveTeachers } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
+import { estimateGradeLabel } from "@/lib/grade";
 import { UserRow } from "./UserRow";
 
 export const dynamic = "force-dynamic";
@@ -32,13 +33,14 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     display_name: string | null;
     role: string;
     schoolName: string | null;
+    gradeLabel: string | null;
   }> = [];
 
   try {
     const admin = getAdminSupabase();
     let query = admin
       .from("profiles")
-      .select("id, login_id, display_name, school_code, role")
+      .select("id, login_id, display_name, school_code, birth_year, role")
       .order("created_at", { ascending: false });
     if (q) {
       query = query.or(`login_id.ilike.%${q}%,display_name.ilike.%${q}%`);
@@ -69,6 +71,8 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
       display_name: p.display_name,
       role: p.role,
       schoolName: p.school_code ? schoolMap.get(p.school_code) ?? null : null,
+      gradeLabel:
+        p.role === "student" ? estimateGradeLabel(p.birth_year) : null,
     }));
   } catch (e) {
     envError = e instanceof Error ? e.message : "데이터를 불러오지 못했어요.";
@@ -137,6 +141,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
                   loginId={u.login_id}
                   displayName={u.display_name ?? "(이름 미입력)"}
                   schoolName={u.schoolName ?? "(학교 미선택)"}
+                  gradeLabel={u.gradeLabel}
                   roleLabel={ROLE_LABEL[u.role] ?? u.role}
                 />
               ))}

@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { signUp } from "./actions";
 import { LOGIN_ID_RE } from "@/lib/login-id";
+import { MIN_BIRTH_YEAR, maxBirthYear, estimateGradeLabel } from "@/lib/grade";
 
 interface School {
   code: string;
@@ -23,6 +24,7 @@ export function SignupForm({ schools }: { schools: School[] }) {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [name, setName] = useState("");
+  const [birthYear, setBirthYear] = useState("");
   const [filter, setFilter] = useState("");
   const [schoolCode, setSchoolCode] = useState<string | null>(null);
   const [typeFilter, setTypeFilter] = useState<"all" | "middle" | "high" | "special">("all");
@@ -63,6 +65,11 @@ export function SignupForm({ schools }: { schools: School[] }) {
       setError("이름은 2자 이상 입력해 주세요.");
       return;
     }
+    const by = Number(birthYear);
+    if (!Number.isInteger(by) || by < MIN_BIRTH_YEAR || by > maxBirthYear()) {
+      setError(`출생연도를 ${MIN_BIRTH_YEAR}~${maxBirthYear()} 사이로 입력해 주세요.`);
+      return;
+    }
     if (!schoolCode) {
       setError("소속 학교를 선택해 주세요.");
       return;
@@ -72,6 +79,7 @@ export function SignupForm({ schools }: { schools: School[] }) {
         loginId: id,
         password,
         displayName: nm,
+        birthYear: by,
         schoolCode,
       });
       if (!res.ok) {
@@ -137,20 +145,44 @@ export function SignupForm({ schools }: { schools: School[] }) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-semibold text-fg-strong" htmlFor="name">
-          이름
-        </label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="실명을 입력해 주세요"
-          className="w-full h-11 px-3 rounded-button border border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500"
-          maxLength={40}
-          required
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-fg-strong" htmlFor="name">
+            이름
+          </label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="실명을 입력해 주세요"
+            className="w-full h-11 px-3 rounded-button border border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500"
+            maxLength={40}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-fg-strong" htmlFor="birthYear">
+            출생연도
+          </label>
+          <input
+            id="birthYear"
+            type="number"
+            inputMode="numeric"
+            value={birthYear}
+            onChange={(e) => setBirthYear(e.target.value)}
+            placeholder="예: 2011"
+            min={MIN_BIRTH_YEAR}
+            max={maxBirthYear()}
+            className="w-full h-11 px-3 rounded-button border border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500"
+            required
+          />
+          {birthYear && estimateGradeLabel(Number(birthYear)) && (
+            <p className="text-xs text-accent-600 font-semibold">
+              {estimateGradeLabel(Number(birthYear))}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">

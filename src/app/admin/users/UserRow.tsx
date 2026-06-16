@@ -9,10 +9,18 @@ interface Props {
   loginId: string | null;
   displayName: string;
   schoolName: string;
+  gradeLabel?: string | null;
   roleLabel: string;
 }
 
-export function UserRow({ id, loginId, displayName, schoolName, roleLabel }: Props) {
+export function UserRow({
+  id,
+  loginId,
+  displayName,
+  schoolName,
+  gradeLabel,
+  roleLabel,
+}: Props) {
   const [pending, startTransition] = useTransition();
   const [tempPw, setTempPw] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +50,12 @@ export function UserRow({ id, loginId, displayName, schoolName, roleLabel }: Pro
               {roleLabel}
             </span>
           </p>
-          <p className="text-sm text-fg-muted">{schoolName}</p>
+          <p className="text-sm text-fg-muted">
+            {schoolName}
+            {gradeLabel && (
+              <span className="text-accent-600 font-semibold"> · {gradeLabel}</span>
+            )}
+          </p>
           {loginId && (
             <p className="text-xs text-fg-subtle mt-1">
               아이디 · <span className="font-mono">{loginId}</span>

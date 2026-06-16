@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAdminSupabase } from "@/data/supabase-admin";
 import { isValidLoginId, loginIdToEmail } from "@/lib/login-id";
+import { isValidBirthYear } from "@/lib/grade";
 
 type SignupResult = { ok: true } | { ok: false; message: string };
 
@@ -10,12 +11,14 @@ export async function signUp(input: {
   loginId: string;
   password: string;
   displayName: string;
+  birthYear: number;
   schoolCode: string;
 }): Promise<SignupResult> {
   const loginId = input.loginId.trim().toLowerCase();
   const displayName = input.displayName.trim();
   const schoolCode = input.schoolCode.trim();
   const password = input.password;
+  const birthYear = input.birthYear;
 
   if (!isValidLoginId(loginId)) {
     return {
@@ -28,6 +31,9 @@ export async function signUp(input: {
   }
   if (displayName.length < 2) {
     return { ok: false, message: "이름은 2자 이상 입력해 주세요." };
+  }
+  if (!isValidBirthYear(birthYear)) {
+    return { ok: false, message: "출생연도를 올바르게 입력해 주세요." };
   }
   if (!schoolCode) {
     return { ok: false, message: "학교를 선택해 주세요." };
@@ -93,6 +99,7 @@ export async function signUp(input: {
         login_id: loginId,
         display_name: displayName,
         school_code: schoolCode,
+        birth_year: birthYear,
         onboarded_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },

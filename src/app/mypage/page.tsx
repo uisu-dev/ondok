@@ -10,6 +10,7 @@ import { ChangePasswordCard } from "./ChangePasswordCard";
 import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
+import { estimateGradeLabel } from "@/lib/grade";
 
 export const dynamic = "force-dynamic";
 
@@ -162,9 +163,19 @@ export default async function MyPage() {
               </p>
               <p className="text-sm text-fg-muted mt-1">
                 {user.school ? user.school.name : "학교 미지정"}
+                {profile.birth_year && estimateGradeLabel(profile.birth_year) && (
+                  <span className="text-accent-600 font-semibold">
+                    {" "}· {estimateGradeLabel(profile.birth_year)}
+                  </span>
+                )}
               </p>
+              {profile.birth_year && (
+                <p className="text-xs text-fg-subtle mt-1">
+                  {profile.birth_year}년생
+                </p>
+              )}
               {profile.login_id && (
-                <p className="text-xs text-fg-subtle mt-2">
+                <p className="text-xs text-fg-subtle mt-1">
                   아이디 · <span className="font-mono">{profile.login_id}</span>
                 </p>
               )}
