@@ -329,8 +329,15 @@ export default async function HomePage() {
                     >
                       {i + 1}
                     </span>
-                    <span className="flex-1 truncate text-fg-strong font-semibold">
-                      {e.displayName ?? "익명"}
+                    <span className="flex-1 min-w-0">
+                      <span className="block truncate text-fg-strong font-semibold">
+                        {e.displayName ?? "익명"}
+                      </span>
+                      {e.schoolName && (
+                        <span className="block text-[10px] text-fg-subtle truncate">
+                          {e.schoolName}
+                        </span>
+                      )}
                     </span>
                     <span className="font-bold text-accent-600">{e.bestScore}</span>
                   </li>
