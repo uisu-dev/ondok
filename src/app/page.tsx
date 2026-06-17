@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { OnthinkingBanner } from "@/components/OnthinkingBanner";
 import { getPopularBooks, getPopularWorksheets } from "@/data/popular";
+import { getGameLeaderboard } from "@/data/leaderboard";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 
 export const dynamic = "force-dynamic";
@@ -131,9 +132,10 @@ function PillarHeader({
 }
 
 export default async function HomePage() {
-  const [popularBooks, popularWorksheets] = await Promise.all([
+  const [popularBooks, popularWorksheets, gameLeaders] = await Promise.all([
     getPopularBooks(5),
     getPopularWorksheets(5),
+    getGameLeaderboard(5),
   ]);
 
   return (
@@ -268,6 +270,74 @@ export default async function HomePage() {
               <PathItem key={card_key(c, i)} card={c} />
             ))}
           </div>
+        </section>
+
+        {/* 게임: 사고도구어 산성비 + 랭킹 */}
+        <section className="space-y-3">
+          <PillarHeader
+            emoji="🌧️"
+            title="사고도구어 산성비"
+            subtitle="떨어지는 단어를 뜻에 맞게 없애는 게임 · 랭킹에 도전하세요"
+          />
+          <Link href="/game" className="block group">
+            <Card
+              interactive
+              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
+            >
+              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
+                🌧️
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-bold text-fg-strong">지금 도전하기</p>
+                <p className="text-sm text-fg-muted">
+                  뜻을 보고 단어를 클릭해 땅에 닿기 전에 없애기
+                </p>
+              </div>
+              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
+                →
+              </div>
+            </Card>
+          </Link>
+
+          {gameLeaders.length > 0 && (
+            <Card as="section" className="px-5 py-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold text-fg-muted">🏆 랭킹 Top 5</p>
+                <Link
+                  href="/game"
+                  className="text-[11px] font-semibold text-accent-600 hover:text-accent-700"
+                >
+                  전체 보기 →
+                </Link>
+              </div>
+              <ol className="space-y-1">
+                {gameLeaders.map((e, i) => (
+                  <li
+                    key={e.userId}
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <span
+                      className={`w-5 text-center font-bold ${
+                        i === 0
+                          ? "text-cat-soc"
+                          : i === 1
+                            ? "text-fg-muted"
+                            : i === 2
+                              ? "text-cat-hum"
+                              : "text-fg-subtle"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="flex-1 truncate text-fg-strong font-semibold">
+                      {e.displayName ?? "익명"}
+                    </span>
+                    <span className="font-bold text-accent-600">{e.bestScore}</span>
+                  </li>
+                ))}
+              </ol>
+            </Card>
+          )}
         </section>
 
         <OnthinkingBanner />
