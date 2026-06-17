@@ -46,6 +46,15 @@ export default function ResultPage() {
     }
     setAnswer(parsed);
 
+    // MBTI 진단이면 로그인 사용자의 프로필에 결과 저장 (비로그인은 무시됨)
+    if (parsed.mode === "mbti" && parsed.mbti) {
+      fetch("/api/me/mbti", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mbti: parsed.mbti }),
+      }).catch(() => {});
+    }
+
     let cancelled = false;
     (async () => {
       const books: Book[] = await getAllBooks();

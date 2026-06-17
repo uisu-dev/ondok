@@ -18,6 +18,7 @@ export interface ProfileRow {
   display_name: string | null;
   school_code: string | null;
   birth_year: number | null;
+  mbti: string | null;
   role: Role;
   teacher_application_status: TeacherApplicationStatus;
   teacher_application_at: string | null;

@@ -366,14 +366,26 @@ export default function SagoLearnPage() {
                     )}
                   </p>
                 )}
-                <label className="flex items-center gap-2 text-sm text-fg-strong cursor-pointer p-2 rounded-button hover:bg-surface-muted">
-                  <input
-                    type="checkbox"
-                    checked={!!known[keyOf(question.correct)]}
-                    onChange={() => toggleKnown(question.correct)}
-                  />
-                  ‘{question.correct.word}’를 아는 단어로 표시
-                </label>
+                {/* 정답을 맞힌 경우에만 '아는 단어' 저장 가능 (틀린 단어 자가 체크 방지) */}
+                {isCorrect ? (
+                  <button
+                    type="button"
+                    onClick={() => toggleKnown(question.correct)}
+                    className={`w-full flex items-center justify-center gap-1.5 px-4 py-3 rounded-button border-2 font-bold text-sm transition-colors ${
+                      known[keyOf(question.correct)]
+                        ? "border-[var(--color-cat-sci)] bg-[color-mix(in_oklab,var(--color-cat-sci)_16%,white)] text-[var(--color-cat-sci)]"
+                        : "border-accent-400 bg-accent-50 text-accent-700 hover:bg-accent-100"
+                    }`}
+                  >
+                    {known[keyOf(question.correct)]
+                      ? `✓ ‘${question.correct.word}’ 아는 단어로 저장됨 (눌러서 취소)`
+                      : `⭐ ‘${question.correct.word}’를 아는 단어로 저장`}
+                  </button>
+                ) : (
+                  <p className="text-xs text-fg-subtle text-center">
+                    정답을 맞힌 단어만 ‘아는 단어’로 저장할 수 있어요.
+                  </p>
+                )}
                 <Button onClick={nextQuestion} className="w-full">
                   다음 문제 →
                 </Button>

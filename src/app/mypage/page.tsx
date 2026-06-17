@@ -11,6 +11,8 @@ import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 import { estimateGradeLabel } from "@/lib/grade";
+import { labelForMBTI } from "@/lib/mbti";
+import type { MBTIType } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -186,6 +188,43 @@ export default async function MyPage() {
               {roleInfo.text}
             </span>
           </div>
+        </Card>
+
+        {/* MBTI 진단 결과 */}
+        <Card as="section" className="px-6 py-6 space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-fg-muted">성향 진단</p>
+              <p className="text-lg font-bold text-fg-strong mt-1">나의 MBTI</p>
+            </div>
+            <Link
+              href="/quiz/mbti"
+              className="h-9 px-3 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-semibold flex items-center"
+            >
+              {profile.mbti ? "다시 검사" : "검사하기"}
+            </Link>
+          </div>
+          {profile.mbti ? (
+            <div className="flex items-baseline gap-2">
+              <span
+                className="font-bold text-cat-lit"
+                style={{ fontSize: 40, lineHeight: 1 }}
+              >
+                {profile.mbti}
+              </span>
+              <span className="text-sm text-fg-muted">
+                {labelForMBTI(profile.mbti as MBTIType)}
+              </span>
+            </div>
+          ) : (
+            <p className="text-xs text-fg-subtle">
+              아직 MBTI 검사를 하지 않았어요.{" "}
+              <Link href="/quiz/mbti" className="text-accent-600 font-semibold">
+                MBTI로 책 찾기
+              </Link>
+              를 하면 결과가 여기에 자동 저장돼요.
+            </p>
+          )}
         </Card>
 
         {/* 사고도구어 학습 진도 */}
