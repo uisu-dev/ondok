@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import sagoData from "@/data/sago-words.json";
 import definitionsData from "@/data/sago-definitions.json";
+import examplesData from "@/data/sago-examples.json";
 
 type Grade = 1 | 2 | 3 | 4;
 type GradeFilter = "all" | Grade;
@@ -24,7 +25,16 @@ const ALL_DEFS = definitionsData.definitions as Record<
   Record<string, string>
 >;
 const ALL_WORDS = sagoData.words as WordEntry[];
+const ALL_EXAMPLES = examplesData.examples as Record<
+  string,
+  { masked: string; word: string }
+>;
 const TOTAL_BY_GRADE: Record<Grade, number> = { 1: 43, 2: 293, 3: 585, 4: 466 };
+
+/** 마스킹된 예문에서 ○ 블록을 실제 단어로 되돌려 공개. */
+function revealExample(masked: string, word: string): string {
+  return masked.split("○".repeat(word.length)).join(word);
+}
 
 function keyOf(w: WordEntry): string {
   return `${w.grade}.${w.raw}`;
@@ -313,6 +323,22 @@ export default function SagoLearnPage() {
             >
               {question.definition}
             </p>
+            {(() => {
+              const ex = ALL_EXAMPLES[keyOf(question.correct)];
+              if (!ex) return null;
+              return (
+                <div className="rounded-button bg-surface-muted px-4 py-3 border border-border">
+                  <p className="text-[11px] font-bold text-accent-600 mb-1">
+                    📝 예문{selected === null ? " (빈칸에 들어갈 단어는?)" : ""}
+                  </p>
+                  <p className="text-sm text-fg-strong leading-relaxed">
+                    {selected !== null
+                      ? revealExample(ex.masked, ex.word)
+                      : ex.masked}
+                  </p>
+                </div>
+              );
+            })()}
             <div className="grid grid-cols-2 gap-2 pt-1">
               {question.options.map((opt, i) => {
                 const sel = selected && keyOf(selected) === keyOf(opt);
