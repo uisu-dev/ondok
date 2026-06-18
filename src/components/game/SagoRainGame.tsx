@@ -40,7 +40,7 @@ const POOL: PoolItem[] = (() => {
 })();
 
 const FIELD_HEIGHT = 440;
-const MAX_WORDS = 7;
+const MAX_WORDS = 12;
 const START_LIVES = 3;
 
 type Status = "idle" | "playing" | "over";
@@ -112,9 +112,9 @@ export function SagoRainGame() {
 
       if (s.status === "playing") {
         s.elapsed += dt;
-        // 천천히 시작해서 완만하게 빨라짐 — 학생들이 오래 도전하도록
-        const fallSpeed = 28 + s.elapsed * 1.3;
-        const spawnInterval = Math.max(1.1, 2.8 - s.elapsed * 0.025);
+        // 아주 천천히 떨어지되 단어는 자주·많이 등장 — 뜻을 보고 단어를 찾는 학습형
+        const fallSpeed = 18 + s.elapsed * 0.7;
+        const spawnInterval = Math.max(0.55, 1.3 - s.elapsed * 0.02);
 
         s.spawnTimer -= dt;
         if (s.spawnTimer <= 0 && s.words.length < MAX_WORDS) {

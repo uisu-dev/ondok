@@ -5,7 +5,8 @@
     "middle": 146,
     "high": 84,
     "special": 8,
-    "total": 238
+    "office": 1,
+    "total": 239
   },
   "schools": [
     {
@@ -58,7 +59,7 @@
     },
     {
       "code": "중02-03",
-      "name": "공주여중학교",
+      "name": "공주여자중학교",
       "nameRaw": "공주여중",
       "type": "middle"
     },
@@ -1435,6 +1436,12 @@
       "name": "천안인애학교",
       "nameRaw": "천안인애학교",
       "type": "special"
+    },
+    {
+      "code": "본청00",
+      "name": "충남교육청",
+      "nameRaw": "충남교육청",
+      "type": "office"
     }
   ]
 }

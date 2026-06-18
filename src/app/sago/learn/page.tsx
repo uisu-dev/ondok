@@ -271,15 +271,6 @@ export default function SagoLearnPage() {
               );
             })}
           </div>
-          {streak.total > 0 && (
-            <p className="text-xs text-fg-subtle text-center pt-1">
-              이번 세션 정답률{" "}
-              <strong className="text-fg-strong">
-                {Math.round((streak.correct / streak.total) * 100)}%
-              </strong>{" "}
-              ({streak.correct} / {streak.total})
-            </p>
-          )}
         </Card>
 
         {/* Filters */}

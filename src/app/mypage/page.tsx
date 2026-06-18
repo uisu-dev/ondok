@@ -445,6 +445,12 @@ export default async function MyPage() {
               >
                 활동지 관리
               </Link>
+              <Link
+                href="/admin/students"
+                className="h-10 px-4 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-sm font-semibold flex items-center"
+              >
+                학생 현황
+              </Link>
               {profile.role === "admin" && (
                 <>
                   <Link
