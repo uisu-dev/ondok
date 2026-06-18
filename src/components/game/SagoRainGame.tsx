@@ -112,8 +112,9 @@ export function SagoRainGame() {
 
       if (s.status === "playing") {
         s.elapsed += dt;
-        const fallSpeed = 42 + s.elapsed * 2.6;
-        const spawnInterval = Math.max(0.7, 2.2 - s.elapsed * 0.045);
+        // 천천히 시작해서 완만하게 빨라짐 — 학생들이 오래 도전하도록
+        const fallSpeed = 28 + s.elapsed * 1.3;
+        const spawnInterval = Math.max(1.1, 2.8 - s.elapsed * 0.025);
 
         s.spawnTimer -= dt;
         if (s.spawnTimer <= 0 && s.words.length < MAX_WORDS) {
