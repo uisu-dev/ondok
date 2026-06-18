@@ -36,10 +36,13 @@ for (const row of rows) {
   }
 }
 
-/** "~중", "~고" 로 끝나는 학교는 "~중학교", "~고등학교" 로 정규화. */
+/** "~중", "~고" 로 끝나는 학교는 "~중학교", "~고등학교" 로 정규화.
+ *  "~여중"/"~여고" 는 "~여자중학교"/"~여자고등학교" (단 '부여'는 지역명이라 예외). */
 function normalizeName(name) {
   const n = name.trim();
   if (/(학교|대학교)$/.test(n)) return n;
+  if (n.endsWith("여중") && n !== "부여중") return n.slice(0, -2) + "여자중학교";
+  if (n.endsWith("여고") && n !== "부여고") return n.slice(0, -2) + "여자고등학교";
   if (n.endsWith("중")) return n + "학교";
   if (n.endsWith("고")) return n + "등학교";
   return n;
