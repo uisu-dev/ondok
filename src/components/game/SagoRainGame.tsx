@@ -57,6 +57,8 @@ export function SagoRainGame() {
   const [, forceRender] = useReducer((x) => x + 1, 0);
   const [bestScore, setBestScore] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
+  const [typed, setTyped] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const stateRef = useRef({
     words: [] as FallingWord[],
@@ -163,22 +165,28 @@ export function SagoRainGame() {
     s.spawnTimer = 0;
     s.status = "playing";
     setBestScore(null);
+    setTyped("");
     lastRef.current = performance.now();
     forceRender();
+    // 키보드 입력을 받기 위해 입력창에 포커스
+    requestAnimationFrame(() => inputRef.current?.focus());
   }
 
-  function clickWord(id: number) {
+  // 타자 입력 — 입력값이 목표 뜻의 단어와 정확히 일치하면 제거
+  function onType(v: string) {
+    setTyped(v);
     const s = stateRef.current;
     if (s.status !== "playing") return;
-    if (id === s.targetId) {
-      s.words = s.words.filter((w) => w.id !== id);
+    const target = s.words.find((w) => w.id === s.targetId);
+    if (target && v.trim() === target.word) {
+      s.words = s.words.filter((w) => w.id !== target.id);
       s.score += 1;
       s.targetId = s.words.length
         ? s.words[Math.floor(Math.random() * s.words.length)].id
         : null;
+      setTyped("");
       forceRender();
     }
-    // 오답 클릭은 무시 (제거되지 않음)
   }
 
   const s = stateRef.current;
@@ -217,19 +225,24 @@ export function SagoRainGame() {
             "linear-gradient(to bottom, #dbeafe 0%, #eff6ff 60%, #dcfce7 100%)",
         }}
       >
-        {/* 떨어지는 단어 */}
+        {/* 떨어지는 단어 — 목표 단어는 강조 */}
         {s.status === "playing" &&
-          s.words.map((w) => (
-            <button
-              key={w.id}
-              type="button"
-              onClick={() => clickWord(w.id)}
-              style={{ position: "absolute", left: `${w.x}%`, top: w.y }}
-              className="px-3 py-1.5 rounded-button bg-white border-2 border-accent-200 text-fg-strong font-bold text-sm shadow-sm hover:border-accent-400 active:scale-95 transition-transform"
-            >
-              {w.word}
-            </button>
-          ))}
+          s.words.map((w) => {
+            const isTarget = w.id === s.targetId;
+            return (
+              <div
+                key={w.id}
+                style={{ position: "absolute", left: `${w.x}%`, top: w.y }}
+                className={`px-3 py-1.5 rounded-button font-bold text-sm shadow-sm border-2 ${
+                  isTarget
+                    ? "bg-accent-600 text-white border-accent-700"
+                    : "bg-white text-fg-strong border-accent-200"
+                }`}
+              >
+                {w.word}
+              </div>
+            );
+          })}
 
         {/* 바닥선 */}
         <div className="absolute left-0 right-0 bottom-0 h-7 bg-[color-mix(in_oklab,var(--color-cat-sci)_22%,white)] border-t-2 border-[var(--color-cat-sci)]" />
@@ -245,8 +258,8 @@ export function SagoRainGame() {
                     사고도구어 산성비
                   </h2>
                   <p className="text-sm text-fg-muted leading-relaxed max-w-[280px] mx-auto">
-                    아래에 나오는 <strong>뜻</strong>을 보고, 하늘에서 떨어지는 단어
-                    중 맞는 것을 클릭해 없애세요. 단어가 땅에 닿으면 생명이 줄어요!
+                    아래 <strong>뜻</strong>을 보고, 떨어지는 단어를 키보드로
+                    입력해 없애세요. 단어가 땅에 닿으면 생명이 줄어요!
                   </p>
                   <button
                     type="button"
@@ -292,12 +305,12 @@ export function SagoRainGame() {
         )}
       </Card>
 
-      {/* 목표 뜻 */}
-      <Card as="section" className="px-5 py-4 min-h-[72px] flex items-center">
+      {/* 목표 뜻 + 타자 입력 */}
+      <Card as="section" className="px-5 py-4 space-y-3">
         {s.status === "playing" && target ? (
           <div>
             <p className="text-[11px] font-bold text-accent-600 mb-0.5">
-              이 뜻의 단어를 찾아 클릭하세요
+              이 뜻의 단어를 입력하세요 (강조된 단어)
             </p>
             <p className="text-sm text-fg-strong leading-snug">{target.def}</p>
           </div>
@@ -306,6 +319,22 @@ export function SagoRainGame() {
             게임을 시작하면 여기에 단어의 뜻이 표시돼요.
           </p>
         )}
+        <input
+          ref={inputRef}
+          type="text"
+          value={typed}
+          onChange={(e) => onType(e.target.value)}
+          disabled={s.status !== "playing"}
+          placeholder={
+            s.status === "playing"
+              ? "뜻에 맞는 단어를 입력하세요"
+              : "게임을 시작하면 입력할 수 있어요"
+          }
+          autoComplete="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          className="w-full h-12 px-4 rounded-button border-2 border-accent-300 bg-surface text-fg-strong text-base focus:outline-none focus:border-accent-500 disabled:opacity-50"
+        />
       </Card>
     </div>
   );
