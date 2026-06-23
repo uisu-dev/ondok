@@ -68,6 +68,7 @@ export function ChosungGame() {
   const [typed, setTyped] = useState("");
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(START_LIVES);
+  const [revealed, setRevealed] = useState(0); // 힌트로 공개한 글자 수
   const [feedback, setFeedback] = useState<string | null>(null);
   const [bestScore, setBestScore] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
@@ -84,16 +85,25 @@ export function ChosungGame() {
     setFeedback(null);
     setBestScore(null);
     setTyped("");
+    setRevealed(0);
     setCurrent(pick("", 1));
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
   function next() {
     setTyped("");
+    setRevealed(0);
     setFeedback(null);
     const maxGrade = maxGradeForScore(scoreRef.current);
     setCurrent((c) => pick(c?.word ?? "", maxGrade));
     requestAnimationFrame(() => inputRef.current?.focus());
+  }
+
+  function useHint() {
+    if (status !== "playing" || !current) return;
+    // 마지막 글자는 남겨둠 (최소 1글자는 직접 맞히도록)
+    setRevealed((r) => Math.min(r + 1, current.word.length - 1));
+    inputRef.current?.focus();
   }
 
   function endGame() {
@@ -133,14 +143,9 @@ export function ChosungGame() {
     }
   }
 
-  // 정답을 다 입력하면 자동 제출 (글자 수 일치 + 정답이면)
+  // 입력만 갱신 — 정답이어도 '확인'을 눌러야 채점됨
   function onType(v: string) {
     setTyped(v);
-    if (status === "playing" && current && v.trim() === current.word) {
-      scoreRef.current += 1;
-      setScore(scoreRef.current);
-      next();
-    }
   }
 
   useEffect(() => {
@@ -185,6 +190,13 @@ export function ChosungGame() {
               <p className="text-sm text-fg-strong leading-relaxed">
                 {current.def}
               </p>
+              {revealed > 0 && (
+                <p className="text-base font-bold text-cat-soc tracking-[0.2em]">
+                  💡{" "}
+                  {current.word.slice(0, revealed) +
+                    "○".repeat(current.word.length - revealed)}
+                </p>
+              )}
             </div>
             <input
               ref={inputRef}
@@ -194,14 +206,24 @@ export function ChosungGame() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") submit();
               }}
-              placeholder="단어를 입력하고 Enter"
+              placeholder="단어 입력 후 확인 (또는 Enter)"
               autoComplete="off"
               autoCapitalize="off"
               spellCheck={false}
               className="w-full h-12 px-4 rounded-button border-2 border-accent-300 bg-surface text-fg-strong text-base focus:outline-none focus:border-accent-500"
             />
             <div className="flex items-center justify-between gap-2">
-              <p className="text-sm font-bold text-cat-hum">{feedback ?? ""}</p>
+              <p className="text-sm font-bold text-cat-hum flex-1 min-w-0 truncate">
+                {feedback ?? ""}
+              </p>
+              <button
+                type="button"
+                onClick={useHint}
+                disabled={revealed >= current.word.length - 1}
+                className="h-10 px-3 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-sm font-bold disabled:opacity-40"
+              >
+                💡 힌트
+              </button>
               <button
                 type="button"
                 onClick={submit}
