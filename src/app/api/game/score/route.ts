@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       { status: 401 }
     );
   }
-  let body: { score?: number };
+  let body: { score?: number; game_type?: string };
   try {
     body = await req.json();
   } catch {
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
   if (!Number.isFinite(score) || score < 0 || score > 100000) {
     return NextResponse.json({ ok: false, error: "점수 오류" }, { status: 400 });
   }
+  const gameType = body.game_type === "chosung" ? "chosung" : "match";
 
   let admin;
   try {
@@ -38,16 +39,17 @@ export async function POST(req: NextRequest) {
   }
   const { error } = await admin
     .from("game_scores")
-    .insert({ user_id: user.id, score });
+    .insert({ user_id: user.id, score, game_type: gameType });
   if (error) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 
-  // 내 최고점
+  // 내 최고점 (같은 게임 종류 기준)
   const { data: best } = await admin
     .from("game_scores")
     .select("score")
     .eq("user_id", user.id)
+    .eq("game_type", gameType)
     .order("score", { ascending: false })
     .limit(1)
     .maybeSingle();

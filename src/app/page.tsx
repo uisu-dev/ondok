@@ -135,7 +135,7 @@ export default async function HomePage() {
   const [popularBooks, popularWorksheets, gameLeaders] = await Promise.all([
     getPopularBooks(5),
     getPopularWorksheets(5),
-    getGameLeaderboard(5),
+    getGameLeaderboard("match", 5),
   ]);
 
   return (
@@ -272,12 +272,12 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* 게임: 사고도구어 짝 맞추기 + 랭킹 */}
+        {/* 게임: 사고도구어 게임 2종 + 랭킹 */}
         <section className="space-y-3">
           <PillarHeader
-            emoji="🃏"
-            title="사고도구어 짝 맞추기"
-            subtitle="단어와 뜻 카드를 짝지어 맞히는 게임 · 랭킹에 도전하세요"
+            emoji="🎮"
+            title="사고도구어 게임"
+            subtitle="놀이로 단어를 익히고 랭킹에 도전하세요"
           />
           <Link href="/game" className="block group">
             <Card
@@ -288,9 +288,28 @@ export default async function HomePage() {
                 🃏
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-bold text-fg-strong">지금 도전하기</p>
+                <p className="text-base font-bold text-fg-strong">짝 맞추기</p>
                 <p className="text-sm text-fg-muted">
                   카드를 뒤집어 단어와 뜻을 짝지어 보기
+                </p>
+              </div>
+              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
+                →
+              </div>
+            </Card>
+          </Link>
+          <Link href="/game/chosung" className="block group">
+            <Card
+              interactive
+              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
+            >
+              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
+                🔤
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-bold text-fg-strong">초성 퀴즈</p>
+                <p className="text-sm text-fg-muted">
+                  초성과 뜻을 보고 사고도구어 맞히기
                 </p>
               </div>
               <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
@@ -302,7 +321,9 @@ export default async function HomePage() {
           {gameLeaders.length > 0 && (
             <Card as="section" className="px-5 py-4 space-y-2">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-fg-muted">🏆 랭킹 Top 5</p>
+                <p className="text-xs font-bold text-fg-muted">
+                  🏆 짝 맞추기 랭킹 Top 5
+                </p>
                 <Link
                   href="/game"
                   className="text-[11px] font-semibold text-accent-600 hover:text-accent-700"

@@ -111,7 +111,7 @@ export function SagoMatchGame() {
     fetch("/api/game/score", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ score }),
+      body: JSON.stringify({ score, game_type: "match" }),
     })
       .then((r) => r.json())
       .then((j) => {
