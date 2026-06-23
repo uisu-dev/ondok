@@ -16,6 +16,7 @@ interface PoolItem {
   word: string;
   def: string;
   cho: string;
+  grade: number;
 }
 
 // 뜻이 있는 2~5글자 한글 단어만 (초성 퀴즈에 적당)
@@ -29,7 +30,7 @@ const POOL: PoolItem[] = (() => {
     const d = defs[String(w.grade)]?.[w.raw];
     if (!d || !d.trim()) continue;
     if (!/^[가-힣]{2,5}$/.test(w.word)) continue;
-    out.push({ word: w.word, def: d.trim(), cho: toChosung(w.word) });
+    out.push({ word: w.word, def: d.trim(), cho: toChosung(w.word), grade: w.grade });
   }
   return out;
 })();
@@ -37,12 +38,28 @@ const POOL: PoolItem[] = (() => {
 const START_LIVES = 3;
 type Status = "idle" | "playing" | "over";
 
-function pick(exclude: string): PoolItem {
-  for (let i = 0; i < 8; i++) {
-    const it = POOL[Math.floor(Math.random() * POOL.length)];
+const GRADE_LABEL: Record<number, string> = {
+  1: "1급 · 쉬움",
+  2: "2급 · 보통",
+  3: "3급 · 어려움",
+  4: "4급 · 매우 어려움",
+};
+
+/** 점수가 쌓일수록 더 높은 등급까지 출제 — 쉬운 1급부터 시작. */
+function maxGradeForScore(score: number): number {
+  if (score < 5) return 1;
+  if (score < 12) return 2;
+  if (score < 22) return 3;
+  return 4;
+}
+
+function pick(exclude: string, maxGrade: number): PoolItem {
+  const pool = POOL.filter((p) => p.grade <= maxGrade);
+  for (let i = 0; i < 10; i++) {
+    const it = pool[Math.floor(Math.random() * pool.length)];
     if (it.word !== exclude) return it;
   }
-  return POOL[Math.floor(Math.random() * POOL.length)];
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 export function ChosungGame() {
@@ -67,14 +84,15 @@ export function ChosungGame() {
     setFeedback(null);
     setBestScore(null);
     setTyped("");
-    setCurrent(pick(""));
+    setCurrent(pick("", 1));
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
   function next() {
     setTyped("");
     setFeedback(null);
-    setCurrent((c) => pick(c?.word ?? ""));
+    const maxGrade = maxGradeForScore(scoreRef.current);
+    setCurrent((c) => pick(c?.word ?? "", maxGrade));
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
@@ -150,9 +168,14 @@ export function ChosungGame() {
         {status === "playing" && current ? (
           <>
             <div className="space-y-2">
-              <p className="text-[11px] font-bold text-accent-600">
-                초성을 보고 뜻에 맞는 단어를 입력하세요
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-bold text-accent-600">
+                  초성을 보고 뜻에 맞는 단어를 입력하세요
+                </p>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-chip bg-accent-100 text-accent-700">
+                  {GRADE_LABEL[current.grade] ?? `${current.grade}급`}
+                </span>
+              </div>
               <p
                 className="font-bold text-fg-strong tracking-[0.3em]"
                 style={{ fontSize: 40, lineHeight: 1.1 }}
