@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
-import { SagoRainGame } from "@/components/game/SagoRainGame";
+import { SagoMatchGame } from "@/components/game/SagoMatchGame";
 import { getGameLeaderboard } from "@/data/leaderboard";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +17,7 @@ export default async function GamePage() {
           </Link>
         </div>
 
-        <SagoRainGame />
+        <SagoMatchGame />
 
         {/* 랭킹 */}
         <Card as="section" className="px-6 py-6 space-y-3">
