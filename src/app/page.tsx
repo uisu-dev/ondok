@@ -5,6 +5,7 @@ import { OnthinkingBanner } from "@/components/OnthinkingBanner";
 import { getPopularBooks, getPopularWorksheets } from "@/data/popular";
 import { getGameLeaderboard } from "@/data/leaderboard";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
+import { maskName } from "@/lib/mask";
 
 export const dynamic = "force-dynamic";
 
@@ -352,7 +353,7 @@ export default async function HomePage() {
                     </span>
                     <span className="flex-1 min-w-0">
                       <span className="block truncate text-fg-strong font-semibold">
-                        {e.displayName ?? "익명"}
+                        {maskName(e.displayName)}
                       </span>
                       {e.schoolName && (
                         <span className="block text-[10px] text-fg-subtle truncate">

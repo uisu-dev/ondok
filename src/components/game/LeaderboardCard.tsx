@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import type { LeaderboardEntry } from "@/data/leaderboard";
+import { maskName } from "@/lib/mask";
 
 export function LeaderboardCard({
   leaders,
@@ -40,7 +41,7 @@ export function LeaderboardCard({
               </span>
               <span className="flex-1 min-w-0">
                 <span className="block text-sm font-semibold text-fg-strong truncate">
-                  {e.displayName ?? "익명"}
+                  {maskName(e.displayName)}
                 </span>
                 {e.schoolName && (
                   <span className="block text-[10px] text-fg-subtle truncate">
