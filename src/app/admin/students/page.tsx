@@ -4,14 +4,17 @@ import { Card } from "@/components/ui/Card";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { canAccessAdmin } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
-import { estimateGradeLabel } from "@/lib/grade";
+import { estimateGradeLabel, estimateGradeNumber } from "@/lib/grade";
+import { StudentsTable, type StudentRow } from "./StudentsTable";
 
 export const dynamic = "force-dynamic";
 
-interface StudentRow {
+interface DashRow {
   id: string;
-  name: string;
-  grade: string | null;
+  display_name: string | null;
+  school_code: string | null;
+  school_name: string | null;
+  birth_year: number | null;
   mbti: string | null;
   sago: number;
   books: number;
@@ -22,11 +25,13 @@ export default async function StudentsPage() {
   const access = await canAccessAdmin();
   if (!access.ok) redirect("/admin/login");
 
-  const schoolCode = access.user?.profile?.school_code ?? null;
-  const schoolName = access.user?.school?.name ?? null;
+  // 슈퍼관리자(HMAC)·admin: 전체 학생 / 교원(teacher): 소속 학교만
+  const isSuper = access.reason === "hmac" || access.reason === "admin";
+  const teacherSchool = access.user?.profile?.school_code ?? null;
+  const teacherSchoolName = access.user?.school?.name ?? null;
 
-  // 슈퍼관리자(HMAC) 등 학교 미지정인 경우 안내
-  if (!schoolCode) {
+  // 교원인데 소속 학교가 없으면 안내
+  if (!isSuper && !teacherSchool) {
     return (
       <div>
         <AdminHeader />
@@ -47,42 +52,26 @@ export default async function StudentsPage() {
     );
   }
 
+  const targetSchool = isSuper ? null : teacherSchool; // null = 전체
+
   let students: StudentRow[] = [];
   let envError: string | null = null;
   try {
     const admin = getAdminSupabase();
-    const { data: rawStudents, error } = await admin
-      .from("profiles")
-      .select("id, display_name, birth_year, mbti")
-      .eq("school_code", schoolCode)
-      .eq("role", "student")
-      .order("display_name");
+    const { data, error } = await admin.rpc("student_dashboard", {
+      p_school_code: targetSchool,
+    });
     if (error) throw error;
-    const list = rawStudents ?? [];
-    const ids = list.map((s) => s.id);
-
-    const sagoCount: Record<string, number> = {};
-    const bookCount: Record<string, number> = {};
-    const sheetCount: Record<string, number> = {};
-    if (ids.length > 0) {
-      const [sg, fv, rp] = await Promise.all([
-        admin.from("sago_progress").select("user_id").in("user_id", ids),
-        admin.from("favorites").select("user_id").eq("kind", "book").in("user_id", ids),
-        admin.from("worksheet_responses").select("user_id").in("user_id", ids),
-      ]);
-      for (const r of sg.data ?? []) sagoCount[r.user_id] = (sagoCount[r.user_id] ?? 0) + 1;
-      for (const r of fv.data ?? []) bookCount[r.user_id] = (bookCount[r.user_id] ?? 0) + 1;
-      for (const r of rp.data ?? []) sheetCount[r.user_id] = (sheetCount[r.user_id] ?? 0) + 1;
-    }
-
-    students = list.map((s) => ({
-      id: s.id,
-      name: s.display_name ?? "(이름 미입력)",
-      grade: estimateGradeLabel(s.birth_year),
-      mbti: s.mbti,
-      sago: sagoCount[s.id] ?? 0,
-      books: bookCount[s.id] ?? 0,
-      sheets: sheetCount[s.id] ?? 0,
+    students = ((data ?? []) as DashRow[]).map((r) => ({
+      id: r.id,
+      name: r.display_name ?? "(이름 미입력)",
+      schoolName: r.school_name,
+      gradeLabel: estimateGradeLabel(r.birth_year),
+      gradeNum: estimateGradeNumber(r.birth_year),
+      mbti: r.mbti,
+      sago: Number(r.sago),
+      books: Number(r.books),
+      sheets: Number(r.sheets),
     }));
   } catch (e) {
     envError = e instanceof Error ? e.message : "데이터를 불러오지 못했어요.";
@@ -92,9 +81,6 @@ export default async function StudentsPage() {
   const sum = (k: "sago" | "books" | "sheets") =>
     students.reduce((a, s) => a + s[k], 0);
   const avg = (total: number) => (n > 0 ? Math.round((total / n) * 10) / 10 : 0);
-  const totalSago = sum("sago");
-  const totalBooks = sum("books");
-  const totalSheets = sum("sheets");
 
   return (
     <div>
@@ -107,10 +93,12 @@ export default async function StudentsPage() {
           <Card as="section" className="px-6 py-6 space-y-1">
             <p className="text-xs font-semibold text-accent-600">학생 현황</p>
             <h1 className="text-2xl font-bold text-fg-strong">
-              {schoolName ?? "우리 학교"}
+              {isSuper ? "전체 학생" : teacherSchoolName ?? "우리 학교"}
             </h1>
             <p className="text-sm text-fg-muted">
-              소속 학생들의 학습 현황이에요. 수업 참고 자료로 활용하세요.
+              {isSuper
+                ? "모든 가입 학생의 학습 현황이에요. 이름·학교·학년으로 필터링할 수 있어요."
+                : "소속 학생들의 학습 현황이에요. 수업 참고 자료로 활용하세요."}
             </p>
           </Card>
 
@@ -118,82 +106,23 @@ export default async function StudentsPage() {
             <Card as="section" className="px-6 py-5 bg-surface-muted">
               <p className="text-sm font-bold text-cat-hum">⚠️ 오류</p>
               <p className="text-xs text-fg-muted mt-1">{envError}</p>
+              <p className="text-xs text-fg-muted mt-2">
+                scripts/migrations/2026-06-20-student-dashboard.sql 가 적용되어 있는지 확인해 주세요.
+              </p>
             </Card>
           )}
 
-          {/* 학교 통계 */}
           {!envError && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <StatCard label="학생 수" value={n} unit="명" />
-              <StatCard
-                label="평균 아는 단어"
-                value={avg(totalSago)}
-                unit="개"
-                hint={`총 ${totalSago}개`}
-              />
-              <StatCard
-                label="도서 선택"
-                value={totalBooks}
-                unit="권"
-                hint={`평균 ${avg(totalBooks)}권`}
-              />
-              <StatCard
-                label="활동지 풀이"
-                value={totalSheets}
-                unit="건"
-                hint={`평균 ${avg(totalSheets)}건`}
-              />
+              <StatCard label="평균 아는 단어" value={avg(sum("sago"))} unit="개" hint={`총 ${sum("sago")}개`} />
+              <StatCard label="도서 선택" value={sum("books")} unit="권" hint={`평균 ${avg(sum("books"))}권`} />
+              <StatCard label="활동지 풀이" value={sum("sheets")} unit="건" hint={`평균 ${avg(sum("sheets"))}건`} />
             </div>
           )}
 
-          {/* 개별 학생 */}
-          {!envError && n === 0 ? (
-            <Card as="section" className="px-6 py-8 text-center">
-              <p className="text-sm text-fg-muted">
-                아직 가입한 학생이 없어요.
-              </p>
-            </Card>
-          ) : (
-            !envError && (
-              <Card as="section" className="px-2 py-2 overflow-x-auto">
-                <table className="w-full text-sm min-w-[560px]">
-                  <thead>
-                    <tr className="text-fg-muted text-xs border-b border-border">
-                      <th className="text-left font-semibold px-3 py-2">이름</th>
-                      <th className="text-left font-semibold px-3 py-2">학년</th>
-                      <th className="text-center font-semibold px-3 py-2">사고도구어</th>
-                      <th className="text-center font-semibold px-3 py-2">도서</th>
-                      <th className="text-center font-semibold px-3 py-2">활동지</th>
-                      <th className="text-center font-semibold px-3 py-2">MBTI</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {students.map((s) => (
-                      <tr key={s.id} className="border-b border-border last:border-0">
-                        <td className="px-3 py-2.5 font-semibold text-fg-strong">
-                          {s.name}
-                        </td>
-                        <td className="px-3 py-2.5 text-fg-muted text-xs">
-                          {s.grade ?? "—"}
-                        </td>
-                        <td className="px-3 py-2.5 text-center font-bold text-accent-600">
-                          {s.sago}
-                        </td>
-                        <td className="px-3 py-2.5 text-center text-fg-strong">
-                          {s.books}
-                        </td>
-                        <td className="px-3 py-2.5 text-center text-fg-strong">
-                          {s.sheets}
-                        </td>
-                        <td className="px-3 py-2.5 text-center text-cat-lit font-semibold">
-                          {s.mbti ?? "—"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </Card>
-            )
+          {!envError && (
+            <StudentsTable students={students} showSchool={isSuper} />
           )}
 
           <p className="text-xs text-fg-subtle leading-relaxed">

@@ -16,6 +16,17 @@ export function isValidBirthYear(year: number, now = new Date()): boolean {
   );
 }
 
+/** 추정 학령(1=초1 … 12=고3). 학생 범위 밖이면 null. */
+export function estimateGradeNumber(
+  birthYear: number | null | undefined,
+  now = new Date()
+): number | null {
+  if (!birthYear) return null;
+  const g = now.getFullYear() - birthYear - 6;
+  if (g < 1 || g > 12) return null;
+  return g;
+}
+
 /** 추정 학년 라벨. 학생 범위를 벗어나면 미취학/졸업(성인) 처리. */
 export function estimateGradeLabel(
   birthYear: number | null | undefined,
