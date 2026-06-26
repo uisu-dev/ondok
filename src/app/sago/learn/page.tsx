@@ -175,6 +175,21 @@ export default function SagoLearnPage() {
       correct: s.correct + (right ? 1 : 0),
       total: s.total + 1,
     }));
+    // 정답을 맞히면 자동으로 '아는 단어'에 기록 (학습량이 현황에 반영되도록).
+    // 틀린 단어는 기록하지 않음.
+    if (right) {
+      const k = keyOf(question.correct);
+      if (!known[k]) {
+        setKnown((prev) => ({ ...prev, [k]: true }));
+        if (signedIn) {
+          fetch("/api/sago/progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ add: [k] }),
+          }).catch(() => {});
+        }
+      }
+    }
   }
 
   function toggleKnown(w: WordEntry) {
