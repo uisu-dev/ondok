@@ -5,18 +5,21 @@ export interface LeaderboardEntry {
   bestScore: number;
 }
 
-/** 게임 랭킹 상위 N (사용자별 최고점). gameType 별로 분리. 없으면 빈 배열. */
+/** 게임 랭킹 상위 N. match/chosung 은 최고점(MAX), battle 은 승수 합계(SUM). */
 export async function getGameLeaderboard(
-  gameType: "match" | "chosung" = "match",
+  gameType: "match" | "chosung" | "battle" = "match",
   limit = 10
 ): Promise<LeaderboardEntry[]> {
   try {
     const { getAdminSupabase } = await import("./supabase-admin");
     const supabase = getAdminSupabase();
-    const { data, error } = await supabase.rpc("game_leaderboard", {
-      p_game_type: gameType,
-      p_limit: limit,
-    });
+    const { data, error } =
+      gameType === "battle"
+        ? await supabase.rpc("battle_leaderboard", { p_limit: limit })
+        : await supabase.rpc("game_leaderboard", {
+            p_game_type: gameType,
+            p_limit: limit,
+          });
     if (error || !data) return [];
     return (data as Array<{
       user_id: string;

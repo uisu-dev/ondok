@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
   if (!Number.isFinite(score) || score < 0 || score > 100000) {
     return NextResponse.json({ ok: false, error: "점수 오류" }, { status: 400 });
   }
-  const gameType = body.game_type === "chosung" ? "chosung" : "match";
+  const gt = body.game_type;
+  const gameType =
+    gt === "chosung" || gt === "battle" ? gt : "match";
 
   let admin;
   try {

@@ -16,12 +16,14 @@ export default async function GamePage() {
           <Link href="/" className="text-fg-muted hover:text-fg-strong">
             ← 홈으로
           </Link>
-          <Link
-            href="/game/chosung"
-            className="text-accent-600 hover:text-accent-700"
-          >
-            🔤 초성 퀴즈 하러가기 →
-          </Link>
+          <span className="flex gap-3">
+            <Link href="/game/chosung" className="text-accent-600 hover:text-accent-700">
+              🔤 초성 퀴즈
+            </Link>
+            <Link href="/game/battle" className="text-accent-600 hover:text-accent-700">
+              ⚔️ 배틀
+            </Link>
+          </span>
         </div>
 
         <SagoMatchGame />

@@ -15,9 +15,14 @@ export default async function ChosungGamePage() {
           <Link href="/" className="text-fg-muted hover:text-fg-strong">
             ← 홈으로
           </Link>
-          <Link href="/game" className="text-accent-600 hover:text-accent-700">
-            🃏 짝 맞추기 하러가기 →
-          </Link>
+          <span className="flex gap-3">
+            <Link href="/game" className="text-accent-600 hover:text-accent-700">
+              🃏 짝 맞추기
+            </Link>
+            <Link href="/game/battle" className="text-accent-600 hover:text-accent-700">
+              ⚔️ 배틀
+            </Link>
+          </span>
         </div>
 
         <ChosungGame />
