@@ -338,6 +338,25 @@ export default async function HomePage() {
               </div>
             </Card>
           </Link>
+          <Link href="/game/battle" className="block group">
+            <Card
+              interactive
+              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
+            >
+              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
+                ⚔️
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-bold text-fg-strong">사고도구어 배틀</p>
+                <p className="text-sm text-fg-muted">
+                  퀴즈를 맞혀 사고몬을 공격 · 이기면 승수 기록
+                </p>
+              </div>
+              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
+                →
+              </div>
+            </Card>
+          </Link>
 
           {gameLeaders.length > 0 && (
             <Card as="section" className="px-5 py-4 space-y-2">
