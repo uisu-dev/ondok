@@ -12,14 +12,6 @@ interface SubMenu {
 
 const SUB_MENUS: SubMenu[] = [
   {
-    href: "/worksheet/books",
-    emoji: "📚",
-    title: "온독 추천도서 활동지",
-    subtitle: "추천도서 한 권을 깊이 읽고 푸는 독후 활동",
-    hint: "책 메타정보 + 사고도구어 관점 활동",
-    status: "공개",
-  },
-  {
     href: "/worksheet/exam",
     emoji: "🎯",
     title: "수능·모의고사 비문학 활동지",
@@ -48,15 +40,13 @@ export default function WorksheetHub() {
         </div>
 
         <Card as="section" className="px-6 py-7 space-y-3">
-          <p className="text-sm font-semibold text-accent-600">
-            사고도구어 문해력
-          </p>
+          <p className="text-sm font-semibold text-accent-600">사고도구어</p>
           <h1 className="text-2xl font-bold text-fg-strong leading-snug">
             사고도구어 활동지
           </h1>
           <p className="text-sm text-fg leading-relaxed">
             글을 읽고, 사고도구어를 찾아내고, 자기 언어로 다시 표현하는
-            독후·독해 활동지예요. 세 가지 종류 중 골라 풀어보세요.
+            독해 활동지예요. (온독도서로 만든 독후 활동은 홈의 <strong>온독도서</strong> 메뉴에 있어요.)
           </p>
         </Card>
 

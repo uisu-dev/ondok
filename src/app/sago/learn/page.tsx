@@ -29,7 +29,14 @@ const ALL_EXAMPLES = examplesData.examples as Record<
   string,
   { masked: string; word: string }
 >;
-const TOTAL_BY_GRADE: Record<Grade, number> = { 1: 43, 2: 293, 3: 585, 4: 466 };
+// 실제 단어 데이터에서 급수별 개수를 계산 (하드코딩 시 실제 수와 어긋나 완주가 안 됨).
+const TOTAL_BY_GRADE: Record<Grade, number> = (() => {
+  const c: Record<Grade, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  for (const w of ALL_WORDS) {
+    if (w.grade >= 1 && w.grade <= 4) c[w.grade as Grade]++;
+  }
+  return c;
+})();
 
 /** 마스킹된 예문에서 ○ 블록을 실제 단어로 되돌려 공개. */
 function revealExample(masked: string, word: string): string {

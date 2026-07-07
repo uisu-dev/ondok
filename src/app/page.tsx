@@ -42,27 +42,38 @@ const BOOK_PATHS: PathCard[] = [
   },
 ];
 
+// 온독도서 활동지 (기존 '온독 추천도서 활동지'가 온독도서 섹션으로 이동)
+const BOOK_WORKSHEET: PathCard[] = [
+  {
+    href: "/worksheet/books",
+    emoji: "📚",
+    title: "온독도서 활동지",
+    subtitle: "추천도서로 만든 독후 활동 풀기",
+    hint: "교사가 만든 독후 활동지",
+  },
+];
+
 const LITERACY_PATHS: PathCard[] = [
   {
     href: "/sago",
     emoji: "📚",
     title: "사고도구어 사전",
-    subtitle: "1,387개 단어를 등급별로 살펴보기",
-    hint: "1급 43 · 2급 293 · 3급 585 · 4급 466",
+    subtitle: "사고도구어를 등급별로 살펴보기",
+    hint: "1급 43 · 2급 291 · 3급 584 · 4급 466",
   },
   {
     href: "/sago/learn",
     emoji: "🎯",
     title: "사고도구어 학습",
     subtitle: "뜻을 보고 단어를 맞히는 랜덤 객관식",
-    hint: "아는 단어 체크 · 학습 진행도 추적",
+    hint: "정답 맞히면 아는 단어로 기록 · 진행도 추적",
   },
   {
     href: "/worksheet",
     emoji: "✏️",
     title: "사고도구어 활동지",
-    subtitle: "독후·독해 활동으로 사고도구어 익히기",
-    hint: "추천도서 · 모의고사 · 자체 지문 · 세 갈래",
+    subtitle: "모의고사·자체 지문으로 사고도구어 익히기",
+    hint: "수능·모의고사 · 자체 지문 활동지",
   },
 ];
 
@@ -245,25 +256,34 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Pillar 1: 온독도서 추천 */}
+        {/* Pillar 1: 온독도서 */}
         <section className="space-y-3">
           <PillarHeader
             emoji="📚"
-            title="온독도서 추천"
-            subtitle="나에게 어울리는 책 찾기 · 세 가지 방법 중 골라보세요"
+            title="온독도서"
+            subtitle="나에게 맞는 책을 찾고 독후 활동으로 이어가요"
           />
           <div className="space-y-3">
+            <p className="text-xs font-bold text-fg-muted px-1 pt-1">
+              온독도서 추천
+            </p>
             {BOOK_PATHS.map((c) => (
+              <PathItem key={c.href} card={c} />
+            ))}
+            <p className="text-xs font-bold text-fg-muted px-1 pt-2">
+              온독도서 활동지
+            </p>
+            {BOOK_WORKSHEET.map((c) => (
               <PathItem key={c.href} card={c} />
             ))}
           </div>
         </section>
 
-        {/* Pillar 2: 사고도구어 문해력 */}
+        {/* Pillar 2: 사고도구어 */}
         <section className="space-y-3">
           <PillarHeader
             emoji="📖"
-            title="사고도구어 문해력"
+            title="사고도구어"
             subtitle="읽고 이해하는 힘의 기초가 되는 단어들로 학습해요"
           />
           <div className="space-y-3">
