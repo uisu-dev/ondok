@@ -147,7 +147,7 @@ export default async function HomePage() {
   const [popularBooks, popularWorksheets, gameLeaders] = await Promise.all([
     getPopularBooks(5),
     getPopularWorksheets(5),
-    getGameLeaderboard("match", 5),
+    getGameLeaderboard("battle", 5),
   ]);
 
   return (
@@ -362,10 +362,10 @@ export default async function HomePage() {
             <Card as="section" className="px-5 py-4 space-y-2">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-bold text-fg-muted">
-                  🏆 짝 맞추기 랭킹 Top 5
+                  🏆 배틀 랭킹 Top 5 (누적 승수)
                 </p>
                 <Link
-                  href="/game"
+                  href="/game/battle"
                   className="text-[11px] font-semibold text-accent-600 hover:text-accent-700"
                 >
                   전체 보기 →
