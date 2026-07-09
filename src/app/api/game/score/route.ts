@@ -4,6 +4,37 @@ import { getAdminSupabase } from "@/data/supabase-admin";
 
 export const dynamic = "force-dynamic";
 
+// GET ?game_type=battle — 내 누적 승수(또는 최고점) 반환.
+export async function GET(req: NextRequest) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ ok: true, signedIn: false, wins: 0 });
+
+  const gt = req.nextUrl.searchParams.get("game_type");
+  const gameType = gt === "chosung" || gt === "battle" ? gt : "match";
+
+  const { data, error } = await supabase
+    .from("game_scores")
+    .select("score")
+    .eq("user_id", user.id)
+    .eq("game_type", gameType);
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  }
+  const rows = data ?? [];
+  // battle 은 승수 합계, 그 외는 최고점
+  const wins = rows.reduce((a, r) => a + (r.score as number), 0);
+  const best = rows.reduce((m, r) => Math.max(m, r.score as number), 0);
+  return NextResponse.json({
+    ok: true,
+    signedIn: true,
+    wins,
+    best,
+  });
+}
+
 // POST — 게임 종료 시 점수 저장 + 내 최고점 반환.
 export async function POST(req: NextRequest) {
   const supabase = await createClient();

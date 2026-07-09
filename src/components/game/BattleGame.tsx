@@ -77,6 +77,17 @@ export function BattleGame() {
   const [picked, setPicked] = useState<PoolItem | null>(null);
   const [flash, setFlash] = useState<"me" | "bot" | null>(null);
   const [saving, setSaving] = useState(false);
+  const [myWins, setMyWins] = useState<number | null>(null);
+
+  // 내 누적 승수 불러오기
+  useEffect(() => {
+    fetch("/api/game/score?game_type=battle", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => {
+        if (j?.ok && j.signedIn) setMyWins(j.wins ?? 0);
+      })
+      .catch(() => {});
+  }, []);
 
   const myHpRef = useRef(MAX_HP);
   const botHpRef = useRef(MAX_HP);
@@ -96,6 +107,7 @@ export function BattleGame() {
     setStatus(result);
     if (result === "win") {
       setSaving(true);
+      setMyWins((w) => (w ?? 0) + 1); // 낙관적 반영
       fetch("/api/game/score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,6 +176,13 @@ export function BattleGame() {
 
   return (
     <div className="space-y-4">
+      {/* 내 누적 승수 */}
+      <div className="flex items-center justify-center">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-chip bg-cat-soc/15 text-cat-soc text-sm font-bold">
+          🏆 내 승수 {myWins ?? 0}승
+        </span>
+      </div>
+
       {/* 캐릭터 + 체력 */}
       <Card as="section" className="px-5 py-5">
         <div className="flex items-end justify-between gap-4">
@@ -258,6 +277,9 @@ export function BattleGame() {
                 <h2 className="text-xl font-bold text-cat-sci">승리!</h2>
                 <p className="text-sm text-fg-muted">
                   사고몬을 물리쳤어요. {saving ? "승수 저장 중…" : "승수 +1 기록됨"}
+                </p>
+                <p className="text-sm font-bold text-cat-soc">
+                  🏆 현재 {myWins ?? 0}승
                 </p>
                 <button type="button" onClick={start} className="h-11 px-6 rounded-button bg-accent-600 hover:bg-accent-700 text-white font-bold">
                   다시 도전
