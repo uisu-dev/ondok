@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 
 export interface StudentRow {
@@ -116,8 +117,13 @@ export function StudentsTable({
             ) : (
               filtered.map((s) => (
                 <tr key={s.id} className="border-b border-border last:border-0">
-                  <td className="px-3 py-2.5 font-semibold text-fg-strong whitespace-nowrap">
-                    {s.name}
+                  <td className="px-3 py-2.5 font-semibold whitespace-nowrap">
+                    <Link
+                      href={`/admin/students/${s.id}`}
+                      className="text-accent-600 hover:underline"
+                    >
+                      {s.name}
+                    </Link>
                   </td>
                   {showSchool && (
                     <td className="px-3 py-2.5 text-fg-muted text-xs whitespace-nowrap">

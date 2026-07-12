@@ -90,15 +90,28 @@ export default async function StudentsPage() {
           <Link href="/admin" className="text-xs font-semibold text-fg-muted hover:text-fg-strong">
             ← 관리자 대시보드
           </Link>
-          <Card as="section" className="px-6 py-6 space-y-1">
-            <p className="text-xs font-semibold text-accent-600">학생 현황</p>
-            <h1 className="text-2xl font-bold text-fg-strong">
-              {isSuper ? "전체 학생" : teacherSchoolName ?? "우리 학교"}
-            </h1>
-            <p className="text-sm text-fg-muted">
-              {isSuper
-                ? "모든 가입 학생의 학습 현황이에요. 이름·학교·학년으로 필터링할 수 있어요."
-                : "소속 학생들의 학습 현황이에요. 수업 참고 자료로 활용하세요."}
+          <Card as="section" className="px-6 py-6 space-y-3">
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-accent-600">학생 현황</p>
+              <h1 className="text-2xl font-bold text-fg-strong">
+                {isSuper ? "전체 학생" : teacherSchoolName ?? "우리 학교"}
+              </h1>
+              <p className="text-sm text-fg-muted">
+                {isSuper
+                  ? "모든 가입 학생의 학습 현황이에요. 이름·학교·학년으로 필터링할 수 있어요."
+                  : "소속 학생들의 학습 현황이에요. 수업 참고 자료로 활용하세요."}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/admin/students/words"
+                className="h-9 px-4 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-sm font-semibold flex items-center"
+              >
+                📊 단어별 학습 현황
+              </Link>
+            </div>
+            <p className="text-xs text-fg-subtle">
+              학생 이름을 누르면 그 학생이 급수별로 아는·부족한 단어를 볼 수 있어요.
             </p>
           </Card>
 
