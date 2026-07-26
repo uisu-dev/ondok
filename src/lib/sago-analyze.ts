@@ -19,10 +19,31 @@ export interface SagoStats {
   matches: { word: string; grade: number; count: number }[];
 }
 
+/** 한글 음절인지. */
+function isHangul(c: string | undefined): boolean {
+  return !!c && c >= "가" && c <= "힣";
+}
+
 /**
- * Naive substring matcher: 표제어가 본문에 한 번이라도 등장하면 1 카운트.
- * 한국어 형태소 분석을 하지 않으므로 "단순"이 "단순하다"·"단순함" 안에도
- * 검출되지만, 일반적인 학습용 통계 표시 목적으로는 충분히 유용.
+ * 표제어 바로 뒤에 붙으면 '다른 낱말의 일부'로 보는 글자 (용언 활용 어미).
+ *   저지 + 른  → 저지르다   (沮止 아님)
+ *   주시 + 면  → 주다       (注視 아님)
+ *   전이 + 었  → ~전이었다  (轉移 아님)
+ * 조사(은·는·이·가·을·를·도·의…)와 '하다/되다/적' 파생은 명사 뒤에 정상적으로
+ * 붙으므로 막지 않는다. (요구했다·양식을·비교하면 등은 그대로 인정)
+ */
+const TAIL_BLOCK = new Set(["었", "였", "겠", "면", "러", "려", "니", "른"]);
+
+/**
+ * 표제어를 본문에서 찾아 카운트한다. 형태소 분석기는 아니지만 두 가지
+ * 어절 경계 규칙으로 오탐을 크게 줄인다.
+ *
+ *  1) 어절 중간에서 시작하는 매칭 제외 — 앞 글자가 한글이면 무시
+ *     (흥부가→'부가', 남편의→'편의', 세상이→'상이', 부모의→'모의')
+ *  2) 뒤에 용언 어미가 붙으면 제외 — TAIL_BLOCK 참고
+ *
+ * 그 대가로 '재분석' 안의 '분석'처럼 접두사가 붙은 합성어는 놓치지만,
+ * 서사문·설명문 모두에서 잡음이 훨씬 크므로 이 편이 통계가 정확하다.
  */
 export function analyzeSago(passage: string): SagoStats {
   if (!passage || !passage.trim()) {
@@ -45,6 +66,13 @@ export function analyzeSago(passage: string): SagoStats {
     while (true) {
       const idx = working.indexOf(w.word, from);
       if (idx < 0) break;
+      const prev = idx > 0 ? working[idx - 1] : undefined;
+      const next = working[idx + w.word.length];
+      // 어절 시작이 아니거나(앞이 한글), 뒤에 용언 어미가 붙으면 다른 낱말로 본다.
+      if (isHangul(prev) || (isHangul(next) && TAIL_BLOCK.has(next!))) {
+        from = idx + 1;
+        continue;
+      }
       count++;
       // mask the matched span so subsequent shorter headwords don't reuse it
       working =
