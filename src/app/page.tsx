@@ -279,7 +279,40 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Pillar 2: 사고도구어 */}
+        {/* Pillar 2: 고전 읽기 */}
+        <section className="space-y-3">
+          <PillarHeader
+            emoji="📜"
+            title="고전 읽기"
+            subtitle="옛이야기를 요즘 말로 다듬어 읽고, 해설과 함께 마무리해요"
+          />
+          <Link href="/works" className="block group">
+            <Card
+              interactive
+              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
+            >
+              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
+                📜
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-bold text-fg-strong">
+                  고전소설 읽기
+                </p>
+                <p className="text-sm text-fg-muted">
+                  흥부전·춘향전 같은 옛이야기를 읽기 쉽게
+                </p>
+                <p className="text-xs text-fg-subtle mt-1">
+                  읽던 곳 이어 읽기 · 완독 후 해설·점검 문제
+                </p>
+              </div>
+              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
+                →
+              </div>
+            </Card>
+          </Link>
+        </section>
+
+        {/* Pillar 3: 사고도구어 */}
         <section className="space-y-3">
           <PillarHeader
             emoji="📖"

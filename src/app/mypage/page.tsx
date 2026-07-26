@@ -44,6 +44,13 @@ export default async function MyPage() {
   // 즐겨찾기 (책 + 활동지)
   let favBooks: Book[] = [];
   let favWorksheets: Array<{ id: number; type: string; title: string }> = [];
+  // 읽은 고전 작품
+  let readWorks: Array<{
+    slug: string;
+    title: string;
+    coverEmoji: string;
+    completed: boolean;
+  }> = [];
   // 내가 푼 활동지
   let solvedWorksheets: Array<{
     id: number;
@@ -133,6 +140,39 @@ export default async function MyPage() {
           };
         })
         .filter(Boolean) as typeof solvedWorksheets;
+    }
+    // 읽은 고전 작품
+    const { data: recs } = await admin
+      .from("work_records")
+      .select("work_id, completed_at, last_section, updated_at")
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: false });
+    if (recs && recs.length > 0) {
+      const wIds = recs.map((r) => Number(r.work_id));
+      const { data: ws } = await admin
+        .from("works")
+        .select("id, slug, title, cover_emoji")
+        .in("id", wIds)
+        .eq("published", true);
+      const wmap = new Map<
+        number,
+        { slug: string; title: string; cover_emoji: string }
+      >();
+      for (const w of ws ?? []) {
+        wmap.set(w.id, { slug: w.slug, title: w.title, cover_emoji: w.cover_emoji });
+      }
+      readWorks = recs
+        .map((r) => {
+          const w = wmap.get(Number(r.work_id));
+          if (!w) return null;
+          return {
+            slug: w.slug,
+            title: w.title,
+            coverEmoji: w.cover_emoji,
+            completed: !!r.completed_at,
+          };
+        })
+        .filter(Boolean) as typeof readWorks;
     }
   } catch {
     /* service role 미설정 시 무시 */
@@ -357,6 +397,57 @@ export default async function MyPage() {
                     </span>
                     <span className="text-[10px] text-fg-subtle whitespace-nowrap">
                       {TYPE_LABEL[w.type as keyof typeof TYPE_LABEL] ?? w.type}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+
+        {/* 읽은 고전 작품 */}
+        <Card as="section" className="px-6 py-6 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-fg-muted">고전 읽기</p>
+              <p className="text-lg font-bold text-fg-strong mt-1">
+                📜 읽은 작품{" "}
+                {readWorks.length > 0 ? `· ${readWorks.length}편` : ""}
+              </p>
+            </div>
+            <Link
+              href="/works"
+              className="h-9 px-3 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-semibold flex items-center"
+            >
+              작품 보러 가기
+            </Link>
+          </div>
+          {readWorks.length === 0 ? (
+            <p className="text-xs text-fg-subtle">
+              고전 읽기에서 작품을 읽으면 여기에 기록돼요.
+            </p>
+          ) : (
+            <ul className="space-y-1.5">
+              {readWorks.map((w) => (
+                <li key={w.slug}>
+                  <Link
+                    href={`/works/${w.slug}`}
+                    className="flex items-center gap-2 px-3 py-2 rounded-button hover:bg-surface-muted transition-colors"
+                  >
+                    <span aria-hidden className="text-base">
+                      {w.coverEmoji}
+                    </span>
+                    <span className="text-sm font-semibold text-fg-strong flex-1 truncate">
+                      {w.title}
+                    </span>
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-chip ${
+                        w.completed
+                          ? "bg-[color-mix(in_oklab,var(--color-cat-sci)_16%,white)] text-cat-sci"
+                          : "bg-accent-100 text-accent-700"
+                      }`}
+                    >
+                      {w.completed ? "완독" : "읽는 중"}
                     </span>
                   </Link>
                 </li>
