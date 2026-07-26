@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 export interface StudentRow {
   id: string;
   name: string;
+  loginId: string | null;
   schoolName: string | null;
   gradeLabel: string | null;
   gradeNum: number | null; // 정렬·필터용 (1~12), 없으면 null
@@ -61,7 +62,13 @@ export function StudentsTable({
     const gf = GRADE_FILTERS.find((f) => f.key === gradeKey) ?? GRADE_FILTERS[0];
     let arr = students.filter((s) => {
       if (!gf.test(s.gradeNum)) return false;
-      if (q && !s.name.includes(q) && !(s.schoolName ?? "").includes(q)) return false;
+      if (
+        q &&
+        !s.name.includes(q) &&
+        !(s.loginId ?? "").includes(q.toLowerCase()) &&
+        !(s.schoolName ?? "").includes(q)
+      )
+        return false;
       return true;
     });
     arr = arr.slice().sort((a, b) => {
@@ -84,7 +91,7 @@ export function StudentsTable({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={showSchool ? "이름·학교 검색" : "이름 검색"}
+          placeholder={showSchool ? "이름·아이디·학교 검색" : "이름·아이디 검색"}
           className="h-10 px-3 rounded-button border border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500 flex-1 min-w-[140px]"
         />
         <div className="flex gap-1">
@@ -163,6 +170,11 @@ export function StudentsTable({
                     >
                       {s.name}
                     </Link>
+                    {s.loginId && (
+                      <span className="ml-1.5 text-[11px] font-mono font-normal text-fg-subtle">
+                        {s.loginId}
+                      </span>
+                    )}
                   </td>
                   {showSchool && (
                     <td className="px-3 py-2.5 text-fg-muted text-xs whitespace-nowrap">

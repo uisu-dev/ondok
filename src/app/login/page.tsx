@@ -16,6 +16,7 @@ function LoginInner() {
   const [password, setPassword] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [removed, setRemoved] = useState<{ reason: string | null } | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -45,6 +46,21 @@ function LoginInner() {
           password,
         });
         if (error) {
+          // 탈퇴 처리된 아이디라면 그 사유를 안내한다
+          try {
+            const res = await fetch(
+              `/api/auth/removed?login_id=${encodeURIComponent(id)}`,
+              { cache: "no-store" }
+            );
+            const info = await res.json();
+            if (info?.removed) {
+              setRemoved({ reason: info.reason ?? null });
+              setError(null);
+              return;
+            }
+          } catch {
+            /* 확인 실패 시 일반 오류 메시지로 진행 */
+          }
           if (error.message.toLowerCase().includes("invalid")) {
             setError("아이디 또는 비밀번호가 올바르지 않습니다.");
           } else {
@@ -72,6 +88,25 @@ function LoginInner() {
           <p className="text-sm font-semibold text-accent-600">온독 플러스</p>
           <h1 className="text-xl font-bold text-fg-strong">로그인</h1>
         </div>
+        {removed && (
+          <div className="rounded-button border border-cat-hum/40 bg-[color-mix(in_oklab,var(--color-cat-hum)_8%,white)] px-4 py-3 space-y-1.5">
+            <p className="text-sm font-bold text-cat-hum">
+              탈퇴 처리된 계정입니다
+            </p>
+            <p className="text-xs text-fg-strong leading-relaxed">
+              이 아이디는 <strong>{removed.reason ?? "부적절한 사용"}</strong>으로
+              탈퇴 처리되었습니다. 이 아이디로는 다시 로그인하거나 가입할 수 없어요.
+            </p>
+            <p className="text-xs text-fg-strong leading-relaxed">
+              알맞은 아이디로{" "}
+              <Link href="/signup" className="text-accent-600 font-bold underline">
+                새로 가입
+              </Link>
+              해 주세요. 궁금한 점은 선생님께 문의해 주세요.
+            </p>
+          </div>
+        )}
+
         <form onSubmit={onSubmit} className="space-y-3">
           <div className="space-y-1.5">
             <label className="text-sm font-semibold text-fg-strong" htmlFor="login_id">

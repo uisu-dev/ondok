@@ -11,6 +11,7 @@ import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 import { StudentDetail, type GradeBreakdown } from "./StudentDetail";
+import { RemoveAccountCard } from "./RemoveAccountCard";
 
 export const dynamic = "force-dynamic";
 
@@ -87,6 +88,7 @@ export default async function StudentDetailPage({
   const isSuper = access.reason === "hmac" || access.reason === "admin";
 
   let student: {
+    login_id: string | null;
     display_name: string | null;
     school_code: string | null;
     birth_year: number | null;
@@ -121,7 +123,7 @@ export default async function StudentDetailPage({
     const admin = getAdminSupabase();
     const { data: prof } = await admin
       .from("profiles")
-      .select("display_name, school_code, birth_year, mbti, role")
+      .select("login_id, display_name, school_code, birth_year, mbti, role")
       .eq("id", id)
       .maybeSingle();
     if (!prof || prof.role !== "student") notFound();
@@ -294,6 +296,11 @@ export default async function StudentDetailPage({
                 <h1 className="text-2xl font-bold text-fg-strong">
                   {student?.display_name ?? "(이름 미입력)"}
                 </h1>
+                {student?.login_id && (
+                  <p className="text-xs text-fg-subtle">
+                    아이디 · <span className="font-mono">{student.login_id}</span>
+                  </p>
+                )}
                 <p className="text-sm text-fg-muted">
                   {schoolName ?? "학교 미지정"}
                   {student?.birth_year && estimateGradeLabel(student.birth_year) && (
@@ -502,6 +509,15 @@ export default async function StudentDetailPage({
                 급수별로 아는 단어와 더 익혀야 할 단어를 볼 수 있어요.
               </p>
               <StudentDetail breakdown={breakdown} />
+
+              {/* 부적절 계정 탈퇴 처리 — 슈퍼관리자·admin 만 */}
+              {isSuper && (
+                <RemoveAccountCard
+                  userId={id}
+                  displayName={student?.display_name ?? ""}
+                  loginId={student?.login_id ?? null}
+                />
+              )}
             </>
           )}
         </div>

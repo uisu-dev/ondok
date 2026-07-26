@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic";
 
 interface DashRow {
   id: string;
+  login_id: string | null;
   display_name: string | null;
   school_code: string | null;
   school_name: string | null;
@@ -75,6 +76,7 @@ export default async function StudentsPage() {
     students = ((data ?? []) as DashRow[]).map((r) => ({
       id: r.id,
       name: r.display_name ?? "(이름 미입력)",
+      loginId: r.login_id ?? null,
       schoolName: r.school_name,
       gradeLabel: estimateGradeLabel(r.birth_year),
       gradeNum: estimateGradeNumber(r.birth_year),
@@ -139,7 +141,7 @@ export default async function StudentsPage() {
               <p className="text-sm font-bold text-cat-hum">⚠️ 오류</p>
               <p className="text-xs text-fg-muted mt-1">{envError}</p>
               <p className="text-xs text-fg-muted mt-2">
-                scripts/migrations/2026-07-05-student-dashboard-v2.sql 가 적용되어 있는지 확인해 주세요.
+                scripts/migrations/2026-07-06-account-removal.sql 가 적용되어 있는지 확인해 주세요.
               </p>
             </Card>
           )}

@@ -56,6 +56,19 @@ export async function signUp(input: {
     return { ok: false, message: "이미 사용 중인 아이디입니다." };
   }
 
+  // 1-1) 부적절 사용으로 탈퇴 처리된 아이디는 재가입 불가
+  const { data: removed } = await admin
+    .from("removed_accounts")
+    .select("reason")
+    .eq("login_id", loginId)
+    .maybeSingle();
+  if (removed) {
+    return {
+      ok: false,
+      message: `이 아이디는 ${removed.reason ?? "부적절한 사용"}으로 탈퇴 처리되어 사용할 수 없습니다. 다른 아이디로 가입해 주세요.`,
+    };
+  }
+
   // 2) 학교 코드 유효성
   const { data: school } = await admin
     .from("schools")
