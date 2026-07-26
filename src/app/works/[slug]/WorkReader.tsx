@@ -11,6 +11,19 @@ type FontSize = "sm" | "md" | "lg" | "xl";
 const FONT_PX: Record<FontSize, number> = { sm: 15, md: 17, lg: 20, xl: 24 };
 const FONT_STORAGE = "ondok:work-fontsize";
 
+/** 연속된 '> ' 줄을 하나의 인용 블록으로 묶는다 (예: 양반전의 증서). */
+function groupBlocks(paragraphs: string[]) {
+  const blocks: { quote: boolean; lines: string[] }[] = [];
+  for (const p of paragraphs) {
+    const isQuote = p.startsWith("> ");
+    const text = isQuote ? p.slice(2) : p;
+    const last = blocks[blocks.length - 1];
+    if (last && last.quote && isQuote) last.lines.push(text);
+    else blocks.push({ quote: isQuote, lines: [text] });
+  }
+  return blocks;
+}
+
 /** **강조** 만 지원하는 최소 인라인 렌더러 (외부 마크다운 라이브러리 없이). */
 function renderInline(text: string, key: number) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
@@ -252,15 +265,32 @@ export function WorkReader({
                 {sec.title}
               </h2>
             )}
-            {sec.paragraphs.map((p, j) => (
-              <p
-                key={j}
-                className="leading-[1.9] text-fg-strong"
-                style={{ fontSize: px }}
-              >
-                {renderInline(p, j)}
-              </p>
-            ))}
+            {groupBlocks(sec.paragraphs).map((b, j) =>
+              b.quote ? (
+                <blockquote
+                  key={j}
+                  className="border-l-4 border-accent-400 bg-surface-muted rounded-r-button pl-4 pr-3 py-3 space-y-1.5"
+                >
+                  {b.lines.map((line, k) => (
+                    <p
+                      key={k}
+                      className="leading-[1.8] text-fg-strong"
+                      style={{ fontSize: Math.max(13, px - 2) }}
+                    >
+                      {renderInline(line, k)}
+                    </p>
+                  ))}
+                </blockquote>
+              ) : (
+                <p
+                  key={j}
+                  className="leading-[1.9] text-fg-strong"
+                  style={{ fontSize: px }}
+                >
+                  {renderInline(b.lines[0], j)}
+                </p>
+              )
+            )}
           </section>
         ))}
 

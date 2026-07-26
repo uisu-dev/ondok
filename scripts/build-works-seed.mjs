@@ -18,13 +18,18 @@ const OUT = resolve(root, "scripts/works-seed.sql");
 const q = (v) =>
   v == null ? "NULL" : `'${String(v).replace(/'/g, "''")}'`;
 
-/** md 에서 front matter(제목 줄·인용 메타)를 걷어내고 본문만 남긴다. */
+/**
+ * md 에서 파일 맨 위의 제목·작업 메모만 걷어내고 본문을 남긴다.
+ * 첫 '## ' 대목이 시작된 뒤의 '> ' 는 본문 속 인용(예: 양반전의 증서)이므로 보존한다.
+ */
 function extractBody(md) {
   const lines = md.split(/\r?\n/);
   const out = [];
+  let started = false;
   for (const line of lines) {
+    if (line.startsWith("## ")) started = true;
     if (line.startsWith("# ")) continue; // 작품 제목 (메타에 따로 있음)
-    if (line.startsWith("> ")) continue; // 작업 메모
+    if (!started && line.startsWith("> ")) continue; // 파일 상단 작업 메모
     out.push(line);
   }
   return out.join("\n").trim();
