@@ -6,6 +6,7 @@ import { canAccessAdmin } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
 import { estimateGradeLabel, estimateGradeNumber } from "@/lib/grade";
 import { StudentsTable, type StudentRow } from "./StudentsTable";
+import { ClassStats } from "./ClassStats";
 
 export const dynamic = "force-dynamic";
 
@@ -17,8 +18,17 @@ interface DashRow {
   birth_year: number | null;
   mbti: string | null;
   sago: number;
+  sago_g1: number;
+  sago_g2: number;
+  sago_g3: number;
+  sago_g4: number;
   books: number;
   sheets: number;
+  works_read: number;
+  works_done: number;
+  battle_wins: number;
+  game_plays: number;
+  last_active: string | null;
 }
 
 export default async function StudentsPage() {
@@ -70,8 +80,17 @@ export default async function StudentsPage() {
       gradeNum: estimateGradeNumber(r.birth_year),
       mbti: r.mbti,
       sago: Number(r.sago),
+      sagoG1: Number(r.sago_g1 ?? 0),
+      sagoG2: Number(r.sago_g2 ?? 0),
+      sagoG3: Number(r.sago_g3 ?? 0),
+      sagoG4: Number(r.sago_g4 ?? 0),
       books: Number(r.books),
       sheets: Number(r.sheets),
+      worksRead: Number(r.works_read ?? 0),
+      worksDone: Number(r.works_done ?? 0),
+      battleWins: Number(r.battle_wins ?? 0),
+      gamePlays: Number(r.game_plays ?? 0),
+      lastActive: r.last_active ?? null,
     }));
   } catch (e) {
     envError = e instanceof Error ? e.message : "데이터를 불러오지 못했어요.";
@@ -120,7 +139,7 @@ export default async function StudentsPage() {
               <p className="text-sm font-bold text-cat-hum">⚠️ 오류</p>
               <p className="text-xs text-fg-muted mt-1">{envError}</p>
               <p className="text-xs text-fg-muted mt-2">
-                scripts/migrations/2026-06-20-student-dashboard.sql 가 적용되어 있는지 확인해 주세요.
+                scripts/migrations/2026-07-05-student-dashboard-v2.sql 가 적용되어 있는지 확인해 주세요.
               </p>
             </Card>
           )}
@@ -133,6 +152,8 @@ export default async function StudentsPage() {
               <StatCard label="활동지 풀이" value={sum("sheets")} unit="건" hint={`평균 ${avg(sum("sheets"))}건`} />
             </div>
           )}
+
+          {!envError && <ClassStats students={students} />}
 
           {!envError && (
             <StudentsTable students={students} showSchool={isSuper} />

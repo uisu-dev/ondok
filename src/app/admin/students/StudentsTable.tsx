@@ -12,8 +12,28 @@ export interface StudentRow {
   gradeNum: number | null; // 정렬·필터용 (1~12), 없으면 null
   mbti: string | null;
   sago: number;
+  sagoG1: number;
+  sagoG2: number;
+  sagoG3: number;
+  sagoG4: number;
   books: number;
   sheets: number;
+  worksRead: number;
+  worksDone: number;
+  battleWins: number;
+  gamePlays: number;
+  lastActive: string | null;
+}
+
+/** 마지막 활동으로부터 지난 날짜 → 짧은 라벨. */
+function activityLabel(iso: string | null): { text: string; tone: string } {
+  if (!iso) return { text: "—", tone: "text-fg-subtle" };
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (days <= 0) return { text: "오늘", tone: "text-cat-sci font-semibold" };
+  if (days === 1) return { text: "어제", tone: "text-cat-sci" };
+  if (days <= 7) return { text: `${days}일 전`, tone: "text-fg-muted" };
+  if (days <= 30) return { text: `${days}일 전`, tone: "text-cat-soc" };
+  return { text: `${days}일 전`, tone: "text-cat-hum" };
 }
 
 const GRADE_FILTERS: { key: string; label: string; test: (g: number | null) => boolean }[] = [
@@ -32,7 +52,9 @@ export function StudentsTable({
 }) {
   const [query, setQuery] = useState("");
   const [gradeKey, setGradeKey] = useState("all");
-  const [sortKey, setSortKey] = useState<"name" | "sago" | "books" | "sheets">("name");
+  const [sortKey, setSortKey] = useState<
+    "name" | "sago" | "books" | "sheets" | "worksDone" | "lastActive"
+  >("name");
 
   const filtered = useMemo(() => {
     const q = query.trim();
@@ -44,6 +66,11 @@ export function StudentsTable({
     });
     arr = arr.slice().sort((a, b) => {
       if (sortKey === "name") return a.name.localeCompare(b.name, "ko");
+      if (sortKey === "lastActive") {
+        const av = a.lastActive ? new Date(a.lastActive).getTime() : 0;
+        const bv = b.lastActive ? new Date(b.lastActive).getTime() : 0;
+        return bv - av; // 최근 활동 순
+      }
       return (b[sortKey] as number) - (a[sortKey] as number);
     });
     return arr;
@@ -80,14 +107,23 @@ export function StudentsTable({
 
       <p className="text-xs text-fg-subtle px-1">
         {filtered.length}명 표시 · 정렬:{" "}
-        {(["name", "sago", "books", "sheets"] as const).map((k) => (
+        {(
+          [
+            ["name", "이름"],
+            ["sago", "사고도구어"],
+            ["books", "도서"],
+            ["sheets", "활동지"],
+            ["worksDone", "고전"],
+            ["lastActive", "최근 활동"],
+          ] as const
+        ).map(([k, label]) => (
           <button
             key={k}
             type="button"
             onClick={() => setSortKey(k)}
-            className={`ml-1 ${sortKey === k ? "text-accent-600 font-bold" : "hover:text-fg-strong"}`}
+            className={`ml-1.5 ${sortKey === k ? "text-accent-600 font-bold" : "hover:text-fg-strong"}`}
           >
-            {k === "name" ? "이름" : k === "sago" ? "사고도구어" : k === "books" ? "도서" : "활동지"}
+            {label}
           </button>
         ))}
       </p>
@@ -104,13 +140,16 @@ export function StudentsTable({
               <th className="text-center font-semibold px-3 py-2">사고도구어</th>
               <th className="text-center font-semibold px-3 py-2">도서</th>
               <th className="text-center font-semibold px-3 py-2">활동지</th>
+              <th className="text-center font-semibold px-3 py-2">고전</th>
+              <th className="text-center font-semibold px-3 py-2">배틀</th>
               <th className="text-center font-semibold px-3 py-2">MBTI</th>
+              <th className="text-center font-semibold px-3 py-2">최근 활동</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={showSchool ? 7 : 6} className="px-3 py-6 text-center text-fg-muted">
+                <td colSpan={showSchool ? 10 : 9} className="px-3 py-6 text-center text-fg-muted">
                   조건에 맞는 학생이 없어요.
                 </td>
               </tr>
@@ -138,8 +177,31 @@ export function StudentsTable({
                   </td>
                   <td className="px-3 py-2.5 text-center text-fg-strong">{s.books}</td>
                   <td className="px-3 py-2.5 text-center text-fg-strong">{s.sheets}</td>
+                  <td className="px-3 py-2.5 text-center text-fg-strong whitespace-nowrap">
+                    {s.worksDone > 0 || s.worksRead > 0 ? (
+                      <>
+                        {s.worksDone}
+                        {s.worksRead > s.worksDone && (
+                          <span className="text-[10px] text-fg-subtle">
+                            {" "}(+{s.worksRead - s.worksDone})
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      0
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-center text-cat-soc font-semibold">
+                    {s.battleWins}
+                  </td>
                   <td className="px-3 py-2.5 text-center text-cat-lit font-semibold">
                     {s.mbti ?? "—"}
+                  </td>
+                  <td className="px-3 py-2.5 text-center text-xs whitespace-nowrap">
+                    {(() => {
+                      const a = activityLabel(s.lastActive);
+                      return <span className={a.tone}>{a.text}</span>;
+                    })()}
                   </td>
                 </tr>
               ))

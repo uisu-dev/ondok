@@ -103,6 +103,17 @@ export default async function StudentDetailPage({
     updatedAt: string;
   }> = [];
   const gameStats = { matchBest: 0, chosungBest: 0, battleWins: 0 };
+  // 고전 읽기 — 작품별 진도 + 점검 문제 답안
+  let readWorks: Array<{
+    slug: string;
+    title: string;
+    coverEmoji: string;
+    completed: boolean;
+    lastSection: number;
+    sectionCount: number;
+    updatedAt: string;
+    qa: Array<{ prompt: string; answer: string }>;
+  }> = [];
   let advice: string[] = [];
   let envError: string | null = null;
 
@@ -187,6 +198,57 @@ export default async function StudentDetailPage({
           };
         })
         .filter(Boolean) as typeof solvedSheets;
+    }
+
+    // 고전 읽기 + 점검 문제 답안
+    const { data: recs } = await admin
+      .from("work_records")
+      .select("work_id, last_section, completed_at, answers, updated_at")
+      .eq("user_id", id)
+      .order("updated_at", { ascending: false });
+    if (recs && recs.length > 0) {
+      const ids = recs.map((r) => Number(r.work_id));
+      const { data: ws } = await admin
+        .from("works")
+        .select("id, slug, title, cover_emoji, body, questions")
+        .in("id", ids);
+      interface WorkLite {
+        id: number;
+        slug: string;
+        title: string;
+        cover_emoji: string | null;
+        body: string;
+        questions: unknown;
+      }
+      const wmap = new Map<number, WorkLite>();
+      for (const w of (ws ?? []) as WorkLite[]) wmap.set(w.id, w);
+      readWorks = recs
+        .map((r) => {
+          const w = wmap.get(Number(r.work_id));
+          if (!w) return null;
+          const questions = (Array.isArray(w.questions) ? w.questions : []) as Array<{
+            position?: number;
+            prompt: string;
+          }>;
+          const answers = (r.answers as Record<string, string>) ?? {};
+          const qa = questions
+            .map((q, i) => ({
+              prompt: q.prompt,
+              answer: answers[String(q.position ?? i)] ?? "",
+            }))
+            .filter((x) => x.answer.trim().length > 0);
+          return {
+            slug: w.slug,
+            title: w.title,
+            coverEmoji: w.cover_emoji ?? "📖",
+            completed: !!r.completed_at,
+            lastSection: (r.last_section as number) ?? 0,
+            sectionCount: (String(w.body).match(/^## /gm) || []).length,
+            updatedAt: r.updated_at as string,
+            qa,
+          };
+        })
+        .filter(Boolean) as typeof readWorks;
     }
 
     // 게임 활동
@@ -284,6 +346,85 @@ export default async function StudentDetailPage({
                     <p className="text-[10px] text-fg-subtle">누적 승수</p>
                   </div>
                 </div>
+              </Card>
+
+              {/* 고전 읽기 */}
+              <Card as="section" className="px-6 py-5 space-y-3">
+                <p className="text-sm font-bold text-fg-strong">
+                  📜 고전 읽기{" "}
+                  {readWorks.length > 0 ? `· ${readWorks.length}편` : ""}
+                </p>
+                {readWorks.length === 0 ? (
+                  <p className="text-xs text-fg-subtle">
+                    아직 읽은 작품이 없어요.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {readWorks.map((w) => {
+                      const pct =
+                        w.completed
+                          ? 100
+                          : w.sectionCount > 0
+                            ? Math.round(((w.lastSection + 1) / w.sectionCount) * 100)
+                            : 0;
+                      return (
+                        <div
+                          key={w.slug}
+                          className="rounded-button border border-border px-4 py-3 space-y-2"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span aria-hidden className="text-base">
+                              {w.coverEmoji}
+                            </span>
+                            <Link
+                              href={`/works/${w.slug}`}
+                              className="text-sm font-bold text-fg-strong hover:text-accent-600 flex-1 truncate"
+                            >
+                              {w.title}
+                            </Link>
+                            <span
+                              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-chip ${
+                                w.completed
+                                  ? "bg-[color-mix(in_oklab,var(--color-cat-sci)_16%,white)] text-cat-sci"
+                                  : "bg-accent-100 text-accent-700"
+                              }`}
+                            >
+                              {w.completed ? "완독" : `읽는 중 ${pct}%`}
+                            </span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-surface-muted overflow-hidden">
+                            <div
+                              className="h-full bg-accent-500"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+
+                          {w.qa.length > 0 ? (
+                            <div className="space-y-2 pt-1">
+                              <p className="text-[11px] font-bold text-accent-600">
+                                점검 문제 답안 {w.qa.length}개
+                              </p>
+                              {w.qa.map((x, i) => (
+                                <div key={i} className="space-y-0.5">
+                                  <p className="text-[11px] text-fg-muted leading-snug">
+                                    Q{i + 1}. {x.prompt}
+                                  </p>
+                                  <p className="text-sm text-fg-strong leading-relaxed whitespace-pre-wrap bg-surface-muted rounded-button px-3 py-2">
+                                    {x.answer}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-[11px] text-fg-subtle">
+                              아직 작성한 답안이 없어요.
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </Card>
 
               {/* 하트 책 */}
