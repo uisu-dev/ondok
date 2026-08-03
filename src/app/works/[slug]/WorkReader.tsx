@@ -4,9 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
-import type { Work, WorkRecord, WorkSection } from "@/lib/work-types";
+import type { Work, WorkRecord, WorkSection, NoteAnswer } from "@/lib/work-types";
+import { quizKeysOf } from "@/lib/work-types";
 import { QTYPE_LABEL } from "@/lib/worksheet-types";
 import { AnnotationSheet } from "./AnnotationSheet";
+import { BadgeCard, BadgeCelebration } from "./Badge";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 const FONT_PX: Record<FontSize, number> = { sm: 15, md: 17, lg: 20, xl: 24 };
@@ -101,7 +103,15 @@ export function WorkReader({
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   // 형광펜 주석
   const [openNote, setOpenNote] = useState<string | null>(null);
-  const [visitedNotes, setVisitedNotes] = useState<Set<string>>(new Set());
+  const [readNotes, setReadNotes] = useState<Set<string>>(new Set());
+  const [noteAnswers, setNoteAnswers] = useState<Record<string, NoteAnswer>>(
+    initialRecord?.noteAnswers ?? {}
+  );
+  // 배지
+  const [badgeAt, setBadgeAt] = useState<string | null>(
+    initialRecord?.badgeAt ?? null
+  );
+  const [celebrate, setCelebrate] = useState(false);
   const [resumeTo, setResumeTo] = useState<number | null>(
     initialRecord && initialRecord.lastSection > 0 && !initialRecord.completedAt
       ? initialRecord.lastSection
@@ -131,16 +141,57 @@ export function WorkReader({
   }
 
   const saveRecord = useCallback(
-    (payload: Record<string, unknown>) => {
-      if (!signedIn) return;
-      fetch("/api/works/record", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ work_id: work.id, ...payload }),
-      }).catch(() => {});
+    async (payload: Record<string, unknown>) => {
+      if (!signedIn) return null;
+      try {
+        const res = await fetch("/api/works/record", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ work_id: work.id, ...payload }),
+        });
+        const json = (await res.json()) as {
+          badgeAt?: string | null;
+          badgeJustEarned?: boolean;
+        };
+        if (json.badgeJustEarned) {
+          setBadgeAt(json.badgeAt ?? new Date().toISOString());
+          setCelebrate(true);
+        } else if (json.badgeAt) {
+          setBadgeAt(json.badgeAt);
+        }
+        return json;
+      } catch {
+        return null;
+      }
     },
     [signedIn, work.id]
   );
+
+  // 형광펜 문제를 골랐을 때 — 정답 판정은 서버가 하지만 화면은 즉시 반영한다
+  const pickNote = useCallback(
+    (key: string, picked: number) => {
+      const ann = work.annotations?.[key];
+      if (!ann || ann.type !== "quiz") return;
+      const ok = ann.answer === picked;
+      setNoteAnswers((prev) => {
+        const before = prev[key];
+        return {
+          ...prev,
+          [key]: {
+            picked,
+            ok: before?.ok === true || ok,
+            first: before ? before.first : ok,
+          },
+        };
+      });
+      void saveRecord({ note: { key, picked } });
+    },
+    [work.annotations, saveRecord]
+  );
+
+  const markRead = useCallback((key: string) => {
+    setReadNotes((prev) => (prev.has(key) ? prev : new Set(prev).add(key)));
+  }, []);
 
   // 어느 대목을 보고 있는지 추적 → 진도 저장
   useEffect(() => {
@@ -165,7 +216,7 @@ export function WorkReader({
     if (!signedIn || current <= savedSection.current) return;
     const t = setTimeout(() => {
       savedSection.current = current;
-      saveRecord({ last_section: current });
+      void saveRecord({ last_section: current });
     }, 1500);
     return () => clearTimeout(t);
   }, [current, signedIn, saveRecord]);
@@ -175,19 +226,11 @@ export function WorkReader({
     if (!signedIn || !answersDirty.current) return;
     setSaveState("saving");
     const t = setTimeout(async () => {
-      try {
-        const res = await fetch("/api/works/record", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ work_id: work.id, answers }),
-        });
-        setSaveState(res.ok ? "saved" : "idle");
-      } catch {
-        setSaveState("idle");
-      }
+      const res = await saveRecord({ answers });
+      setSaveState(res ? "saved" : "idle");
     }, 1000);
     return () => clearTimeout(t);
-  }, [answers, signedIn, work.id]);
+  }, [answers, signedIn, saveRecord]);
 
   function jumpTo(idx: number) {
     setResumeTo(null);
@@ -198,7 +241,7 @@ export function WorkReader({
   function finishReading() {
     setCompleted(true);
     savedSection.current = sections.length - 1;
-    saveRecord({ last_section: sections.length - 1, completed: true });
+    void saveRecord({ last_section: sections.length - 1, completed: true });
     setTimeout(() => {
       document
         .getElementById("work-after")
@@ -207,7 +250,14 @@ export function WorkReader({
   }
 
   const px = FONT_PX[fontSize];
-  const noteCount = Object.keys(work.annotations ?? {}).length;
+  const annotations = work.annotations ?? {};
+  const noteCount = Object.keys(annotations).length;
+  const quizKeys = quizKeysOf(annotations);
+  const quizSolved = quizKeys.filter((k) => noteAnswers[k]?.ok).length;
+  // 형광펜에 ✓ 를 붙일 대상 — 맞힌 문제 + 읽어 본 배경지식
+  const resolved = new Set<string>(readNotes);
+  for (const k of quizKeys) if (noteAnswers[k]?.ok) resolved.add(k);
+
   const pct = sections.length
     ? Math.round(((current + 1) / sections.length) * 100)
     : 0;
@@ -247,8 +297,23 @@ export function WorkReader({
             </p>
             <p className="text-[11px] text-fg-muted leading-relaxed">
               짧은 문제를 풀거나 배경지식을 볼 수 있어요. 이 작품에는 {noteCount}곳이
-              있어요{visitedNotes.size > 0 && ` (${visitedNotes.size}곳 확인함)`}.
+              있고, 그중 {quizKeys.length}곳이 문제예요.
             </p>
+            {quizKeys.length > 0 && (
+              <div className="flex items-center gap-2 pt-1">
+                <div className="flex-1 h-1.5 rounded-full bg-border overflow-hidden">
+                  <div
+                    className="h-full bg-[var(--color-cat-sci)] transition-all duration-500"
+                    style={{
+                      width: `${Math.round((quizSolved / quizKeys.length) * 100)}%`,
+                    }}
+                  />
+                </div>
+                <span className="text-[11px] font-bold text-fg-muted shrink-0">
+                  문제 {quizSolved}/{quizKeys.length}
+                </span>
+              </div>
+            )}
           </div>
         )}
 
@@ -335,7 +400,7 @@ export function WorkReader({
                       className="leading-[1.8] text-fg-strong"
                       style={{ fontSize: Math.max(13, px - 2) }}
                     >
-                      {renderInline(line, k, setOpenNote, visitedNotes)}
+                      {renderInline(line, k, setOpenNote, resolved)}
                     </p>
                   ))}
                 </blockquote>
@@ -345,7 +410,7 @@ export function WorkReader({
                   className="leading-[1.9] text-fg-strong"
                   style={{ fontSize: px }}
                 >
-                  {renderInline(b.lines[0], j, setOpenNote, visitedNotes)}
+                  {renderInline(b.lines[0], j, setOpenNote, resolved)}
                 </p>
               )
             )}
@@ -380,6 +445,19 @@ export function WorkReader({
                   : "로그인하면 읽기 기록이 저장돼요."}
               </p>
             </Card>
+
+            <BadgeCard
+              title={work.title}
+              emoji={work.coverEmoji}
+              earned={!!badgeAt}
+              badgeAt={badgeAt}
+              quizSolved={quizSolved}
+              quizTotal={quizKeys.length}
+              answered={Object.values(answers).filter((v) => v.trim()).length}
+              questionTotal={work.questions.length}
+              completed={completed}
+              signedIn={signedIn}
+            />
 
             {work.commentary && (
               <Card as="section" className="px-6 py-6 space-y-3">
@@ -474,18 +552,22 @@ export function WorkReader({
       </div>
 
       {/* 형광펜 주석 시트 */}
-      {openNote && work.annotations?.[openNote] && (
+      {openNote && annotations[openNote] && (
         <AnnotationSheet
-          annotation={work.annotations[openNote]}
+          annotation={annotations[openNote]}
           label={openNote}
+          prior={noteAnswers[openNote]}
           onClose={() => setOpenNote(null)}
-          onDone={() =>
-            setVisitedNotes((prev) => {
-              const next = new Set(prev);
-              next.add(openNote);
-              return next;
-            })
-          }
+          onPick={(picked) => pickNote(openNote, picked)}
+          onRead={() => markRead(openNote)}
+        />
+      )}
+
+      {celebrate && (
+        <BadgeCelebration
+          title={work.title}
+          emoji={work.coverEmoji}
+          onClose={() => setCelebrate(false)}
         />
       )}
     </div>

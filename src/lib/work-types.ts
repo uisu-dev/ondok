@@ -34,6 +34,8 @@ export interface Work {
   author: string | null;
   category: string;
   era: string | null;
+  /** 창작(정착) 추정 연도 — 시대순 정렬용 */
+  eraOrder: number;
   summary: string | null;
   body: string;
   commentary: string | null;
@@ -51,7 +53,17 @@ export type WorkSummary = Omit<
 > & {
   questionCount: number;
   charCount: number;
+  /** 본문에 심긴 형광펜 문제 수 (배지 조건 안내용) */
+  quizCount: number;
 };
+
+/** 형광펜 문제 1개의 채점 결과. */
+export interface NoteAnswer {
+  picked: number;
+  ok: boolean;
+  /** 처음 고른 답이 정답이었는지 */
+  first: boolean;
+}
 
 /** 학생 1명의 읽기 기록. */
 export interface WorkRecord {
@@ -59,6 +71,65 @@ export interface WorkRecord {
   completedAt: string | null;
   answers: Record<string, string>;
   answeredCount: number;
+  noteAnswers: Record<string, NoteAnswer>;
+  badgeAt: string | null;
+}
+
+/**
+ * 시대 구간. era_order(창작 추정 연도)로 나눈다.
+ * 목록에서 이 단위로 묶어 보여 준다.
+ */
+export interface EraBand {
+  key: string;
+  label: string;
+  note: string;
+  until: number;
+}
+
+export const ERA_BANDS: EraBand[] = [
+  { key: "early", label: "조선 전기", note: "15~16세기", until: 1600 },
+  { key: "mid", label: "조선 중기", note: "17세기", until: 1700 },
+  { key: "late", label: "조선 후기", note: "18세기", until: 1800 },
+  { key: "last", label: "조선 말기", note: "19세기", until: 9999 },
+];
+
+export function eraBandOf(eraOrder: number): EraBand {
+  return ERA_BANDS.find((b) => eraOrder < b.until) ?? ERA_BANDS[ERA_BANDS.length - 1];
+}
+
+/** 시대순으로 묶는다. 작품이 없는 구간은 빼고 돌려준다. */
+export function groupByEra<T extends { eraOrder: number }>(
+  works: T[]
+): Array<{ band: EraBand; works: T[] }> {
+  const sorted = [...works].sort((a, b) => a.eraOrder - b.eraOrder);
+  const out: Array<{ band: EraBand; works: T[] }> = [];
+  for (const w of sorted) {
+    const band = eraBandOf(w.eraOrder);
+    const last = out[out.length - 1];
+    if (last && last.band.key === band.key) last.works.push(w);
+    else out.push({ band, works: [w] });
+  }
+  return out;
+}
+
+/** 배지 조건을 채웠는지. 완독 + 형광펜 문제 전부 정답 + 점검 문제 전부 작성. */
+export function earnsBadge(opts: {
+  completed: boolean;
+  quizKeys: string[];
+  noteAnswers: Record<string, NoteAnswer>;
+  questionCount: number;
+  answeredCount: number;
+}): boolean {
+  if (!opts.completed) return false;
+  if (opts.answeredCount < opts.questionCount) return false;
+  return opts.quizKeys.every((k) => opts.noteAnswers[k]?.ok === true);
+}
+
+/** 본문에서 형광펜 문제(quiz)로 쓰인 주석 키만 추린다. */
+export function quizKeysOf(annotations: Record<string, Annotation>): string[] {
+  return Object.entries(annotations)
+    .filter(([, a]) => a.type === "quiz")
+    .map(([k]) => k);
 }
 
 export interface WorkSection {

@@ -1,41 +1,57 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Annotation } from "@/lib/work-types";
+import type { Annotation, NoteAnswer } from "@/lib/work-types";
 
 /**
  * 본문의 형광펜을 눌렀을 때 뜨는 시트.
  *  - quiz : 보기를 고르면 곧바로 정답 여부와 해설을 보여 준다
  *  - info : 배경지식을 설명한다
+ *
+ * 이미 맞힌 문제를 다시 열면 정답과 해설을 그대로 보여 준다.
+ * 틀렸던 문제는 다시 풀 수 있게 열어 둔다 (배지를 채울 기회).
  */
 export function AnnotationSheet({
   annotation,
   label,
+  prior,
   onClose,
-  onDone,
+  onPick,
+  onRead,
 }: {
   annotation: Annotation;
   label: string;
+  prior?: NoteAnswer;
   onClose: () => void;
-  onDone: () => void;
+  onPick: (picked: number) => void;
+  onRead: () => void;
 }) {
-  const [picked, setPicked] = useState<number | null>(null);
+  const solved = prior?.ok === true;
+  const [picked, setPicked] = useState<number | null>(
+    solved ? (annotation.answer ?? null) : null
+  );
 
   // ESC 로 닫기 + 배경 스크롤 잠금
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    const prev = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
+      document.body.style.overflow = prevOverflow;
     };
   }, [onClose]);
 
   const isQuiz = annotation.type === "quiz";
+
+  // info 는 열어 본 것만으로 확인 처리
+  useEffect(() => {
+    if (!isQuiz) onRead();
+  }, [isQuiz, onRead]);
+
   const correct =
     picked !== null && typeof annotation.answer === "number"
       ? picked === annotation.answer
@@ -44,7 +60,7 @@ export function AnnotationSheet({
   function choose(i: number) {
     if (picked !== null) return;
     setPicked(i);
-    onDone();
+    onPick(i);
   }
 
   return (
@@ -80,6 +96,11 @@ export function AnnotationSheet({
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           {isQuiz ? (
             <>
+              {prior && !prior.ok && picked === null && (
+                <p className="text-xs text-fg-muted bg-surface-muted rounded-button px-3 py-2">
+                  지난번에는 아쉬웠어요. 다시 골라 볼까요?
+                </p>
+              )}
               <p className="text-sm text-fg-strong leading-relaxed">
                 {annotation.question}
               </p>
@@ -118,7 +139,9 @@ export function AnnotationSheet({
                       correct ? "text-cat-sci" : "text-cat-hum"
                     }`}
                   >
-                    {correct ? "✓ 맞았어요!" : "✕ 아쉬워요"}
+                    {correct
+                      ? "✓ 맞았어요!"
+                      : "✕ 아쉬워요 — 닫았다 다시 열면 한 번 더 풀 수 있어요"}
                   </p>
                   {annotation.explain && (
                     <p className="text-sm text-fg leading-relaxed bg-surface-muted rounded-button px-4 py-3">

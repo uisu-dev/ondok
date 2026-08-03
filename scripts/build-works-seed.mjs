@@ -78,15 +78,20 @@ for (const f of files) {
     if (!used.has(k)) console.log(`  ⚠ ${meta.title}: 주석 '${k}' 이 본문에서 쓰이지 않았습니다`);
   }
 
+  if (typeof meta.era_order !== "number") {
+    console.log(`  ⚠ ${meta.title}: era_order(창작 추정 연도)가 없습니다`);
+  }
+
   console.log(
-    `${meta.title} — ${chars}자 / ${sections}개 대목 / 문항 ${meta.questions.length}개 / 주석 ${used.size}개`
+    `${String(meta.era_order ?? "????").padStart(4)}  ${meta.title} — ${chars}자 / ${sections}개 대목 / 문항 ${meta.questions.length}개 / 주석 ${used.size}개`
   );
 
-  stmts.push(`-- ${meta.title} (${chars}자, ${sections}개 대목, 주석 ${used.size}개)
+  stmts.push(`-- ${meta.era_order ?? "?"} ${meta.title} (${chars}자, ${sections}개 대목, 주석 ${used.size}개)
 INSERT INTO public.works
-  (slug, title, author, category, era, summary, body, commentary, cover_emoji, questions, annotations, published)
+  (slug, title, author, category, era, era_order, summary, body, commentary, cover_emoji, questions, annotations, published)
 VALUES (
   ${q(meta.slug)}, ${q(meta.title)}, ${q(meta.author)}, ${q(meta.category)}, ${q(meta.era)},
+  ${Number(meta.era_order ?? 9999)},
   ${q(meta.summary)},
   ${q(body)},
   ${q(meta.commentary)},
@@ -97,10 +102,12 @@ VALUES (
 )
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title, author = EXCLUDED.author, category = EXCLUDED.category,
-  era = EXCLUDED.era, summary = EXCLUDED.summary, body = EXCLUDED.body,
+  era = EXCLUDED.era, era_order = EXCLUDED.era_order,
+  summary = EXCLUDED.summary, body = EXCLUDED.body,
   commentary = EXCLUDED.commentary, cover_emoji = EXCLUDED.cover_emoji,
   questions = EXCLUDED.questions, annotations = EXCLUDED.annotations, updated_at = NOW();`);
 }
+stmts.sort();
 
 const totalQuiz = answerDist.reduce((s, n) => s + n, 0);
 if (totalQuiz > 0) {

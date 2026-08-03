@@ -1,4 +1,5 @@
-import type { Work, WorkRecord, WorkSummary } from "@/lib/work-types";
+import type { Work, WorkRecord, WorkSummary, NoteAnswer } from "@/lib/work-types";
+import { quizKeysOf } from "@/lib/work-types";
 import { getSupabase } from "./supabase";
 
 interface WorkRow {
@@ -8,6 +9,7 @@ interface WorkRow {
   author: string | null;
   category: string;
   era: string | null;
+  era_order: number | null;
   summary: string | null;
   body: string;
   commentary: string | null;
@@ -26,6 +28,7 @@ function fromRow(row: WorkRow): Work {
     author: row.author,
     category: row.category,
     era: row.era,
+    eraOrder: typeof row.era_order === "number" ? row.era_order : 9999,
     summary: row.summary,
     body: row.body,
     commentary: row.commentary,
@@ -40,19 +43,34 @@ function fromRow(row: WorkRow): Work {
   };
 }
 
-/** 공개된 작품 목록 (본문 제외). */
+const LIST_COLS =
+  "id, slug, title, author, category, era, summary, cover_emoji, questions, published, created_at, body";
+
+/** 공개된 작품 목록 (본문 제외). 시대순(창작 추정 연도) 정렬. */
 export async function listPublishedWorks(): Promise<WorkSummary[]> {
   const supabase = getSupabase();
   if (!supabase) return [];
-  const { data, error } = await supabase
+
+  const full = await supabase
     .from("works")
-    .select(
-      "id, slug, title, author, category, era, summary, cover_emoji, questions, published, created_at, body"
-    )
+    .select(`${LIST_COLS}, era_order, annotations`)
     .eq("published", true)
+    .order("era_order", { ascending: true })
     .order("created_at", { ascending: true });
-  if (error || !data) return [];
-  return (data as WorkRow[]).map((r) => {
+
+  // era_order / annotations 마이그레이션 전이면 컬럼이 없어 실패한다 → 옛 스키마로 한 번 더
+  const res = full.error
+    ? await supabase
+        .from("works")
+        .select(LIST_COLS)
+        .eq("published", true)
+        .order("created_at", { ascending: true })
+    : full;
+
+  const data = res.data as WorkRow[] | null;
+  if (res.error || !data) return [];
+
+  return data.map((r) => {
     const w = fromRow(r);
     return {
       id: w.id,
@@ -61,12 +79,17 @@ export async function listPublishedWorks(): Promise<WorkSummary[]> {
       author: w.author,
       category: w.category,
       era: w.era,
+      eraOrder: w.eraOrder,
       summary: w.summary,
       coverEmoji: w.coverEmoji,
       published: w.published,
       createdAt: w.createdAt,
       questionCount: w.questions.length,
-      charCount: r.body.replace(/\s+/g, "").length,
+      quizCount: quizKeysOf(w.annotations).length,
+      // 본문 글자수는 [[표시할 말|키]] 의 키 부분을 빼고 센다
+      charCount: r.body
+        .replace(/\[\[([^\]|]+)\|[^\]]+\]\]/g, "$1")
+        .replace(/\s+/g, "").length,
     };
   });
 }
@@ -97,7 +120,9 @@ export async function getWorkRecord(
   if (!user) return null;
   const { data } = await supabase
     .from("work_records")
-    .select("last_section, completed_at, answers, answered_count")
+    .select(
+      "last_section, completed_at, answers, answered_count, note_answers, badge_at"
+    )
     .eq("user_id", user.id)
     .eq("work_id", workId)
     .maybeSingle();
@@ -107,5 +132,7 @@ export async function getWorkRecord(
     completedAt: (data.completed_at as string) ?? null,
     answers: (data.answers as Record<string, string>) ?? {},
     answeredCount: (data.answered_count as number) ?? 0,
+    noteAnswers: (data.note_answers as Record<string, NoteAnswer>) ?? {},
+    badgeAt: (data.badge_at as string) ?? null,
   };
 }

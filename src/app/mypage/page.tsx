@@ -12,6 +12,7 @@ import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 import { estimateGradeLabel } from "@/lib/grade";
 import { labelForMBTI } from "@/lib/mbti";
+import { BadgeMedal } from "@/app/works/[slug]/Badge";
 import type { MBTIType } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -50,7 +51,10 @@ export default async function MyPage() {
     title: string;
     coverEmoji: string;
     completed: boolean;
+    badgeAt: string | null;
   }> = [];
+  // 전체 작품 수 (배지 진행도용)
+  let workTotal = 0;
   // 내가 푼 활동지
   let solvedWorksheets: Array<{
     id: number;
@@ -142,9 +146,15 @@ export default async function MyPage() {
         .filter(Boolean) as typeof solvedWorksheets;
     }
     // 읽은 고전 작품
+    const { count: wCount } = await admin
+      .from("works")
+      .select("id", { count: "exact", head: true })
+      .eq("published", true);
+    workTotal = wCount ?? 0;
+
     const { data: recs } = await admin
       .from("work_records")
-      .select("work_id, completed_at, last_section, updated_at")
+      .select("work_id, completed_at, last_section, updated_at, badge_at")
       .eq("user_id", user.id)
       .order("updated_at", { ascending: false });
     if (recs && recs.length > 0) {
@@ -170,6 +180,7 @@ export default async function MyPage() {
             title: w.title,
             coverEmoji: w.cover_emoji,
             completed: !!r.completed_at,
+            badgeAt: (r.badge_at as string) ?? null,
           };
         })
         .filter(Boolean) as typeof readWorks;
@@ -177,6 +188,8 @@ export default async function MyPage() {
   } catch {
     /* service role 미설정 시 무시 */
   }
+
+  const badges = readWorks.filter((w) => w.badgeAt);
 
   const profile = user.profile;
   const roleInfo = ROLE_LABEL[profile.role] ?? ROLE_LABEL.student;
@@ -405,6 +418,62 @@ export default async function MyPage() {
           )}
         </Card>
 
+        {/* 고전 마스터 배지 */}
+        <Card as="section" className="px-6 py-6 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-fg-muted">필수 고전소설</p>
+              <p className="text-lg font-bold text-fg-strong mt-1">
+                🏅 마스터 배지 · {badges.length}
+                <span className="text-sm font-semibold text-fg-muted">
+                  {workTotal > 0 ? ` / ${workTotal}` : ""}
+                </span>
+              </p>
+            </div>
+            <Link
+              href="/works"
+              className="h-9 px-3 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-semibold flex items-center"
+            >
+              배지 모으러 가기
+            </Link>
+          </div>
+
+          {badges.length === 0 ? (
+            <div className="rounded-button bg-surface-muted px-4 py-4 space-y-1">
+              <p className="text-xs font-bold text-fg-strong">
+                아직 받은 배지가 없어요
+              </p>
+              <p className="text-[11px] text-fg-muted leading-relaxed">
+                작품을 끝까지 읽고, 본문의 형광펜 문제를 모두 맞히고, 점검 문제까지
+                답하면 그 작품의 배지를 받아요.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-wrap gap-3">
+                {badges.map((w) => (
+                  <Link
+                    key={w.slug}
+                    href={`/works/${w.slug}`}
+                    className="flex flex-col items-center gap-1.5 w-[72px] group"
+                    title={w.title}
+                  >
+                    <BadgeMedal emoji={w.coverEmoji} size={56} />
+                    <span className="text-[11px] font-semibold text-fg-muted group-hover:text-fg-strong text-center leading-tight line-clamp-2">
+                      {w.title}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+              {workTotal > badges.length && (
+                <p className="text-[11px] text-fg-subtle">
+                  {workTotal - badges.length}개 남았어요.
+                </p>
+              )}
+            </>
+          )}
+        </Card>
+
         {/* 읽은 고전 작품 */}
         <Card as="section" className="px-6 py-6 space-y-4">
           <div className="flex items-center justify-between gap-3">
@@ -442,12 +511,14 @@ export default async function MyPage() {
                     </span>
                     <span
                       className={`text-[10px] font-bold px-1.5 py-0.5 rounded-chip ${
-                        w.completed
-                          ? "bg-[color-mix(in_oklab,var(--color-cat-sci)_16%,white)] text-cat-sci"
-                          : "bg-accent-100 text-accent-700"
+                        w.badgeAt
+                          ? "bg-[color-mix(in_oklab,var(--color-cat-soc)_18%,white)] text-[#b45309]"
+                          : w.completed
+                            ? "bg-[color-mix(in_oklab,var(--color-cat-sci)_16%,white)] text-cat-sci"
+                            : "bg-accent-100 text-accent-700"
                       }`}
                     >
-                      {w.completed ? "완독" : "읽는 중"}
+                      {w.badgeAt ? "🏅 마스터" : w.completed ? "완독" : "읽는 중"}
                     </span>
                   </Link>
                 </li>
