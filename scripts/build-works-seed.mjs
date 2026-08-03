@@ -48,14 +48,29 @@ for (const f of files) {
   const body = extractBody(readFileSync(mdPath, "utf8"));
 
   const sections = (body.match(/^## /gm) || []).length;
-  const chars = body.replace(/\s+/g, "").length;
+  // 본문 글자수에서 [[표시할 말|키]] 의 '|키]]' 부분은 제외하고 센다
+  const plain = body.replace(/\[\[([^\]|]+)\|[^\]]+\]\]/g, "$1");
+  const chars = plain.replace(/\s+/g, "").length;
+
+  // 본문에 심긴 주석 키와 annotations 정의가 맞는지 검사
+  const used = new Set(
+    [...body.matchAll(/\[\[[^\]|]+\|([^\]]+)\]\]/g)].map((m) => m[1])
+  );
+  const defined = new Set(Object.keys(meta.annotations ?? {}));
+  for (const k of used) {
+    if (!defined.has(k)) console.log(`  ⚠ ${meta.title}: 본문의 [[…|${k}]] 에 해당하는 주석 정의가 없습니다`);
+  }
+  for (const k of defined) {
+    if (!used.has(k)) console.log(`  ⚠ ${meta.title}: 주석 '${k}' 이 본문에서 쓰이지 않았습니다`);
+  }
+
   console.log(
-    `${meta.title} — ${chars}자 / ${sections}개 대목 / 문항 ${meta.questions.length}개`
+    `${meta.title} — ${chars}자 / ${sections}개 대목 / 문항 ${meta.questions.length}개 / 주석 ${used.size}개`
   );
 
-  stmts.push(`-- ${meta.title} (${chars}자, ${sections}개 대목)
+  stmts.push(`-- ${meta.title} (${chars}자, ${sections}개 대목, 주석 ${used.size}개)
 INSERT INTO public.works
-  (slug, title, author, category, era, summary, body, commentary, cover_emoji, questions, published)
+  (slug, title, author, category, era, summary, body, commentary, cover_emoji, questions, annotations, published)
 VALUES (
   ${q(meta.slug)}, ${q(meta.title)}, ${q(meta.author)}, ${q(meta.category)}, ${q(meta.era)},
   ${q(meta.summary)},
@@ -63,13 +78,14 @@ VALUES (
   ${q(meta.commentary)},
   ${q(meta.cover_emoji)},
   ${q(JSON.stringify(meta.questions))}::jsonb,
+  ${q(JSON.stringify(meta.annotations ?? {}))}::jsonb,
   TRUE
 )
 ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title, author = EXCLUDED.author, category = EXCLUDED.category,
   era = EXCLUDED.era, summary = EXCLUDED.summary, body = EXCLUDED.body,
   commentary = EXCLUDED.commentary, cover_emoji = EXCLUDED.cover_emoji,
-  questions = EXCLUDED.questions, updated_at = NOW();`);
+  questions = EXCLUDED.questions, annotations = EXCLUDED.annotations, updated_at = NOW();`);
 }
 
 const sql = `-- 고전 읽기 작품 시드 (자동 생성: scripts/build-works-seed.mjs)

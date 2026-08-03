@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import type { Work, WorkRecord, WorkSection } from "@/lib/work-types";
 import { QTYPE_LABEL } from "@/lib/worksheet-types";
+import { AnnotationSheet } from "./AnnotationSheet";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 const FONT_PX: Record<FontSize, number> = { sm: 15, md: 17, lg: 20, xl: 24 };
@@ -24,20 +25,57 @@ function groupBlocks(paragraphs: string[]) {
   return blocks;
 }
 
-/** **강조** 만 지원하는 최소 인라인 렌더러 (외부 마크다운 라이브러리 없이). */
-function renderInline(text: string, key: number) {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+/**
+ * **강조** 와 [[형광펜|주석키]] 만 지원하는 최소 인라인 렌더러.
+ * 외부 마크다운 라이브러리 없이 처리한다.
+ */
+function renderInline(
+  text: string,
+  key: number,
+  onNote?: (annKey: string) => void,
+  visited?: Set<string>
+) {
+  const parts = text.split(/(\*\*[^*]+\*\*|\[\[[^\]]+\]\])/g);
   return (
     <>
-      {parts.map((p, i) =>
-        p.startsWith("**") && p.endsWith("**") ? (
-          <strong key={`${key}-${i}`} className="text-accent-700">
-            {p.slice(2, -2)}
-          </strong>
-        ) : (
-          <span key={`${key}-${i}`}>{p}</span>
-        )
-      )}
+      {parts.map((p, i) => {
+        if (p.startsWith("**") && p.endsWith("**")) {
+          return (
+            <strong key={`${key}-${i}`} className="text-accent-700">
+              {p.slice(2, -2)}
+            </strong>
+          );
+        }
+        if (p.startsWith("[[") && p.endsWith("]]")) {
+          const inner = p.slice(2, -2);
+          const bar = inner.lastIndexOf("|");
+          const label = bar >= 0 ? inner.slice(0, bar) : inner;
+          const annKey = bar >= 0 ? inner.slice(bar + 1) : inner;
+          const done = visited?.has(annKey);
+          return (
+            <button
+              key={`${key}-${i}`}
+              type="button"
+              onClick={() => onNote?.(annKey)}
+              className={`inline font-bold rounded-sm px-0.5 -mx-0.5 transition-colors ${
+                done ? "text-cat-sci" : "text-fg-strong"
+              }`}
+              style={{
+                background: done
+                  ? "linear-gradient(to top, color-mix(in oklab, var(--color-cat-sci) 30%, transparent) 45%, transparent 45%)"
+                  : "linear-gradient(to top, color-mix(in oklab, var(--color-cat-soc) 45%, transparent) 45%, transparent 45%)",
+              }}
+              title="눌러서 확인하기"
+            >
+              {label}
+              <span className="text-[0.7em] align-super ml-0.5 opacity-70">
+                {done ? "✓" : "?"}
+              </span>
+            </button>
+          );
+        }
+        return <span key={`${key}-${i}`}>{p}</span>;
+      })}
     </>
   );
 }
@@ -60,6 +98,9 @@ export function WorkReader({
     initialRecord?.answers ?? {}
   );
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  // 형광펜 주석
+  const [openNote, setOpenNote] = useState<string | null>(null);
+  const [visitedNotes, setVisitedNotes] = useState<Set<string>>(new Set());
   const [resumeTo, setResumeTo] = useState<number | null>(
     initialRecord && initialRecord.lastSection > 0 && !initialRecord.completedAt
       ? initialRecord.lastSection
@@ -165,6 +206,7 @@ export function WorkReader({
   }
 
   const px = FONT_PX[fontSize];
+  const noteCount = Object.keys(work.annotations ?? {}).length;
   const pct = sections.length
     ? Math.round(((current + 1) / sections.length) * 100)
     : 0;
@@ -192,6 +234,27 @@ export function WorkReader({
         </div>
         {work.summary && (
           <p className="text-sm text-fg leading-relaxed">{work.summary}</p>
+        )}
+
+        {noteCount > 0 && (
+          <div className="rounded-button bg-surface-muted px-4 py-3 space-y-1">
+            <p className="text-xs font-bold text-fg-strong">
+              <span
+                className="px-0.5"
+                style={{
+                  background:
+                    "linear-gradient(to top, color-mix(in oklab, var(--color-cat-soc) 45%, transparent) 45%, transparent 45%)",
+                }}
+              >
+                형광펜
+              </span>
+              으로 표시된 말을 눌러 보세요
+            </p>
+            <p className="text-[11px] text-fg-muted leading-relaxed">
+              짧은 문제를 풀거나 배경지식을 볼 수 있어요. 이 작품에는 {noteCount}곳이
+              있어요{visitedNotes.size > 0 && ` (${visitedNotes.size}곳 확인함)`}.
+            </p>
+          </div>
         )}
 
         {/* 글자 크기 */}
@@ -277,7 +340,7 @@ export function WorkReader({
                       className="leading-[1.8] text-fg-strong"
                       style={{ fontSize: Math.max(13, px - 2) }}
                     >
-                      {renderInline(line, k)}
+                      {renderInline(line, k, setOpenNote, visitedNotes)}
                     </p>
                   ))}
                 </blockquote>
@@ -287,7 +350,7 @@ export function WorkReader({
                   className="leading-[1.9] text-fg-strong"
                   style={{ fontSize: px }}
                 >
-                  {renderInline(b.lines[0], j)}
+                  {renderInline(b.lines[0], j, setOpenNote, visitedNotes)}
                 </p>
               )
             )}
@@ -414,6 +477,22 @@ export function WorkReader({
           ← 다른 작품 보기
         </Link>
       </div>
+
+      {/* 형광펜 주석 시트 */}
+      {openNote && work.annotations?.[openNote] && (
+        <AnnotationSheet
+          annotation={work.annotations[openNote]}
+          label={openNote}
+          onClose={() => setOpenNote(null)}
+          onDone={() =>
+            setVisitedNotes((prev) => {
+              const next = new Set(prev);
+              next.add(openNote);
+              return next;
+            })
+          }
+        />
+      )}
     </div>
   );
 }

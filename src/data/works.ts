@@ -13,6 +13,7 @@ interface WorkRow {
   commentary: string | null;
   cover_emoji: string;
   questions: Work["questions"];
+  annotations: Work["annotations"] | null;
   published: boolean;
   created_at: string;
 }
@@ -30,6 +31,10 @@ function fromRow(row: WorkRow): Work {
     commentary: row.commentary,
     coverEmoji: row.cover_emoji,
     questions: Array.isArray(row.questions) ? row.questions : [],
+    annotations:
+      row.annotations && typeof row.annotations === "object"
+        ? row.annotations
+        : {},
     published: row.published,
     createdAt: row.created_at,
   };

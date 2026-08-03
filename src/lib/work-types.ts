@@ -10,6 +10,23 @@ export interface WorkQuestion {
   rubric?: string;
 }
 
+/**
+ * 본문 속 형광펜 주석. 본문에 [[표시할 말|키]] 로 심고 키로 연결한다.
+ *  - quiz : 짧은 확인 문제 (보기 중 하나 고르기)
+ *  - info : 배경지식 설명
+ */
+export interface Annotation {
+  type: "quiz" | "info";
+  /** quiz */
+  question?: string;
+  options?: string[];
+  answer?: number; // options 의 인덱스
+  explain?: string;
+  /** info */
+  title?: string;
+  body?: string;
+}
+
 export interface Work {
   id: number;
   slug: string;
@@ -22,12 +39,16 @@ export interface Work {
   commentary: string | null;
   coverEmoji: string;
   questions: WorkQuestion[];
+  annotations: Record<string, Annotation>;
   published: boolean;
   createdAt: string;
 }
 
 /** 목록용 — 본문 없이 가벼운 형태. */
-export type WorkSummary = Omit<Work, "body" | "commentary" | "questions"> & {
+export type WorkSummary = Omit<
+  Work,
+  "body" | "commentary" | "questions" | "annotations"
+> & {
   questionCount: number;
   charCount: number;
 };
