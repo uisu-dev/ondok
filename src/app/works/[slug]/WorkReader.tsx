@@ -52,26 +52,27 @@ function renderInline(
           const label = bar >= 0 ? inner.slice(0, bar) : inner;
           const annKey = bar >= 0 ? inner.slice(bar + 1) : inner;
           const done = visited?.has(annKey);
+          // button 이 아니라 span — button 의 기본 스타일(가운데 정렬 등)이
+          // 본문 줄바꿈을 망가뜨린다.
           return (
-            <button
+            <span
               key={`${key}-${i}`}
-              type="button"
+              role="button"
+              tabIndex={0}
+              data-done={done ? "true" : "false"}
               onClick={() => onNote?.(annKey)}
-              className={`inline font-bold rounded-sm px-0.5 -mx-0.5 transition-colors ${
-                done ? "text-cat-sci" : "text-fg-strong"
-              }`}
-              style={{
-                background: done
-                  ? "linear-gradient(to top, color-mix(in oklab, var(--color-cat-sci) 30%, transparent) 45%, transparent 45%)"
-                  : "linear-gradient(to top, color-mix(in oklab, var(--color-cat-soc) 45%, transparent) 45%, transparent 45%)",
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onNote?.(annKey);
+                }
               }}
-              title="눌러서 확인하기"
+              className="hl-note"
+              title={done ? "다시 보기" : "눌러서 확인하기"}
             >
               {label}
-              <span className="text-[0.7em] align-super ml-0.5 opacity-70">
-                {done ? "✓" : "?"}
-              </span>
-            </button>
+              <span className="hl-note__mark">{done ? "✓" : "?"}</span>
+            </span>
           );
         }
         return <span key={`${key}-${i}`}>{p}</span>;
@@ -239,13 +240,7 @@ export function WorkReader({
         {noteCount > 0 && (
           <div className="rounded-button bg-surface-muted px-4 py-3 space-y-1">
             <p className="text-xs font-bold text-fg-strong">
-              <span
-                className="px-0.5"
-                style={{
-                  background:
-                    "linear-gradient(to top, color-mix(in oklab, var(--color-cat-soc) 45%, transparent) 45%, transparent 45%)",
-                }}
-              >
+              <span className="hl-note" style={{ cursor: "default" }}>
                 형광펜
               </span>
               으로 표시된 말을 눌러 보세요

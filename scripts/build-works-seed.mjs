@@ -53,9 +53,18 @@ for (const f of files) {
   const chars = plain.replace(/\s+/g, "").length;
 
   // 본문에 심긴 주석 키와 annotations 정의가 맞는지 검사
-  const used = new Set(
-    [...body.matchAll(/\[\[[^\]|]+\|([^\]]+)\]\]/g)].map((m) => m[1])
-  );
+  const marks = [...body.matchAll(/\[\[([^\]|]+)\|([^\]]+)\]\]/g)];
+  const used = new Set(marks.map((m) => m[2]));
+
+  // 형광펜 구간이 길면 여러 줄을 통째로 덮어 지저분해진다 → 핵심 구절만
+  for (const [, label, k] of marks) {
+    if (label.length > 40) {
+      console.log(
+        `  ⚠ ${meta.title}: 주석 '${k}' 의 표시 구간이 ${label.length}자입니다 (40자 이하 권장)`
+      );
+    }
+  }
+
   const defined = new Set(Object.keys(meta.annotations ?? {}));
   for (const k of used) {
     if (!defined.has(k)) console.log(`  ⚠ ${meta.title}: 본문의 [[…|${k}]] 에 해당하는 주석 정의가 없습니다`);

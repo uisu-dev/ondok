@@ -73,6 +73,60 @@
   }
 }
 
+/* ── 고전 읽기 본문의 형광펜 주석 ──────────────────────────────
+   글자 아래쪽에만 띠를 깔아 실제 형광펜처럼 보이게 한다.
+   box-decoration-break: clone 이 있어야 여러 줄에 걸칠 때
+   줄마다 따로 칠해진다 (없으면 통째로 색 블록이 된다). */
+.hl-note {
+  cursor: pointer;
+  color: var(--color-fg-strong);
+  background-repeat: no-repeat;
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-cat-soc) 34%, transparent) 0.4em,
+    transparent 0.4em
+  );
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-image 0.15s ease, color 0.15s ease;
+}
+.hl-note:hover,
+.hl-note:focus-visible {
+  outline: none;
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-cat-soc) 60%, transparent) 0.62em,
+    transparent 0.62em
+  );
+}
+/* 이미 확인한 주석 */
+.hl-note[data-done="true"] {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-cat-sci) 24%, transparent) 0.4em,
+    transparent 0.4em
+  );
+}
+.hl-note[data-done="true"]:hover,
+.hl-note[data-done="true"]:focus-visible {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-cat-sci) 44%, transparent) 0.62em,
+    transparent 0.62em
+  );
+}
+/* 끝에 붙는 작은 표시 (? / ✓) */
+.hl-note__mark {
+  font-size: 0.62em;
+  font-weight: 700;
+  vertical-align: super;
+  margin-left: 0.05em;
+  color: color-mix(in oklab, var(--color-cat-soc) 85%, black);
+}
+.hl-note[data-done="true"] .hl-note__mark {
+  color: var(--color-cat-sci);
+}
+
 @media print {
   @page {
     margin: 1.2cm 1.3cm;
