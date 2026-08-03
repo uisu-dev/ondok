@@ -44,9 +44,9 @@ export default async function WorksPage() {
         </div>
 
         <Card as="section" className="px-6 py-7 space-y-3">
-          <p className="text-sm font-semibold text-accent-600">📜 고전 읽기</p>
+          <p className="text-sm font-semibold text-accent-600">📜 읽기 쉬운 필수 고전소설</p>
           <h1 className="text-2xl font-bold text-fg-strong leading-snug">
-            옛이야기를 요즘 말로 읽어요
+            꼭 읽어야 할 고전, 요즘 말로 읽어요
           </h1>
           <p className="text-sm text-fg leading-relaxed">
             흥부전, 춘향전 같은 고전을 읽기 쉽게 다듬었어요. 어려운 옛말 대신

@@ -409,7 +409,7 @@ export default async function MyPage() {
         <Card as="section" className="px-6 py-6 space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold text-fg-muted">고전 읽기</p>
+              <p className="text-xs font-semibold text-fg-muted">필수 고전소설</p>
               <p className="text-lg font-bold text-fg-strong mt-1">
                 📜 읽은 작품{" "}
                 {readWorks.length > 0 ? `· ${readWorks.length}편` : ""}
@@ -424,7 +424,7 @@ export default async function MyPage() {
           </div>
           {readWorks.length === 0 ? (
             <p className="text-xs text-fg-subtle">
-              고전 읽기에서 작품을 읽으면 여기에 기록돼요.
+              필수 고전소설에서 작품을 읽으면 여기에 기록돼요.
             </p>
           ) : (
             <ul className="space-y-1.5">

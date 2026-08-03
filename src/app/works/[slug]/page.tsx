@@ -29,7 +29,7 @@ export default async function WorkPage({
       <div className="mx-auto max-w-[720px] px-6 py-6 space-y-4">
         <div className="text-xs font-semibold text-fg-muted">
           <Link href="/works" className="hover:text-fg-strong">
-            ← 고전 읽기
+            ← 필수 고전소설
           </Link>
         </div>
         <WorkReader

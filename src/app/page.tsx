@@ -283,8 +283,8 @@ export default async function HomePage() {
         <section className="space-y-3">
           <PillarHeader
             emoji="📜"
-            title="고전 읽기"
-            subtitle="옛이야기를 요즘 말로 다듬어 읽고, 해설과 함께 마무리해요"
+            title="읽기 쉬운 필수 고전소설"
+            subtitle="꼭 읽어야 할 고전을 요즘 말로 다듬었어요"
           />
           <Link href="/works" className="block group">
             <Card
@@ -296,7 +296,7 @@ export default async function HomePage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-base font-bold text-fg-strong">
-                  고전소설 읽기
+                  작품 읽으러 가기
                 </p>
                 <p className="text-sm text-fg-muted">
                   흥부전·춘향전 같은 옛이야기를 읽기 쉽게
