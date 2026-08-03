@@ -42,6 +42,7 @@ if (files.length === 0) {
 }
 
 const stmts = [];
+const answerDist = [0, 0, 0, 0]; // 정답 위치가 한쪽으로 쏠리면 찍어서 맞힐 수 있다
 for (const f of files) {
   const meta = JSON.parse(readFileSync(join(dir, f), "utf8"));
   const mdPath = join(dir, f.replace(/\.json$/, ".md"));
@@ -63,6 +64,10 @@ for (const f of files) {
         `  ⚠ ${meta.title}: 주석 '${k}' 의 표시 구간이 ${label.length}자입니다 (40자 이하 권장)`
       );
     }
+  }
+
+  for (const a of Object.values(meta.annotations ?? {})) {
+    if (a.type === "quiz") answerDist[a.answer] = (answerDist[a.answer] ?? 0) + 1;
   }
 
   const defined = new Set(Object.keys(meta.annotations ?? {}));
@@ -95,6 +100,20 @@ ON CONFLICT (slug) DO UPDATE SET
   era = EXCLUDED.era, summary = EXCLUDED.summary, body = EXCLUDED.body,
   commentary = EXCLUDED.commentary, cover_emoji = EXCLUDED.cover_emoji,
   questions = EXCLUDED.questions, annotations = EXCLUDED.annotations, updated_at = NOW();`);
+}
+
+const totalQuiz = answerDist.reduce((s, n) => s + n, 0);
+if (totalQuiz > 0) {
+  console.log(
+    `\n주석 문항 정답 분포 (총 ${totalQuiz}개): ` +
+      answerDist.map((n, i) => `${i + 1}번 ${n}`).join(" · ")
+  );
+  const max = Math.max(...answerDist);
+  if (max / totalQuiz > 0.4) {
+    console.log(
+      "  ⚠ 정답이 한쪽 보기에 쏠려 있습니다. 찍어서 맞힐 수 있으니 보기 순서를 섞으세요."
+    );
+  }
 }
 
 const sql = `-- 고전 읽기 작품 시드 (자동 생성: scripts/build-works-seed.mjs)
