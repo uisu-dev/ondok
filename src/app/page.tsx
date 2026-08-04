@@ -14,7 +14,6 @@ interface PathCard {
   emoji: string;
   title: string;
   subtitle: string;
-  hint: string;
   comingSoon?: boolean;
 }
 
@@ -24,21 +23,18 @@ const BOOK_PATHS: PathCard[] = [
     emoji: "🧠",
     title: "MBTI로 찾기",
     subtitle: "성격 유형으로 어울리는 책 추천",
-    hint: "8문항 빠른 진단 · 약 2분",
   },
   {
     href: "/quiz/interest",
     emoji: "🌱",
     title: "관심사로 찾기",
     subtitle: "좋아하는 주제로 책 추천",
-    hint: "우주 · AI · 환경 · 마음 · 모험 …",
   },
   {
     href: "/quiz/career",
     emoji: "🎓",
     title: "진로·전공으로 찾기",
     subtitle: "꿈꾸는 미래에 어울리는 책 추천",
-    hint: "과학 · 의료 · 공학 · 예술 · 교육 …",
   },
 ];
 
@@ -49,7 +45,6 @@ const BOOK_WORKSHEET: PathCard[] = [
     emoji: "📚",
     title: "온독도서 활동지",
     subtitle: "추천도서로 만든 독후 활동 풀기",
-    hint: "교사가 만든 독후 활동지",
   },
 ];
 
@@ -59,66 +54,149 @@ const LITERACY_PATHS: PathCard[] = [
     emoji: "📚",
     title: "사고도구어 사전",
     subtitle: "사고도구어를 등급별로 살펴보기",
-    hint: "1급 43 · 2급 291 · 3급 584 · 4급 466",
   },
   {
     href: "/sago/learn",
     emoji: "🎯",
     title: "사고도구어 학습",
     subtitle: "뜻을 보고 단어를 맞히는 랜덤 객관식",
-    hint: "정답 맞히면 아는 단어로 기록 · 진행도 추적",
   },
   {
     href: "/worksheet",
     emoji: "✏️",
     title: "사고도구어 활동지",
     subtitle: "모의고사·자체 지문으로 사고도구어 익히기",
-    hint: "수능·모의고사 · 자체 지문 활동지",
   },
 ];
 
-function PathItem({ card }: { card: PathCard }) {
+const GAME_PATHS: PathCard[] = [
+  {
+    href: "/game",
+    emoji: "🃏",
+    title: "짝 맞추기",
+    subtitle: "카드를 뒤집어 단어와 뜻을 짝지어 보기",
+  },
+  {
+    href: "/game/chosung",
+    emoji: "🔤",
+    title: "초성 퀴즈",
+    subtitle: "초성과 뜻을 보고 사고도구어 맞히기",
+  },
+  {
+    href: "/game/battle",
+    emoji: "⚔️",
+    title: "사고도구어 배틀",
+    subtitle: "퀴즈를 맞혀 사고몬을 공격 · 이기면 승수 기록",
+  },
+];
+
+/**
+ * 메뉴 격자 — 좁은 화면 2칸, 넓은 화면은 항목 수만큼 한 줄에 놓아
+ * 빈 칸이 남지 않게 한다. 세로 길이를 줄이는 것이 목적.
+ */
+function PathGrid({
+  children,
+  cols,
+}: {
+  children: React.ReactNode;
+  cols: 3 | 4;
+}) {
+  return (
+    <div
+      className={`grid grid-cols-2 gap-3 items-stretch ${
+        cols === 4 ? "sm:grid-cols-4" : "sm:grid-cols-3"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/**
+ * 정사각형에 가까운 타일. 격자 한 칸을 채운다.
+ * span2 를 주면 좁은 화면에서만 두 칸을 차지하며 가로 배치로 바뀐다.
+ * (3개짜리 묶음에서 마지막 한 칸이 비어 보이지 않게)
+ */
+function PathTile({ card, span2 = false }: { card: PathCard; span2?: boolean }) {
   const body = (
     <Card
       interactive={!card.comingSoon}
-      className={`px-5 py-5 flex items-center gap-4 border transition-colors ${
+      className={`h-full px-4 py-4 flex gap-2.5 border transition-colors ${
+        span2
+          ? "flex-row items-center sm:flex-col sm:items-stretch sm:gap-2.5"
+          : "flex-col"
+      } ${
         card.comingSoon
           ? "border-border opacity-70"
           : "border-transparent group-hover:border-accent-300"
       }`}
     >
       <div
-        className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${
+        className={`shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center text-2xl ${
           card.comingSoon ? "bg-surface-muted" : "bg-accent-50"
         }`}
       >
         {card.emoji}
       </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <p className="text-base font-bold text-fg-strong">{card.title}</p>
+      <div className={`min-w-0 ${span2 ? "flex-1 sm:flex-none" : ""}`}>
+        <p className="text-sm font-bold text-fg-strong leading-snug">
+          {card.title}
           {card.comingSoon && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-chip bg-accent-50 text-accent-700">
+            <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded-chip bg-accent-50 text-accent-700 align-middle">
               곧 공개
             </span>
           )}
-        </div>
-        <p className="text-sm text-fg-muted">{card.subtitle}</p>
-        {!card.comingSoon && (
-          <p className="text-xs text-fg-subtle mt-1 truncate">{card.hint}</p>
-        )}
+        </p>
+        <p
+          className={`text-[11px] text-fg-muted leading-relaxed mt-1 ${
+            span2 ? "truncate sm:whitespace-normal sm:line-clamp-2" : "line-clamp-2"
+          }`}
+        >
+          {card.subtitle}
+        </p>
       </div>
-      {!card.comingSoon && (
-        <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
-          →
-        </div>
-      )}
     </Card>
   );
-  if (card.comingSoon) return body;
+  const span = span2 ? "col-span-2 sm:col-span-1" : "";
+  if (card.comingSoon) return <div className={span}>{body}</div>;
   return (
-    <Link href={card.href} className="block group">
+    <Link href={card.href} className={`block group h-full ${span}`}>
       {body}
+    </Link>
+  );
+}
+
+/** 격자에서 한 줄을 통째로 쓰는 넓은 타일. 홀수로 남는 항목이나 대표 메뉴에 쓴다. */
+function PathWide({
+  href,
+  emoji,
+  title,
+  subtitle,
+  className = "col-span-2 sm:col-span-3",
+}: {
+  href: string;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  className?: string;
+}) {
+  return (
+    <Link href={href} className={`block group ${className}`}>
+      <Card
+        interactive
+        className="px-4 py-3.5 flex items-center gap-3 border border-transparent group-hover:border-accent-300 transition-colors"
+      >
+        <div className="shrink-0 w-11 h-11 rounded-2xl bg-accent-50 flex items-center justify-center text-2xl">
+          {emoji}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-fg-strong">{title}</p>
+          <p className="text-[11px] text-fg-muted truncate">{subtitle}</p>
+        </div>
+        <span className="shrink-0 text-accent-600 text-lg group-hover:translate-x-0.5 transition-transform">
+          →
+        </span>
+      </Card>
     </Link>
   );
 }
@@ -263,20 +341,14 @@ export default async function HomePage() {
             title="온독도서"
             subtitle="나에게 맞는 책을 찾고 독후 활동으로 이어가요"
           />
-          <div className="space-y-3">
-            <p className="text-xs font-bold text-fg-muted px-1 pt-1">
-              온독도서 추천
-            </p>
+          <PathGrid cols={4}>
             {BOOK_PATHS.map((c) => (
-              <PathItem key={c.href} card={c} />
+              <PathTile key={c.href} card={c} />
             ))}
-            <p className="text-xs font-bold text-fg-muted px-1 pt-2">
-              온독도서 활동지
-            </p>
             {BOOK_WORKSHEET.map((c) => (
-              <PathItem key={c.href} card={c} />
+              <PathTile key={c.href} card={c} />
             ))}
-          </div>
+          </PathGrid>
         </section>
 
         {/* Pillar 2: 고전 읽기 */}
@@ -286,30 +358,13 @@ export default async function HomePage() {
             title="읽기 쉬운 필수 고전소설"
             subtitle="꼭 읽어야 할 고전을 요즘 말로 다듬었어요"
           />
-          <Link href="/works" className="block group">
-            <Card
-              interactive
-              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
-            >
-              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
-                📜
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-bold text-fg-strong">
-                  작품 읽으러 가기
-                </p>
-                <p className="text-sm text-fg-muted">
-                  흥부전·춘향전 같은 옛이야기를 읽기 쉽게
-                </p>
-                <p className="text-xs text-fg-subtle mt-1">
-                  읽던 곳 이어 읽기 · 완독 후 해설·점검 문제
-                </p>
-              </div>
-              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
-                →
-              </div>
-            </Card>
-          </Link>
+          <PathWide
+            href="/works"
+            emoji="📜"
+            title="작품 읽으러 가기 · 15편"
+            subtitle="시대순 배열 · 형광펜 문제 · 작품별 마스터 배지"
+            className=""
+          />
         </section>
 
         {/* Pillar 3: 사고도구어 */}
@@ -319,11 +374,15 @@ export default async function HomePage() {
             title="사고도구어"
             subtitle="읽고 이해하는 힘의 기초가 되는 단어들로 학습해요"
           />
-          <div className="space-y-3">
+          <PathGrid cols={3}>
             {LITERACY_PATHS.map((c, i) => (
-              <PathItem key={card_key(c, i)} card={c} />
+              <PathTile
+                key={card_key(c, i)}
+                card={c}
+                span2={i === LITERACY_PATHS.length - 1}
+              />
             ))}
-          </div>
+          </PathGrid>
         </section>
 
         {/* 게임: 사고도구어 게임 2종 + 랭킹 */}
@@ -333,63 +392,15 @@ export default async function HomePage() {
             title="사고도구어 게임"
             subtitle="놀이로 단어를 익히고 랭킹에 도전하세요"
           />
-          <Link href="/game" className="block group">
-            <Card
-              interactive
-              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
-            >
-              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
-                🃏
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-bold text-fg-strong">짝 맞추기</p>
-                <p className="text-sm text-fg-muted">
-                  카드를 뒤집어 단어와 뜻을 짝지어 보기
-                </p>
-              </div>
-              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
-                →
-              </div>
-            </Card>
-          </Link>
-          <Link href="/game/chosung" className="block group">
-            <Card
-              interactive
-              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
-            >
-              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
-                🔤
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-bold text-fg-strong">초성 퀴즈</p>
-                <p className="text-sm text-fg-muted">
-                  초성과 뜻을 보고 사고도구어 맞히기
-                </p>
-              </div>
-              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
-                →
-              </div>
-            </Card>
-          </Link>
-          <Link href="/game/battle" className="block group">
-            <Card
-              interactive
-              className="px-5 py-5 flex items-center gap-4 border border-transparent group-hover:border-accent-300 transition-colors"
-            >
-              <div className="shrink-0 w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center text-3xl">
-                ⚔️
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-bold text-fg-strong">사고도구어 배틀</p>
-                <p className="text-sm text-fg-muted">
-                  퀴즈를 맞혀 사고몬을 공격 · 이기면 승수 기록
-                </p>
-              </div>
-              <div className="shrink-0 text-accent-600 text-xl group-hover:translate-x-0.5 transition-transform">
-                →
-              </div>
-            </Card>
-          </Link>
+          <PathGrid cols={3}>
+            {GAME_PATHS.map((c, i) => (
+              <PathTile
+                key={c.href}
+                card={c}
+                span2={i === GAME_PATHS.length - 1}
+              />
+            ))}
+          </PathGrid>
 
           {gameLeaders.length > 0 && (
             <Card as="section" className="px-5 py-4 space-y-2">
