@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Card } from "@/components/ui/Card";
 import { OnthinkingBanner } from "@/components/OnthinkingBanner";
 import { getPopularBooks, getPopularWorksheets } from "@/data/popular";
+import { countPublishedWorks } from "@/data/works";
 import { getGameLeaderboard } from "@/data/leaderboard";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 import { maskName } from "@/lib/mask";
@@ -222,11 +223,13 @@ function PillarHeader({
 }
 
 export default async function HomePage() {
-  const [popularBooks, popularWorksheets, gameLeaders] = await Promise.all([
-    getPopularBooks(5),
-    getPopularWorksheets(5),
-    getGameLeaderboard("battle", 5),
-  ]);
+  const [popularBooks, popularWorksheets, gameLeaders, workCount] =
+    await Promise.all([
+      getPopularBooks(5),
+      getPopularWorksheets(5),
+      getGameLeaderboard("battle", 5),
+      countPublishedWorks(),
+    ]);
 
   return (
     <main className="flex-1 w-full">
@@ -361,7 +364,7 @@ export default async function HomePage() {
           <PathWide
             href="/works"
             emoji="📜"
-            title="작품 읽으러 가기 · 15편"
+            title={`작품 읽으러 가기${workCount > 0 ? ` · ${workCount}편` : ""}`}
             subtitle="시대순 배열 · 형광펜 문제 · 작품별 마스터 배지"
             className=""
           />

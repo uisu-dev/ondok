@@ -94,6 +94,18 @@ export async function listPublishedWorks(): Promise<WorkSummary[]> {
   });
 }
 
+/** 공개된 작품 수. 메뉴에 '· N편'을 붙이는 용도라 본문은 가져오지 않는다. */
+export async function countPublishedWorks(): Promise<number> {
+  const supabase = getSupabase();
+  if (!supabase) return 0;
+  const { count, error } = await supabase
+    .from("works")
+    .select("id", { count: "exact", head: true })
+    .eq("published", true);
+  if (error) return 0;
+  return count ?? 0;
+}
+
 /** 공개된 작품 1편 (본문 포함). */
 export async function getPublishedWork(slug: string): Promise<Work | null> {
   const supabase = getSupabase();
