@@ -4,7 +4,10 @@
 //   content/works/heungbu.md    … 다듬은 본문 (## 로 대목 구분)
 //
 // Run: node scripts/build-works-seed.mjs
-//  → scripts/works-seed.sql
+//  → scripts/works-seed.sql  (전체 작품)
+//
+// 새로 추가한 작품만 뽑고 싶을 때 (전체 시드는 커서 Supabase 에 붙이기 부담스럽다):
+//   node scripts/build-works-seed.mjs --only=manboksa,chwiyu --out=scripts/works-seed-new.sql
 
 import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { resolve, dirname, join } from "node:path";
@@ -13,7 +16,15 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
 const dir = resolve(root, "content/works");
-const OUT = resolve(root, "scripts/works-seed.sql");
+
+const arg = (name) => {
+  const hit = process.argv.find((a) => a.startsWith(`--${name}=`));
+  return hit ? hit.slice(name.length + 3) : null;
+};
+const onlySlugs = arg("only")
+  ? new Set(arg("only").split(",").map((s) => s.trim()).filter(Boolean))
+  : null;
+const OUT = resolve(root, arg("out") ?? "scripts/works-seed.sql");
 
 const q = (v) =>
   v == null ? "NULL" : `'${String(v).replace(/'/g, "''")}'`;
@@ -45,6 +56,7 @@ const stmts = [];
 const answerDist = [0, 0, 0, 0]; // 정답 위치가 한쪽으로 쏠리면 찍어서 맞힐 수 있다
 for (const f of files) {
   const meta = JSON.parse(readFileSync(join(dir, f), "utf8"));
+  if (onlySlugs && !onlySlugs.has(meta.slug)) continue;
   const mdPath = join(dir, f.replace(/\.json$/, ".md"));
   const body = extractBody(readFileSync(mdPath, "utf8"));
 
