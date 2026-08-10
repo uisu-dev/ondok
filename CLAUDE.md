@@ -131,38 +131,25 @@ Other commands: `/unstuck` (when stuck), `/pm` (generate PRD)
 4. Write tests for new functionality
 
 ### Before Committing
-1. Run the gate checks: `.harness/gates/check-boundaries.sh`
-2. Run tests
-3. Ensure no secrets are exposed: `.harness/gates/check-secrets.sh`
-4. If seed exists: run `/evaluate` to verify against spec
+1. `npx tsc --noEmit` — 타입 검사
+2. `npm run build` — 빌드가 통과하는지
+3. 작품(content/works) 을 건드렸으면 `node scripts/build-works-seed.mjs`
+4. 비밀키가 섞여 들어가지 않았는지 확인 (`.env.local` 은 커밋 금지)
 
 ---
 
----
+## Harness Gates — 사용하지 않음
 
-## Harness Gate Commands
+`.harness/gates/*.sh` 는 템플릿에 딸려 온 검사 스크립트이나 **이 프로젝트에서는 쓰지 않는다.**
 
-See `.harness/gates/GATES.md` for the full default vs opt-in breakdown.
+check-boundaries.sh 가 import 구문을 파싱하지 않고 줄 안의 문자열만 훑어
+오탐을 쏟아 냈기 때문이다. 예를 들어 이런 것들을 위반으로 잡았다.
 
-```bash
-# DEFAULT gates (blocking — run on pre-commit + CI)
-.harness/gates/check-secrets.sh        # Leaked secrets
-.harness/gates/check-boundaries.sh     # Dependency boundary violations
-.harness/gates/check-structure.sh      # Project structure rules
-.harness/gates/check-spec.sh           # Seed spec completeness
-.harness/gates/check-layers.sh         # 3-tier layer separation
-.harness/gates/check-security.sh       # SAST security scanning
-.harness/gates/check-deps.sh           # Dependency vulnerabilities
+- `form.append("file", blob, "upload.jpg")` → `.jpg` 의 `pg` 를 PostgreSQL import 로 오인
+- `const defs = definitionsData...`        → `defs` 의 `fs` 를 Node fs import 로 오인
 
-# OPT-IN gates (manual; enable via HARNESS_ENABLE_* env vars)
-.harness/gates/check-complexity.sh     # Code complexity metrics
-.harness/gates/check-mutation.sh       # Mutation testing score
-.harness/gates/check-performance.sh    # Performance budgets
-.harness/gates/check-ai-antipatterns.sh # AI-generated code anti-patterns
-
-# Run all
-.harness/detect-violations.sh
-```
+CI 워크플로(.github/workflows/harness-gates.yaml)는 2026-08-10 에 제거했다.
+검증은 위의 타입 검사·빌드로 대신한다.
 
 ---
 
