@@ -121,6 +121,16 @@ ON CONFLICT (slug) DO UPDATE SET
 }
 stmts.sort();
 
+if (stmts.length === 0) {
+  console.error(
+    onlySlugs
+      ? `\n✕ --only 에 준 슬러그와 맞는 작품이 없습니다: ${[...onlySlugs].join(", ")}\n` +
+          `  content/works/*.json 의 "slug" 값을 확인하세요.`
+      : "\n✕ 내보낼 작품이 없습니다."
+  );
+  process.exit(1);
+}
+
 const totalQuiz = answerDist.reduce((s, n) => s + n, 0);
 if (totalQuiz > 0) {
   console.log(
