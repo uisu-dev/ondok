@@ -1,12 +1,12 @@
 {
-  "source": "충청남도교육청 학교 명단 (~중/~고 → ~중학교/~고등학교 정규화)",
-  "generated_at": "2026-06-09T22:29:03.978Z",
+  "source": "충청남도교육청 학교 명단 (초기: xlsx / 사립 등 누락분: NEIS 학교기본정보 API)",
+  "generated_at": "2026-08-13T01:08:21.448Z",
   "counts": {
-    "middle": 146,
-    "high": 84,
-    "special": 8,
+    "middle": 191,
+    "high": 122,
+    "special": 12,
     "office": 1,
-    "total": 239
+    "total": 326
   },
   "schools": [
     {
@@ -34,6 +34,20 @@
       "type": "middle"
     },
     {
+      "code": "8222115",
+      "name": "건양대학교병설건양중학교",
+      "nameRaw": "건양대학교병설건양중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8161016",
+      "name": "경천중학교",
+      "nameRaw": "경천중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중06-12",
       "name": "계룡중학교",
       "nameRaw": "계룡중",
@@ -58,10 +72,24 @@
       "type": "middle"
     },
     {
+      "code": "8161017",
+      "name": "공주북중학교",
+      "nameRaw": "공주북중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중02-03",
       "name": "공주여자중학교",
       "nameRaw": "공주여중",
       "type": "middle"
+    },
+    {
+      "code": "8161019",
+      "name": "공주영명중학교",
+      "nameRaw": "공주영명중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중02-01",
@@ -76,10 +104,31 @@
       "type": "middle"
     },
     {
+      "code": "8271011",
+      "name": "광시중학교",
+      "nameRaw": "광시중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중12-03",
       "name": "광천중학교",
       "nameRaw": "광천중",
       "type": "middle"
+    },
+    {
+      "code": "8151025",
+      "name": "광풍중학교",
+      "nameRaw": "광풍중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "C035902",
+      "name": "국립공주대학교사범대학부설중학교",
+      "nameRaw": "국립공주대학교사범대학부설중학교",
+      "type": "middle",
+      "founded": "국립"
     },
     {
       "code": "중14-05",
@@ -112,6 +161,13 @@
       "type": "middle"
     },
     {
+      "code": "8222014",
+      "name": "기민중학교",
+      "nameRaw": "기민중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중14-04",
       "name": "남면중학교",
       "nameRaw": "남면중",
@@ -136,6 +192,13 @@
       "type": "middle"
     },
     {
+      "code": "8222015",
+      "name": "논산대건중학교",
+      "nameRaw": "논산대건중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중06-02",
       "name": "논산여자중학교",
       "nameRaw": "논산여중",
@@ -148,16 +211,30 @@
       "type": "middle"
     },
     {
-      "code": "중07-01-02",
-      "name": "당진중대호지분교장",
-      "nameRaw": "당진중대호지분교장",
-      "type": "middle"
-    },
-    {
       "code": "중07-01",
       "name": "당진중학교",
       "nameRaw": "당진중",
       "type": "middle"
+    },
+    {
+      "code": "중07-01-02",
+      "name": "당진중학교대호지분교장",
+      "nameRaw": "당진중학교대호지분교장",
+      "type": "middle"
+    },
+    {
+      "code": "8171016",
+      "name": "대명중학교",
+      "nameRaw": "대명중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8191015",
+      "name": "대산중학교",
+      "nameRaw": "대산중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중13-03",
@@ -184,6 +261,20 @@
       "type": "middle"
     },
     {
+      "code": "8191016",
+      "name": "대철중학교",
+      "nameRaw": "대철중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8271012",
+      "name": "대흥중학교",
+      "nameRaw": "대흥중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중13-05",
       "name": "덕산중학교",
       "nameRaw": "덕산중",
@@ -194,6 +285,27 @@
       "name": "도고중학교",
       "nameRaw": "도고중",
       "type": "middle"
+    },
+    {
+      "code": "8241010",
+      "name": "동강중학교",
+      "nameRaw": "동강중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8251009",
+      "name": "동영중학교",
+      "nameRaw": "동영중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8181014",
+      "name": "둔포중학교",
+      "nameRaw": "둔포중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중14-06",
@@ -238,6 +350,13 @@
       "type": "middle"
     },
     {
+      "code": "8231014",
+      "name": "백제중학교",
+      "nameRaw": "백제중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중01-22",
       "name": "병천중학교",
       "nameRaw": "병천중",
@@ -254,6 +373,13 @@
       "name": "복수중학교",
       "nameRaw": "복수중",
       "type": "middle"
+    },
+    {
+      "code": "8151027",
+      "name": "복자여자중학교",
+      "nameRaw": "복자여자중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중02-02",
@@ -304,6 +430,20 @@
       "type": "middle"
     },
     {
+      "code": "8191017",
+      "name": "서령중학교",
+      "nameRaw": "서령중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8241011",
+      "name": "서림여자중학교",
+      "nameRaw": "서림여자중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중10-06",
       "name": "서면중학교",
       "nameRaw": "서면중",
@@ -340,6 +480,20 @@
       "type": "middle"
     },
     {
+      "code": "8291012",
+      "name": "서야중학교",
+      "nameRaw": "서야중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8191010",
+      "name": "서일중학교",
+      "nameRaw": "서일중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중10-03",
       "name": "서천여자중학교",
       "nameRaw": "서천여중",
@@ -350,6 +504,20 @@
       "name": "서천중학교",
       "nameRaw": "서천중",
       "type": "middle"
+    },
+    {
+      "code": "8261013",
+      "name": "서해삼육중학교",
+      "nameRaw": "서해삼육중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8291013",
+      "name": "석문중학교",
+      "nameRaw": "석문중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중09-06",
@@ -400,6 +568,13 @@
       "type": "middle"
     },
     {
+      "code": "8291014",
+      "name": "송악중학교",
+      "nameRaw": "송악중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중07-03",
       "name": "수청중학교",
       "nameRaw": "수청중",
@@ -418,10 +593,31 @@
       "type": "middle"
     },
     {
+      "code": "8271013",
+      "name": "신양중학교",
+      "nameRaw": "신양중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중04-18",
       "name": "신창중학교",
       "nameRaw": "신창중",
       "type": "middle"
+    },
+    {
+      "code": "8291015",
+      "name": "신평중학교",
+      "nameRaw": "신평중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8222016",
+      "name": "쌘뽈여자중학교",
+      "nameRaw": "쌘뽈여자중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중04-11",
@@ -440,6 +636,20 @@
       "name": "아산세교중학교",
       "nameRaw": "아산세교중",
       "type": "middle"
+    },
+    {
+      "code": "8181186",
+      "name": "아산윤슬중학교",
+      "nameRaw": "아산윤슬중학교",
+      "type": "middle",
+      "founded": "공립"
+    },
+    {
+      "code": "8181015",
+      "name": "아산중학교",
+      "nameRaw": "아산중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중04-13",
@@ -464,6 +674,13 @@
       "name": "여해학교",
       "nameRaw": "여해학교",
       "type": "middle"
+    },
+    {
+      "code": "8222018",
+      "name": "연무여자중학교",
+      "nameRaw": "연무여자중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중06-05",
@@ -518,6 +735,20 @@
       "name": "온양중학교",
       "nameRaw": "온양중",
       "type": "middle"
+    },
+    {
+      "code": "8231015",
+      "name": "외산중학교",
+      "nameRaw": "외산중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8231016",
+      "name": "용강중학교",
+      "nameRaw": "용강중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중06-10",
@@ -592,6 +823,13 @@
       "type": "middle"
     },
     {
+      "code": "8271014",
+      "name": "임성중학교",
+      "nameRaw": "임성중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중09-04",
       "name": "임천중학교",
       "nameRaw": "임천중",
@@ -628,6 +866,13 @@
       "type": "middle"
     },
     {
+      "code": "8261083",
+      "name": "주촌중학교",
+      "nameRaw": "주촌중학교",
+      "type": "middle",
+      "founded": "공립"
+    },
+    {
       "code": "중08-06",
       "name": "진산중학교",
       "nameRaw": "진산중",
@@ -646,6 +891,13 @@
       "type": "middle"
     },
     {
+      "code": "8151029",
+      "name": "천성중학교",
+      "nameRaw": "천성중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중01-26",
       "name": "천안가람중학교",
       "nameRaw": "천안가람중",
@@ -656,6 +908,20 @@
       "name": "천안가온중학교",
       "nameRaw": "천안가온중",
       "type": "middle"
+    },
+    {
+      "code": "8151265",
+      "name": "천안계광중학교",
+      "nameRaw": "천안계광중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8151236",
+      "name": "천안동성중학교",
+      "nameRaw": "천안동성중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중01-04",
@@ -710,6 +976,13 @@
       "name": "천안새샘중학교",
       "nameRaw": "천안새샘중",
       "type": "middle"
+    },
+    {
+      "code": "8151030",
+      "name": "천안서여자중학교",
+      "nameRaw": "천안서여자중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중01-11",
@@ -772,6 +1045,13 @@
       "type": "middle"
     },
     {
+      "code": "8251010",
+      "name": "청신여자중학교",
+      "nameRaw": "청신여자중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중11-01",
       "name": "청양중학교",
       "nameRaw": "청양중",
@@ -808,6 +1088,20 @@
       "type": "middle"
     },
     {
+      "code": "8241012",
+      "name": "판교중학교",
+      "nameRaw": "판교중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
+      "code": "8191019",
+      "name": "팔봉중학교",
+      "nameRaw": "팔봉중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중03-03",
       "name": "한내여자중학교",
       "nameRaw": "한내여중",
@@ -826,6 +1120,13 @@
       "type": "middle"
     },
     {
+      "code": "8181180",
+      "name": "한올중학교",
+      "nameRaw": "한올중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중07-05",
       "name": "합덕여자중학교",
       "nameRaw": "합덕여중",
@@ -842,6 +1143,13 @@
       "name": "해미중학교",
       "nameRaw": "해미중",
       "type": "middle"
+    },
+    {
+      "code": "8291016",
+      "name": "호서중학교",
+      "nameRaw": "호서중학교",
+      "type": "middle",
+      "founded": "사립"
     },
     {
       "code": "중12-06",
@@ -880,6 +1188,13 @@
       "type": "middle"
     },
     {
+      "code": "8261015",
+      "name": "홍주중학교",
+      "nameRaw": "홍주중학교",
+      "type": "middle",
+      "founded": "사립"
+    },
+    {
       "code": "중01-13",
       "name": "환서중학교",
       "nameRaw": "환서중",
@@ -899,9 +1214,16 @@
     },
     {
       "code": "고47",
-      "name": "강경상고등학교",
-      "nameRaw": "강경상고",
+      "name": "강경상업고등학교",
+      "nameRaw": "강경상업고등학교",
       "type": "high"
+    },
+    {
+      "code": "8140360",
+      "name": "건양대학교병설건양고등학교",
+      "nameRaw": "건양대학교병설건양고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고53",
@@ -914,6 +1236,13 @@
       "name": "공주고등학교",
       "nameRaw": "공주고",
       "type": "high"
+    },
+    {
+      "code": "8140080",
+      "name": "공주금성여자고등학교",
+      "nameRaw": "공주금성여자고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고21",
@@ -934,6 +1263,27 @@
       "type": "high"
     },
     {
+      "code": "8140082",
+      "name": "공주영명고등학교",
+      "nameRaw": "공주영명고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140196",
+      "name": "공주정보고등학교",
+      "nameRaw": "공주정보고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "C035903",
+      "name": "국립공주대학교사범대학부설고등학교",
+      "nameRaw": "국립공주대학교사범대학부설고등학교",
+      "type": "high",
+      "founded": "국립"
+    },
+    {
       "code": "고44",
       "name": "국방항공고등학교",
       "nameRaw": "국방항공고",
@@ -947,8 +1297,8 @@
     },
     {
       "code": "고58",
-      "name": "금산산고등학교",
-      "nameRaw": "금산산고",
+      "name": "금산산업고등학교",
+      "nameRaw": "금산산업고등학교",
       "type": "high"
     },
     {
@@ -970,10 +1320,24 @@
       "type": "high"
     },
     {
+      "code": "8140085",
+      "name": "논산대건고등학교",
+      "nameRaw": "논산대건고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고46",
       "name": "논산여자고등학교",
       "nameRaw": "논산여고",
       "type": "high"
+    },
+    {
+      "code": "8140152",
+      "name": "논산여자상업고등학교",
+      "nameRaw": "논산여자상업고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고55",
@@ -1007,9 +1371,16 @@
     },
     {
       "code": "고24",
-      "name": "대천여상",
-      "nameRaw": "대천여상",
+      "name": "대천여자상업고등학교",
+      "nameRaw": "대천여자상업고등학교",
       "type": "high"
+    },
+    {
+      "code": "8140086",
+      "name": "대흥고등학교",
+      "nameRaw": "대흥고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고80",
@@ -1042,6 +1413,13 @@
       "type": "high"
     },
     {
+      "code": "8140087",
+      "name": "복자여자고등학교",
+      "nameRaw": "복자여자고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고43",
       "name": "부석고등학교",
       "nameRaw": "부석고",
@@ -1072,6 +1450,41 @@
       "type": "high"
     },
     {
+      "code": "8140270",
+      "name": "북일고등학교",
+      "nameRaw": "북일고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140271",
+      "name": "북일여자고등학교",
+      "nameRaw": "북일여자고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140501",
+      "name": "비전고등학교",
+      "nameRaw": "비전고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140088",
+      "name": "삽교고등학교",
+      "nameRaw": "삽교고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140089",
+      "name": "서령고등학교",
+      "nameRaw": "서령고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고42",
       "name": "서산고등학교",
       "nameRaw": "서산고",
@@ -1079,8 +1492,8 @@
     },
     {
       "code": "고41",
-      "name": "서산공고등학교",
-      "nameRaw": "서산공고",
+      "name": "서산공업고등학교",
+      "nameRaw": "서산공업고등학교",
       "type": "high"
     },
     {
@@ -1096,6 +1509,20 @@
       "type": "high"
     },
     {
+      "code": "8140090",
+      "name": "서야고등학교",
+      "nameRaw": "서야고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140209",
+      "name": "서일고등학교",
+      "nameRaw": "서일고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고68",
       "name": "서천고등학교",
       "nameRaw": "서천고",
@@ -1108,6 +1535,13 @@
       "type": "high"
     },
     {
+      "code": "8140091",
+      "name": "서해삼육고등학교",
+      "nameRaw": "서해삼육고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고33",
       "name": "설화고등학교",
       "nameRaw": "설화고",
@@ -1118,6 +1552,34 @@
       "name": "성환고등학교",
       "nameRaw": "성환고",
       "type": "high"
+    },
+    {
+      "code": "8140093",
+      "name": "송악고등학교",
+      "nameRaw": "송악고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140094",
+      "name": "신평고등학교",
+      "nameRaw": "신평고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140095",
+      "name": "쌘뽈여자고등학교",
+      "nameRaw": "쌘뽈여자고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140096",
+      "name": "아산고등학교",
+      "nameRaw": "아산고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고31",
@@ -1138,16 +1600,37 @@
       "type": "high"
     },
     {
+      "code": "8140098",
+      "name": "연무고등학교",
+      "nameRaw": "연무고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고49",
       "name": "연무마이스터고등학교",
       "nameRaw": "연무마이스터고",
       "type": "high"
     },
     {
+      "code": "8140100",
+      "name": "예산고등학교",
+      "nameRaw": "예산고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고79",
       "name": "예산여자고등학교",
       "nameRaw": "예산여고",
       "type": "high"
+    },
+    {
+      "code": "8140344",
+      "name": "예산예화여자고등학교",
+      "nameRaw": "예산예화여자고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고28",
@@ -1186,9 +1669,16 @@
       "type": "high"
     },
     {
+      "code": "8140101",
+      "name": "장항고등학교",
+      "nameRaw": "장항고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고67",
-      "name": "장항공고등학교",
-      "nameRaw": "장항공고",
+      "name": "장항공업고등학교",
+      "nameRaw": "장항공업고등학교",
       "type": "high"
     },
     {
@@ -1199,14 +1689,21 @@
     },
     {
       "code": "고27",
-      "name": "주산산고등학교",
-      "nameRaw": "주산산고",
+      "name": "주산산업고등학교",
+      "nameRaw": "주산산업고등학교",
       "type": "high"
     },
     {
+      "code": "8140104",
+      "name": "천안고등학교",
+      "nameRaw": "천안고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고02",
-      "name": "천안공고등학교",
-      "nameRaw": "천안공고",
+      "name": "천안공업고등학교",
+      "nameRaw": "천안공업고등학교",
       "type": "high"
     },
     {
@@ -1220,6 +1717,13 @@
       "name": "천안불당고등학교",
       "nameRaw": "천안불당고",
       "type": "high"
+    },
+    {
+      "code": "8140358",
+      "name": "천안상업고등학교",
+      "nameRaw": "천안상업고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고12",
@@ -1244,6 +1748,13 @@
       "name": "천안여자고등학교",
       "nameRaw": "천안여고",
       "type": "high"
+    },
+    {
+      "code": "8140160",
+      "name": "천안여자상업고등학교",
+      "nameRaw": "천안여자상업고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고13",
@@ -1288,6 +1799,13 @@
       "type": "high"
     },
     {
+      "code": "8140508",
+      "name": "충남관광보건고등학교",
+      "nameRaw": "충남관광보건고등학교",
+      "type": "high",
+      "founded": "공립"
+    },
+    {
       "code": "고37",
       "name": "충남다사랑",
       "nameRaw": "충남다사랑",
@@ -1312,6 +1830,13 @@
       "type": "high"
     },
     {
+      "code": "8140366",
+      "name": "충남삼성고등학교",
+      "nameRaw": "충남삼성고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고08",
       "name": "충남예술고등학교",
       "nameRaw": "충남예술고",
@@ -1325,8 +1850,8 @@
     },
     {
       "code": "고32",
-      "name": "충남외고등학교",
-      "nameRaw": "충남외고",
+      "name": "충남외국어고등학교",
+      "nameRaw": "충남외국어고등학교",
       "type": "high"
     },
     {
@@ -1337,8 +1862,8 @@
     },
     {
       "code": "고51",
-      "name": "충남체고등학교",
-      "nameRaw": "충남체고",
+      "name": "충남체육고등학교",
+      "nameRaw": "충남체육고등학교",
       "type": "high"
     },
     {
@@ -1354,10 +1879,52 @@
       "type": "high"
     },
     {
+      "code": "8140197",
+      "name": "태안여자고등학교",
+      "nameRaw": "태안여자고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140510",
+      "name": "한국국제비즈니스고등학교",
+      "nameRaw": "한국국제비즈니스고등학교",
+      "type": "high",
+      "founded": "공립"
+    },
+    {
+      "code": "8140509",
+      "name": "한국미래문화고등학교",
+      "nameRaw": "한국미래문화고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고65",
       "name": "한국식품마이스터고등학교",
       "nameRaw": "한국식품마이스터고",
       "type": "high"
+    },
+    {
+      "code": "8140461",
+      "name": "한국K-POP고등학교",
+      "nameRaw": "한국K-POP고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140500",
+      "name": "한올고등학교",
+      "nameRaw": "한올고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
+      "code": "8140107",
+      "name": "한일고등학교",
+      "nameRaw": "한일고등학교",
+      "type": "high",
+      "founded": "사립"
     },
     {
       "code": "고57",
@@ -1372,6 +1939,13 @@
       "type": "high"
     },
     {
+      "code": "8140108",
+      "name": "호서고등학교",
+      "nameRaw": "호서고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "고73",
       "name": "홍성고등학교",
       "nameRaw": "홍성고",
@@ -1379,8 +1953,8 @@
     },
     {
       "code": "고77",
-      "name": "홍성공고등학교",
-      "nameRaw": "홍성공고",
+      "name": "홍성공업고등학교",
+      "nameRaw": "홍성공업고등학교",
       "type": "high"
     },
     {
@@ -1390,16 +1964,44 @@
       "type": "high"
     },
     {
+      "code": "8140109",
+      "name": "홍주고등학교",
+      "nameRaw": "홍주고등학교",
+      "type": "high",
+      "founded": "사립"
+    },
+    {
       "code": "특03",
       "name": "공주정명학교",
       "nameRaw": "공주정명학교",
       "type": "special"
     },
     {
+      "code": "C036093",
+      "name": "국립공주대학교사범대학부설특수학교",
+      "nameRaw": "국립공주대학교사범대학부설특수학교",
+      "type": "special",
+      "founded": "국립"
+    },
+    {
+      "code": "8140199",
+      "name": "나사렛새꿈학교",
+      "nameRaw": "나사렛새꿈학교",
+      "type": "special",
+      "founded": "사립"
+    },
+    {
       "code": "특07",
       "name": "당진꿈나래학교",
       "nameRaw": "당진꿈나래학교",
       "type": "special"
+    },
+    {
+      "code": "8140176",
+      "name": "보령정심학교",
+      "nameRaw": "보령정심학교",
+      "type": "special",
+      "founded": "사립"
     },
     {
       "code": "특05",
@@ -1418,6 +2020,13 @@
       "name": "아산성심학교",
       "nameRaw": "아산성심학교",
       "type": "special"
+    },
+    {
+      "code": "8140512",
+      "name": "아산한여울학교",
+      "nameRaw": "아산한여울학교",
+      "type": "special",
+      "founded": "공립"
     },
     {
       "code": "특08",

@@ -72,6 +72,26 @@ async function fetchKind(kind) {
   return out;
 }
 
+/**
+ * 원본 xlsx 가 약칭('천안공', '강경상')을 써서 정규화가 어긋난 것들.
+ * 뒤에 '고등학교'만 붙여 '천안공고등학교' 같은 엉터리 이름이 되었다.
+ * 같은 학교이므로 새로 넣지 않고 기존 행의 이름만 고친다 (코드는 유지).
+ *   우리 이름 → NEIS 공식명
+ */
+const RENAME = {
+  당진중대호지분교장: "당진중학교대호지분교장",
+  강경상고등학교: "강경상업고등학교",
+  금산산고등학교: "금산산업고등학교",
+  대천여상: "대천여자상업고등학교",
+  서산공고등학교: "서산공업고등학교",
+  장항공고등학교: "장항공업고등학교",
+  주산산고등학교: "주산산업고등학교",
+  천안공고등학교: "천안공업고등학교",
+  충남외고등학교: "충남외국어고등학교",
+  충남체고등학교: "충남체육고등학교",
+  홍성공고등학교: "홍성공업고등학교",
+};
+
 /** 비교용으로 이름을 눌러 준다 (괄호·공백·중점 제거). */
 const key = (s) =>
   s
@@ -81,7 +101,12 @@ const key = (s) =>
 
 const existing = JSON.parse(readFileSync(SCHOOLS_JSON, "utf8"));
 const byName = new Map();
-for (const s of existing.schools) byName.set(key(s.name), s);
+for (const s of existing.schools) {
+  byName.set(key(s.name), s);
+  // 약칭으로 들어간 학교는 NEIS 공식명으로도 찾을 수 있게 해 둔다
+  const official = RENAME[key(s.name)];
+  if (official) byName.set(key(official), s);
+}
 
 const fetched = [];
 for (const kind of KINDS) {
@@ -100,11 +125,17 @@ for (const kind of KINDS) {
 
 const added = [];
 const matched = [];
+const renamed = []; // 같은 학교인데 우리 이름이 잘못된 것 → UPDATE
 for (const f of fetched) {
   const hit = byName.get(key(f.name));
   if (hit) {
-    matched.push({ ...f, code: hit.code });
     hit._seen = true;
+    if (key(hit.name) !== key(f.name)) {
+      renamed.push({ code: hit.code, from: hit.name, to: f.name });
+      hit.name = f.name;
+      hit.nameRaw = f.name;
+    }
+    matched.push({ ...f, code: hit.code });
   } else {
     added.push({ ...f, code: f.neisCode });
   }
@@ -113,6 +144,7 @@ const orphans = existing.schools.filter((s) => !s._seen && s.type !== "office");
 
 console.log(`\n기존 ${existing.schools.length}개 / NEIS ${fetched.length}개`);
 console.log(`  이름 일치 : ${matched.length}개 (코드 그대로 유지)`);
+console.log(`  이름 정정 : ${renamed.length}개 (약칭 → 공식명, 코드 유지)`);
 console.log(`  신규 추가 : ${added.length}개`);
 const byFond = {};
 for (const a of added) byFond[a.founded] = (byFond[a.founded] ?? 0) + 1;
@@ -125,8 +157,13 @@ if (orphans.length) {
   for (const o of orphans) console.log(`    ${o.code} ${o.name}`);
 }
 
-if (added.length === 0) {
-  console.log("\n추가할 학교가 없습니다.");
+if (renamed.length) {
+  console.log(`\n이름 정정 ${renamed.length}개:`);
+  for (const r of renamed) console.log(`  ${r.code}  ${r.from} → ${r.to}`);
+}
+
+if (added.length === 0 && renamed.length === 0) {
+  console.log("\n바꿀 것이 없습니다.");
   process.exit(0);
 }
 
@@ -173,13 +210,26 @@ console.log(`\n→ ${SCHOOLS_JSON} (${merged.length}개)`);
 
 // 신규분만 담은 SQL — 기존 행은 건드리지 않는다
 const esc = (s) => s.replace(/'/g, "''");
-const sql = `-- 누락돼 있던 학교 ${added.length}개 추가 (대부분 사립)
--- 자동 생성: scripts/fetch-schools-neis.mjs
+const sql = `-- 학교 명단 보정 — 자동 생성: scripts/fetch-schools-neis.mjs
+-- 출처: NEIS 학교기본정보 API (충청남도교육청 N10)
 --
 -- 기존 학교의 code 는 건드리지 않는다. profiles.school_code 가 이를 FK 로
 -- 참조하므로 코드를 바꾸면 학생·교원 소속이 끊긴다.
 -- 신규 학교의 code 는 NEIS 표준학교코드를 그대로 쓴다.
 
+${
+  renamed.length
+    ? `-- ① 약칭으로 잘못 들어간 이름 ${renamed.length}개 정정 (같은 학교이므로 코드 유지)
+${renamed
+  .map(
+    (r) =>
+      `UPDATE public.schools SET name = '${esc(r.to)}' WHERE code = '${esc(r.code)}';  -- ${r.from}`
+  )
+  .join("\n")}
+`
+    : ""
+}
+-- ② 빠져 있던 학교 ${added.length}개 추가 (사립 ${added.filter((a) => a.founded === "사립").length}개 포함)
 INSERT INTO public.schools (code, name, type) VALUES
 ${added.map((a) => `  ('${esc(a.code)}', '${esc(a.name)}', '${a.type}')`).join(",\n")}
 ON CONFLICT (code) DO UPDATE SET
