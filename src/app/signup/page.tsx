@@ -11,7 +11,7 @@ export default async function SignupPage() {
   const user = await getSignedInUser();
   if (user) redirect("/mypage");
 
-  const schools = (schoolsJson as { schools: { code: string; name: string; type: string }[] })
+  const schools = (schoolsJson as { schools: { code: string; name: string }[] })
     .schools;
 
   return (

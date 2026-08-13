@@ -9,14 +9,10 @@ import { MIN_BIRTH_YEAR, maxBirthYear, estimateGradeLabel } from "@/lib/grade";
 interface School {
   code: string;
   name: string;
-  type: string;
 }
 
-const TYPE_LABEL: Record<string, string> = {
-  middle: "중학교",
-  high: "고등학교",
-  special: "특수학교",
-};
+/** 목록에 없는 학교라면 여기로 가입하도록 안내한다. */
+const FALLBACK_SCHOOL_NAME = "충남교육청";
 
 export function SignupForm({ schools }: { schools: School[] }) {
   const router = useRouter();
@@ -27,21 +23,22 @@ export function SignupForm({ schools }: { schools: School[] }) {
   const [birthYear, setBirthYear] = useState("");
   const [filter, setFilter] = useState("");
   const [schoolCode, setSchoolCode] = useState<string | null>(null);
-  const [typeFilter, setTypeFilter] = useState<"all" | "middle" | "high" | "special">("all");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const visible = useMemo(() => {
     const q = filter.trim();
-    return schools
-      .filter((s) => (typeFilter === "all" ? true : s.type === typeFilter))
-      .filter((s) => (q ? s.name.includes(q) : true))
-      .slice(0, 60);
-  }, [schools, filter, typeFilter]);
+    return schools.filter((s) => (q ? s.name.includes(q) : true)).slice(0, 60);
+  }, [schools, filter]);
 
   const selected = useMemo(
     () => schools.find((s) => s.code === schoolCode) ?? null,
     [schools, schoolCode]
+  );
+
+  const fallback = useMemo(
+    () => schools.find((s) => s.name === FALLBACK_SCHOOL_NAME) ?? null,
+    [schools]
   );
 
   function onSubmit(e: React.FormEvent) {
@@ -190,57 +187,58 @@ export function SignupForm({ schools }: { schools: School[] }) {
           소속 학교{" "}
           {selected ? <span className="text-accent-600">· {selected.name}</span> : null}
         </label>
-        <div className="flex gap-1">
-          {(["all", "middle", "high", "special"] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTypeFilter(t)}
-              className={`h-8 px-3 rounded-full text-xs font-semibold transition-all ${
-                typeFilter === t
-                  ? "bg-accent-600 text-white"
-                  : "bg-surface-muted text-fg-muted hover:bg-border"
-              }`}
-            >
-              {t === "all" ? "전체" : TYPE_LABEL[t]}
-            </button>
-          ))}
-        </div>
         <input
           type="text"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          placeholder="학교명 검색 (예: 천안중앙)"
+          placeholder="학교명 검색 (예: 천안중앙, 북일, 영명)"
           className="w-full h-11 px-3 rounded-button border border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500"
         />
-        <div className="rounded-card border border-border overflow-hidden">
-          <ul className="max-h-64 overflow-y-auto divide-y divide-border">
-            {visible.length === 0 ? (
-              <li className="px-3 py-4 text-xs text-fg-muted text-center">
-                일치하는 학교가 없습니다.
-              </li>
-            ) : (
-              visible.map((s) => (
+        {visible.length === 0 ? (
+          // 목록에 없는 학교일 수 있으므로 대신 고를 곳을 알려 준다
+          <div className="rounded-card border border-border bg-surface-muted px-4 py-4 space-y-2">
+            <p className="text-sm font-bold text-fg-strong">
+              찾으시는 학교가 없나요?
+            </p>
+            <p className="text-xs text-fg-muted leading-relaxed">
+              아직 목록에 없는 학교일 수 있어요. 그럴 때는{" "}
+              <b className="text-fg-strong">{FALLBACK_SCHOOL_NAME}</b>으로 가입하시고,
+              선생님께 학교 이름을 알려 주세요.
+            </p>
+            {fallback && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSchoolCode(fallback.code);
+                  setFilter("");
+                }}
+                className="h-10 px-4 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-xs font-bold"
+              >
+                {FALLBACK_SCHOOL_NAME}으로 선택
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-card border border-border overflow-hidden">
+            <ul className="max-h-64 overflow-y-auto divide-y divide-border">
+              {visible.map((s) => (
                 <li key={s.code}>
                   <button
                     type="button"
                     onClick={() => setSchoolCode(s.code)}
-                    className={`w-full text-left px-3 py-2.5 text-sm flex items-center justify-between gap-2 transition-colors ${
+                    className={`w-full text-left px-3 py-2.5 text-sm transition-colors ${
                       schoolCode === s.code
                         ? "bg-accent-100 text-accent-700 font-semibold"
                         : "text-fg-strong hover:bg-surface-muted"
                     }`}
                   >
-                    <span>{s.name}</span>
-                    <span className="text-[10px] text-fg-subtle">
-                      {TYPE_LABEL[s.type] ?? s.type}
-                    </span>
+                    {s.name}
                   </button>
                 </li>
-              ))
-            )}
-          </ul>
-        </div>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       {error && (
