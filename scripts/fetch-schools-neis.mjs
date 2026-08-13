@@ -92,6 +92,16 @@ const RENAME = {
   홍성공고등학교: "홍성공업고등학교",
 };
 
+/**
+ * NEIS 에 잡히지 않는 학교라 위 RENAME 으로는 못 고치는 것들.
+ * 원본 xlsx 가 '학교'를 떼고 적어 놓아 이름이 어중간하다.
+ *   code → 올바른 이름
+ */
+const MANUAL_FIX = {
+  고37: "충남다사랑학교",
+  고81: "충남온라인학교",
+};
+
 /** 비교용으로 이름을 눌러 준다 (괄호·공백·중점 제거). */
 const key = (s) =>
   s
@@ -100,6 +110,18 @@ const key = (s) =>
     .trim();
 
 const existing = JSON.parse(readFileSync(SCHOOLS_JSON, "utf8"));
+
+// NEIS 에 없는 학교의 이름 보정 — 대조 전에 먼저 반영한다
+const manual = [];
+for (const s of existing.schools) {
+  const fixed = MANUAL_FIX[s.code];
+  if (fixed && s.name !== fixed) {
+    manual.push({ code: s.code, from: s.name, to: fixed });
+    s.name = fixed;
+    s.nameRaw = fixed;
+  }
+}
+
 const byName = new Map();
 for (const s of existing.schools) {
   byName.set(key(s.name), s);
@@ -157,12 +179,17 @@ if (orphans.length) {
   for (const o of orphans) console.log(`    ${o.code} ${o.name}`);
 }
 
+if (manual.length) {
+  console.log(`\n수동 보정 ${manual.length}개 (NEIS 미등재):`);
+  for (const m of manual) console.log(`  ${m.code}  ${m.from} → ${m.to}`);
+}
+
 if (renamed.length) {
   console.log(`\n이름 정정 ${renamed.length}개:`);
   for (const r of renamed) console.log(`  ${r.code}  ${r.from} → ${r.to}`);
 }
 
-if (added.length === 0 && renamed.length === 0) {
+if (added.length === 0 && renamed.length === 0 && manual.length === 0) {
   console.log("\n바꿀 것이 없습니다.");
   process.exit(0);
 }
@@ -218,9 +245,9 @@ const sql = `-- 학교 명단 보정 — 자동 생성: scripts/fetch-schools-ne
 -- 신규 학교의 code 는 NEIS 표준학교코드를 그대로 쓴다.
 
 ${
-  renamed.length
-    ? `-- ① 약칭으로 잘못 들어간 이름 ${renamed.length}개 정정 (같은 학교이므로 코드 유지)
-${renamed
+  [...renamed, ...manual].length
+    ? `-- ① 이름 정정 ${renamed.length + manual.length}개 (같은 학교이므로 코드 유지)
+${[...renamed, ...manual]
   .map(
     (r) =>
       `UPDATE public.schools SET name = '${esc(r.to)}' WHERE code = '${esc(r.code)}';  -- ${r.from}`
@@ -229,12 +256,16 @@ ${renamed
 `
     : ""
 }
--- ② 빠져 있던 학교 ${added.length}개 추가 (사립 ${added.filter((a) => a.founded === "사립").length}개 포함)
+${
+  added.length
+    ? `-- ② 빠져 있던 학교 ${added.length}개 추가 (사립 ${added.filter((a) => a.founded === "사립").length}개 포함)
 INSERT INTO public.schools (code, name, type) VALUES
 ${added.map((a) => `  ('${esc(a.code)}', '${esc(a.name)}', '${a.type}')`).join(",\n")}
 ON CONFLICT (code) DO UPDATE SET
   name = EXCLUDED.name,
   type = EXCLUDED.type;
-`;
+`
+    : "-- 추가할 학교 없음\n"
+}`;
 writeFileSync(ADD_SQL, sql, "utf8");
 console.log(`→ ${ADD_SQL}`);
