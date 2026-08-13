@@ -112,7 +112,14 @@ export function groupByEra<T extends { eraOrder: number }>(
   return out;
 }
 
-/** 배지 조건을 채웠는지. 완독 + 형광펜 문제 전부 정답 + 점검 문제 전부 작성. */
+/**
+ * 배지 조건을 채웠는지.
+ * 완독 + 형광펜 문제를 전부 '첫 시도에' 정답 + 점검 문제 전부 작성.
+ *
+ * ok 가 아니라 first 를 보는 이유: ok 는 다시 골라 맞혀도 참이 되므로
+ * 보기를 하나씩 눌러 보면 누구나 채울 수 있다. 배지는 읽고 맞힌 사람의
+ * 것이어야 하므로 첫 시도만 인정한다. 대신 기록을 지우고 다시 도전할 수 있다.
+ */
 export function earnsBadge(opts: {
   completed: boolean;
   quizKeys: string[];
@@ -122,7 +129,15 @@ export function earnsBadge(opts: {
 }): boolean {
   if (!opts.completed) return false;
   if (opts.answeredCount < opts.questionCount) return false;
-  return opts.quizKeys.every((k) => opts.noteAnswers[k]?.ok === true);
+  return opts.quizKeys.every((k) => opts.noteAnswers[k]?.first === true);
+}
+
+/** 첫 시도에 맞힌 형광펜 문제 수 — 배지 진행률 표시용. */
+export function firstTryCount(
+  quizKeys: string[],
+  noteAnswers: Record<string, NoteAnswer>
+): number {
+  return quizKeys.filter((k) => noteAnswers[k]?.first === true).length;
 }
 
 /** 본문에서 형광펜 문제(quiz)로 쓰인 주석 키만 추린다. */

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getAdminSupabase } from "@/data/supabase-admin";
-import { earnsBadge, quizKeysOf } from "@/lib/work-types";
+import { earnsBadge, firstTryCount, quizKeysOf } from "@/lib/work-types";
 import type { Annotation, NoteAnswer, WorkQuestion } from "@/lib/work-types";
 
 export const dynamic = "force-dynamic";
@@ -116,6 +116,8 @@ export async function POST(req: NextRequest) {
   const questions = (work.questions ?? []) as WorkQuestion[];
   const quizKeys = quizKeysOf(annotations);
   const noteCorrect = quizKeys.filter((k) => noteAnswers[k]?.ok).length;
+  // 배지는 첫 시도 정답만 인정한다
+  const noteFirstCorrect = firstTryCount(quizKeys, noteAnswers);
 
   const badgeAt =
     prevBadge ??
@@ -152,6 +154,7 @@ export async function POST(req: NextRequest) {
     signedIn: true,
     completedAt,
     noteCorrect,
+    noteFirstCorrect,
     quizTotal: quizKeys.length,
     badgeAt,
     // 이번 요청으로 배지를 새로 받았는지

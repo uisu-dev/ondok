@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import type { Work, WorkRecord, WorkSection, NoteAnswer } from "@/lib/work-types";
-import { quizKeysOf } from "@/lib/work-types";
+import { firstTryCount, quizKeysOf } from "@/lib/work-types";
 import { QTYPE_LABEL } from "@/lib/worksheet-types";
 import { AnnotationSheet } from "./AnnotationSheet";
-import { BadgeCard, BadgeCelebration } from "./Badge";
+import { BadgeCard, BadgeCelebration, ResetConfirm } from "./Badge";
 
 type FontSize = "sm" | "md" | "lg" | "xl";
 const FONT_PX: Record<FontSize, number> = { sm: 15, md: 17, lg: 20, xl: 24 };
@@ -112,6 +112,9 @@ export function WorkReader({
     initialRecord?.badgeAt ?? null
   );
   const [celebrate, setCelebrate] = useState(false);
+  // 기록 초기화 (첫 시도에 틀린 문제를 다시 풀기 위한 재도전)
+  const [askReset, setAskReset] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [resumeTo, setResumeTo] = useState<number | null>(
     initialRecord && initialRecord.lastSection > 0 && !initialRecord.completedAt
       ? initialRecord.lastSection
@@ -193,6 +196,33 @@ export function WorkReader({
     setReadNotes((prev) => (prev.has(key) ? prev : new Set(prev).add(key)));
   }, []);
 
+  // 배지는 첫 시도 정답만 인정하므로, 처음부터 다시 도전할 길을 열어 둔다
+  const resetRecord = useCallback(async () => {
+    if (!signedIn || resetting) return;
+    setResetting(true);
+    try {
+      const res = await fetch("/api/works/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ work_id: work.id }),
+      });
+      if (!res.ok) return;
+      setNoteAnswers({});
+      setReadNotes(new Set());
+      setAnswers({});
+      setCompleted(false);
+      setCurrent(0);
+      setResumeTo(null);
+      savedSection.current = 0;
+      answersDirty.current = false;
+      setSaveState("idle");
+      setAskReset(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setResetting(false);
+    }
+  }, [signedIn, resetting, work.id]);
+
   // 어느 대목을 보고 있는지 추적 → 진도 저장
   useEffect(() => {
     const els = sectionRefs.current.filter(Boolean) as HTMLElement[];
@@ -253,7 +283,11 @@ export function WorkReader({
   const annotations = work.annotations ?? {};
   const noteCount = Object.keys(annotations).length;
   const quizKeys = quizKeysOf(annotations);
-  const quizSolved = quizKeys.filter((k) => noteAnswers[k]?.ok).length;
+  // 배지는 첫 시도에 맞힌 것만 인정한다
+  const quizFirstTry = firstTryCount(quizKeys, noteAnswers);
+  const missedFirst = quizKeys.filter(
+    (k) => noteAnswers[k] && noteAnswers[k].first !== true
+  ).length;
   // 형광펜에 ✓ 를 붙일 대상 — 맞힌 문제 + 읽어 본 배경지식
   const resolved = new Set<string>(readNotes);
   for (const k of quizKeys) if (noteAnswers[k]?.ok) resolved.add(k);
@@ -298,6 +332,12 @@ export function WorkReader({
             <p className="text-[11px] text-fg-muted leading-relaxed">
               짧은 문제를 풀거나 배경지식을 볼 수 있어요. 이 작품에는 {noteCount}곳이
               있고, 그중 {quizKeys.length}곳이 문제예요.
+              {quizKeys.length > 0 && (
+                <>
+                  {" "}
+                  배지는 <b className="text-fg-strong">한 번에 맞힌 문제</b>만 세요.
+                </>
+              )}
             </p>
             {quizKeys.length > 0 && (
               <div className="flex items-center gap-2 pt-1">
@@ -305,12 +345,12 @@ export function WorkReader({
                   <div
                     className="h-full bg-[var(--color-cat-sci)] transition-all duration-500"
                     style={{
-                      width: `${Math.round((quizSolved / quizKeys.length) * 100)}%`,
+                      width: `${Math.round((quizFirstTry / quizKeys.length) * 100)}%`,
                     }}
                   />
                 </div>
                 <span className="text-[11px] font-bold text-fg-muted shrink-0">
-                  문제 {quizSolved}/{quizKeys.length}
+                  한 번에 {quizFirstTry}/{quizKeys.length}
                 </span>
               </div>
             )}
@@ -451,12 +491,14 @@ export function WorkReader({
               emoji={work.coverEmoji}
               earned={!!badgeAt}
               badgeAt={badgeAt}
-              quizSolved={quizSolved}
+              quizFirstTry={quizFirstTry}
               quizTotal={quizKeys.length}
+              missedFirst={missedFirst}
               answered={Object.values(answers).filter((v) => v.trim()).length}
               questionTotal={work.questions.length}
               completed={completed}
               signedIn={signedIn}
+              onReset={() => setAskReset(true)}
             />
 
             {work.commentary && (
@@ -568,6 +610,15 @@ export function WorkReader({
           title={work.title}
           emoji={work.coverEmoji}
           onClose={() => setCelebrate(false)}
+        />
+      )}
+
+      {askReset && (
+        <ResetConfirm
+          title={work.title}
+          pending={resetting}
+          onCancel={() => setAskReset(false)}
+          onConfirm={() => void resetRecord()}
         />
       )}
     </div>

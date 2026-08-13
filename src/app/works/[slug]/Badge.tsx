@@ -5,7 +5,9 @@ import { Card } from "@/components/ui/Card";
 
 /**
  * 작품별 마스터 배지.
- * 조건: 끝까지 읽기 + 형광펜 문제 전부 정답 + 점검 문제 전부 작성.
+ * 조건: 끝까지 읽기 + 형광펜 문제를 전부 '한 번에' 맞히기 + 점검 문제 전부 작성.
+ *
+ * 한 번에 맞힌 것만 인정하는 대신, 기록을 지우고 처음부터 다시 도전할 수 있다.
  */
 
 /** 배지 도안 — 작품 표지 이모지를 금테로 감싼다. */
@@ -45,30 +47,39 @@ export function BadgeCard({
   emoji,
   earned,
   badgeAt,
-  quizSolved,
+  quizFirstTry,
   quizTotal,
+  missedFirst,
   answered,
   questionTotal,
   completed,
   signedIn,
+  onReset,
 }: {
   title: string;
   emoji: string;
   earned: boolean;
   badgeAt: string | null;
-  quizSolved: number;
+  /** 첫 시도에 맞힌 형광펜 문제 수 */
+  quizFirstTry: number;
   quizTotal: number;
+  /** 첫 시도에 틀린 형광펜 문제 수 — 하나라도 있으면 이번 판은 배지가 불가능 */
+  missedFirst: number;
   answered: number;
   questionTotal: number;
   completed: boolean;
   signedIn: boolean;
+  onReset?: () => void;
 }) {
+  // 첫 시도에 틀린 문제가 있으면 이번 판으로는 배지를 받을 수 없다
+  const blocked = !earned && missedFirst > 0;
+
   const steps = [
     { label: "끝까지 읽기", done: completed, detail: completed ? "완독" : "읽는 중" },
     {
-      label: "형광펜 문제 모두 맞히기",
-      done: quizTotal === 0 || quizSolved >= quizTotal,
-      detail: `${quizSolved}/${quizTotal}`,
+      label: "형광펜 문제 한 번에 맞히기",
+      done: quizTotal === 0 || quizFirstTry >= quizTotal,
+      detail: `${quizFirstTry}/${quizTotal}`,
     },
     {
       label: "점검 문제 모두 답하기",
@@ -102,6 +113,11 @@ export function BadgeCard({
                 : "축하해요!"
               : "세 가지를 모두 채우면 배지를 받아요"}
           </p>
+          {!earned && (
+            <p className="text-[11px] text-fg-subtle mt-0.5 leading-relaxed">
+              형광펜 문제는 <b className="text-fg-muted">한 번에 맞힌 것만</b> 인정돼요.
+            </p>
+          )}
         </div>
       </div>
 
@@ -136,13 +152,101 @@ export function BadgeCard({
           배지는 로그인해야 저장돼요.
         </p>
       )}
-      {signedIn && !earned && quizTotal > 0 && quizSolved < quizTotal && (
+
+      {signedIn && blocked && (
+        <div className="rounded-button bg-surface-muted px-4 py-3 space-y-2">
+          <p className="text-xs font-bold text-fg-strong">
+            한 번에 못 맞힌 문제가 {missedFirst}개 있어요
+          </p>
+          <p className="text-[11px] text-fg-muted leading-relaxed">
+            이번 판으로는 배지를 받을 수 없어요. 그래도 괜찮아요 — 기록을 지우고
+            처음부터 다시 읽으면 얼마든지 다시 도전할 수 있어요.
+          </p>
+          {onReset && (
+            <button
+              type="button"
+              onClick={onReset}
+              className="h-10 px-4 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-xs font-bold"
+            >
+              처음부터 다시 읽기
+            </button>
+          )}
+        </div>
+      )}
+
+      {signedIn && !earned && !blocked && quizTotal > 0 && quizFirstTry < quizTotal && (
         <p className="text-xs text-fg-muted leading-relaxed">
-          아직 못 맞힌 형광펜 문제가 있어요. 본문에서 <b>?</b> 가 남아 있는 곳을
-          다시 눌러 풀어 보세요.
+          아직 안 푼 형광펜 문제가 있어요. 본문에서 <b>?</b> 가 남아 있는 곳을
+          눌러 풀어 보세요.
         </p>
       )}
     </Card>
+  );
+}
+
+/** 처음부터 다시 읽기 — 되돌릴 수 없으니 한 번 물어본다. */
+export function ResetConfirm({
+  title,
+  pending,
+  onCancel,
+  onConfirm,
+}: {
+  title: string;
+  pending: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] bg-fg-strong/55 flex items-center justify-center p-6"
+      onClick={onCancel}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="bg-surface rounded-card shadow-card-hover w-full max-w-xs px-6 py-7 space-y-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="space-y-1.5">
+          <p className="text-base font-bold text-fg-strong leading-snug">
+            처음부터 다시 읽을까요?
+          </p>
+          <p className="text-sm text-fg-muted leading-relaxed">
+            「{title}」의 읽기 기록·형광펜 문제 답·점검 문제 답이 모두 지워져요.
+            지운 기록은 되돌릴 수 없어요.
+          </p>
+          <p className="text-xs text-fg-subtle leading-relaxed pt-1">
+            이미 받은 배지는 그대로 남아요.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={pending}
+            className="flex-1 h-11 rounded-button border-2 border-border text-fg-strong font-bold text-sm disabled:opacity-50"
+          >
+            그만두기
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={pending}
+            className="flex-1 h-11 rounded-button bg-accent-600 hover:bg-accent-700 text-white font-bold text-sm disabled:opacity-50"
+          >
+            {pending ? "지우는 중…" : "다시 읽기"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

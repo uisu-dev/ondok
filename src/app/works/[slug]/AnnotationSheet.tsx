@@ -9,7 +9,8 @@ import type { Annotation, NoteAnswer } from "@/lib/work-types";
  *  - info : 배경지식을 설명한다
  *
  * 이미 맞힌 문제를 다시 열면 정답과 해설을 그대로 보여 준다.
- * 틀렸던 문제는 다시 풀 수 있게 열어 둔다 (배지를 채울 기회).
+ * 틀렸던 문제도 다시 풀 수 있게 열어 두되, 배지는 첫 시도만 인정하므로
+ * 그 사실을 분명히 알려 준다. (배지에 다시 도전하려면 기록을 지워야 한다)
  */
 export function AnnotationSheet({
   annotation,
@@ -56,6 +57,8 @@ export function AnnotationSheet({
     picked !== null && typeof annotation.answer === "number"
       ? picked === annotation.answer
       : false;
+  // 배지에 인정되는 것은 이 문제를 처음 풀어서 맞혔을 때뿐이다
+  const firstTry = correct && (prior ? prior.first === true : true);
 
   function choose(i: number) {
     if (picked !== null) return;
@@ -96,9 +99,10 @@ export function AnnotationSheet({
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           {isQuiz ? (
             <>
-              {prior && !prior.ok && picked === null && (
-                <p className="text-xs text-fg-muted bg-surface-muted rounded-button px-3 py-2">
-                  지난번에는 아쉬웠어요. 다시 골라 볼까요?
+              {prior && prior.first !== true && picked === null && (
+                <p className="text-xs text-fg-muted bg-surface-muted rounded-button px-3 py-2 leading-relaxed">
+                  지난번에 한 번에 맞히지 못한 문제예요. 다시 풀어 볼 수 있지만
+                  <b className="text-fg-strong"> 배지에는 반영되지 않아요</b>.
                 </p>
               )}
               <p className="text-sm text-fg-strong leading-relaxed">
@@ -135,14 +139,22 @@ export function AnnotationSheet({
               {picked !== null && (
                 <div className="space-y-2 pt-1">
                   <p
-                    className={`text-sm font-bold ${
+                    className={`text-sm font-bold leading-relaxed ${
                       correct ? "text-cat-sci" : "text-cat-hum"
                     }`}
                   >
                     {correct
-                      ? "✓ 맞았어요!"
-                      : "✕ 아쉬워요 — 닫았다 다시 열면 한 번 더 풀 수 있어요"}
+                      ? firstTry
+                        ? "✓ 한 번에 맞았어요!"
+                        : "✓ 맞았어요 (배지에는 반영되지 않아요)"
+                      : "✕ 아쉬워요 — 이 문제는 배지에 반영되지 않아요"}
                   </p>
+                  {!correct && (
+                    <p className="text-xs text-fg-muted leading-relaxed">
+                      해설을 읽고 넘어가세요. 배지에 다시 도전하려면 글 끝에서
+                      <b className="text-fg-strong"> 처음부터 다시 읽기</b>를 누르면 돼요.
+                    </p>
+                  )}
                   {annotation.explain && (
                     <p className="text-sm text-fg leading-relaxed bg-surface-muted rounded-button px-4 py-3">
                       {annotation.explain}

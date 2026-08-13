@@ -444,8 +444,9 @@ export default async function MyPage() {
                 아직 받은 배지가 없어요
               </p>
               <p className="text-[11px] text-fg-muted leading-relaxed">
-                작품을 끝까지 읽고, 본문의 형광펜 문제를 모두 맞히고, 점검 문제까지
-                답하면 그 작품의 배지를 받아요.
+                작품을 끝까지 읽고, 본문의 형광펜 문제를 <b className="text-fg-strong">한 번에</b>{" "}
+                모두 맞히고, 점검 문제까지 답하면 그 작품의 배지를 받아요. 쉽지 않지만,
+                그래서 받을 만한 배지예요.
               </p>
             </div>
           ) : (
