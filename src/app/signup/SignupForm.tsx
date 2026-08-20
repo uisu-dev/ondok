@@ -4,11 +4,19 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { signUp } from "./actions";
 import { LOGIN_ID_RE } from "@/lib/login-id";
-import { MIN_BIRTH_YEAR, maxBirthYear, estimateGradeLabel } from "@/lib/grade";
+import {
+  MIN_BIRTH_YEAR,
+  maxBirthYear,
+  estimateGradeLabel,
+  gradeOptions,
+  CLASS_OPTIONS,
+} from "@/lib/grade";
+import type { AccountType } from "./actions";
 
 interface School {
   code: string;
   name: string;
+  type: string;
 }
 
 /** 목록에 없는 학교라면 여기로 가입하도록 안내한다. */
@@ -23,6 +31,9 @@ export function SignupForm({ schools }: { schools: School[] }) {
   const [birthYear, setBirthYear] = useState("");
   const [filter, setFilter] = useState("");
   const [schoolCode, setSchoolCode] = useState<string | null>(null);
+  const [accountType, setAccountType] = useState<AccountType>("student");
+  const [grade, setGrade] = useState<number | null>(null);
+  const [classNo, setClassNo] = useState<number | null>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -71,6 +82,16 @@ export function SignupForm({ schools }: { schools: School[] }) {
       setError("소속 학교를 선택해 주세요.");
       return;
     }
+    if (accountType === "student") {
+      if (grade == null) {
+        setError("학년을 선택해 주세요.");
+        return;
+      }
+      if (classNo == null) {
+        setError("반을 선택해 주세요.");
+        return;
+      }
+    }
     startTransition(async () => {
       const res = await signUp({
         loginId: id,
@@ -78,6 +99,9 @@ export function SignupForm({ schools }: { schools: School[] }) {
         displayName: nm,
         birthYear: by,
         schoolCode,
+        accountType,
+        grade: accountType === "student" ? grade : null,
+        classNo: accountType === "student" ? classNo : null,
       });
       if (!res.ok) {
         setError(res.message);
@@ -90,6 +114,55 @@ export function SignupForm({ schools }: { schools: School[] }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
+      {/* 계정 유형 — 교사는 관리자 승인을 거쳐야 권한이 올라간다 */}
+      <div className="space-y-2">
+        <span className="text-sm font-semibold text-fg-strong">가입 유형</span>
+        <div className="grid grid-cols-2 gap-2">
+          {(
+            [
+              { key: "student", emoji: "🎒", label: "학생", hint: "바로 이용" },
+              { key: "teacher", emoji: "🧑‍🏫", label: "교사", hint: "승인 후 이용" },
+            ] as const
+          ).map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setAccountType(t.key)}
+              aria-pressed={accountType === t.key}
+              className={`h-[72px] rounded-button border-2 flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                accountType === t.key
+                  ? "border-accent-600 bg-accent-50"
+                  : "border-border bg-surface hover:border-accent-300"
+              }`}
+            >
+              <span aria-hidden className="text-xl leading-none">
+                {t.emoji}
+              </span>
+              <span
+                className={`text-sm font-bold ${
+                  accountType === t.key ? "text-accent-700" : "text-fg-strong"
+                }`}
+              >
+                {t.label}
+              </span>
+              <span className="text-[10px] text-fg-subtle">{t.hint}</span>
+            </button>
+          ))}
+        </div>
+        {accountType === "teacher" && (
+          <div className="rounded-button bg-surface-muted px-4 py-3 space-y-1">
+            <p className="text-xs font-bold text-fg-strong">
+              교사 계정은 관리자 승인이 필요해요
+            </p>
+            <p className="text-[11px] text-fg-muted leading-relaxed">
+              가입은 바로 되지만, 승인 전까지는 학생과 같은 화면만 보입니다.
+              등록하신 이름과 학교를 관리자가 확인한 뒤 교원으로 올려 드려요.
+              보통 1~2일 이내에 처리됩니다.
+            </p>
+          </div>
+        )}
+      </div>
+
       <div className="space-y-2">
         <label className="text-sm font-semibold text-fg-strong" htmlFor="login_id">
           아이디
@@ -241,6 +314,54 @@ export function SignupForm({ schools }: { schools: School[] }) {
         )}
       </div>
 
+      {/* 학년·반 — 학생만. 통계를 반 단위로 묶는 데 쓴다 */}
+      {accountType === "student" && (
+        <div className="space-y-3">
+          <div>
+            <span className="text-sm font-semibold text-fg-strong">학년 · 반</span>
+            <p className="text-[11px] text-fg-subtle mt-0.5">
+              선생님이 우리 반 학습 현황을 볼 때 쓰여요. 나중에 바꿀 수 있어요.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {gradeOptions(selected?.type).map((g) => (
+              <button
+                key={g}
+                type="button"
+                onClick={() => setGrade(g)}
+                aria-pressed={grade === g}
+                className={`h-11 min-w-[72px] px-4 rounded-button border-2 text-sm font-bold transition-colors ${
+                  grade === g
+                    ? "border-accent-600 bg-accent-600 text-white"
+                    : "border-border bg-surface text-fg-strong hover:border-accent-300"
+                }`}
+              >
+                {g}학년
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-5 gap-2">
+            {CLASS_OPTIONS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setClassNo(c)}
+                aria-pressed={classNo === c}
+                className={`h-11 rounded-button border-2 text-sm font-bold transition-colors ${
+                  classNo === c
+                    ? "border-accent-600 bg-accent-600 text-white"
+                    : "border-border bg-surface text-fg-strong hover:border-accent-300"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {error && (
         <p className="text-sm text-cat-hum font-semibold">{error}</p>
       )}
@@ -250,7 +371,11 @@ export function SignupForm({ schools }: { schools: School[] }) {
         disabled={pending}
         className="w-full h-12 rounded-button bg-accent-600 hover:bg-accent-700 text-white font-semibold disabled:opacity-50 transition-colors"
       >
-        {pending ? "가입 중…" : "가입 완료"}
+        {pending
+          ? "가입 중…"
+          : accountType === "teacher"
+            ? "가입하고 교원 승인 신청"
+            : "가입 완료"}
       </button>
     </form>
   );

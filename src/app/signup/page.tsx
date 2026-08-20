@@ -11,8 +11,9 @@ export default async function SignupPage() {
   const user = await getSignedInUser();
   if (user) redirect("/mypage");
 
-  const schools = (schoolsJson as { schools: { code: string; name: string }[] })
-    .schools;
+  const schools = (
+    schoolsJson as { schools: { code: string; name: string; type: string }[] }
+  ).schools;
 
   return (
     <main className="flex-1 w-full">
@@ -27,8 +28,8 @@ export default async function SignupPage() {
             <p className="text-sm font-semibold text-accent-600">온독 플러스</p>
             <h1 className="text-xl font-bold text-fg-strong">회원가입</h1>
             <p className="text-sm text-fg-muted leading-relaxed">
-              아이디·비밀번호와 이름·학교만 입력하면 가입이 끝나요. 모든 회원은 우선 <strong>학생</strong> 권한이며,
-              교사이신 경우 가입 후 마이페이지에서 <strong>교원 승인 신청</strong>을 따로 하시면 됩니다.
+              가입 유형을 고르고 몇 가지만 입력하면 끝나요. <strong>학생</strong>은 바로 이용할 수 있고,
+              <strong>교사</strong>는 관리자 승인을 거쳐 교원 권한으로 올려 드립니다.
             </p>
           </div>
           <SignupForm schools={schools} />

@@ -18,6 +18,10 @@ export interface ProfileRow {
   display_name: string | null;
   school_code: string | null;
   birth_year: number | null;
+  /** 학생이 직접 고른 학년·반. grade_year 는 그 값이 어느 학년도의 것인지. */
+  grade: number | null;
+  class_no: number | null;
+  grade_year: number | null;
   mbti: string | null;
   role: Role;
   teacher_application_status: TeacherApplicationStatus;

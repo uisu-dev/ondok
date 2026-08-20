@@ -3,9 +3,23 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAdminSupabase } from "@/data/supabase-admin";
 import { isValidLoginId, loginIdToEmail } from "@/lib/login-id";
-import { isValidBirthYear } from "@/lib/grade";
+import {
+  currentSchoolYear,
+  isValidBirthYear,
+  isValidClassNo,
+  isValidGrade,
+} from "@/lib/grade";
 
 type SignupResult = { ok: true } | { ok: false; message: string };
+
+/**
+ * 가입 유형.
+ *  student — 바로 학생으로 시작. 학년·반을 함께 받는다.
+ *  teacher — 계정은 학생 권한으로 만들되 교원 승인 신청을 걸어 둔다.
+ *            관리자가 /admin/teachers 에서 승인해야 role 이 teacher 가 된다.
+ *            (가입만으로 교사 권한을 주면 누구나 남의 학생 자료를 볼 수 있다)
+ */
+export type AccountType = "student" | "teacher";
 
 export async function signUp(input: {
   loginId: string;
@@ -13,6 +27,9 @@ export async function signUp(input: {
   displayName: string;
   birthYear: number;
   schoolCode: string;
+  accountType: AccountType;
+  grade?: number | null;
+  classNo?: number | null;
 }): Promise<SignupResult> {
   const loginId = input.loginId.trim().toLowerCase();
   const displayName = input.displayName.trim();
@@ -38,6 +55,7 @@ export async function signUp(input: {
   if (!schoolCode) {
     return { ok: false, message: "학교를 선택해 주세요." };
   }
+  const isTeacherApplication = input.accountType === "teacher";
 
   let admin;
   try {
@@ -69,14 +87,26 @@ export async function signUp(input: {
     };
   }
 
-  // 2) 학교 코드 유효성
+  // 2) 학교 코드 유효성 (학년 상한이 학교 종류에 따라 다르므로 type 도 함께)
   const { data: school } = await admin
     .from("schools")
-    .select("code")
+    .select("code, type")
     .eq("code", schoolCode)
     .maybeSingle();
   if (!school) {
     return { ok: false, message: "선택한 학교를 찾을 수 없습니다." };
+  }
+
+  // 2-1) 학생은 학년·반을 함께 받는다 (교사 신청자는 받지 않는다)
+  const grade = input.grade ?? null;
+  const classNo = input.classNo ?? null;
+  if (!isTeacherApplication) {
+    if (grade == null || !isValidGrade(grade, school.type)) {
+      return { ok: false, message: "학년을 선택해 주세요." };
+    }
+    if (classNo == null || !isValidClassNo(classNo)) {
+      return { ok: false, message: "반을 선택해 주세요." };
+    }
   }
 
   // 3) Supabase Auth 가입 + 로그인 세션 동시 생성
@@ -113,6 +143,15 @@ export async function signUp(input: {
         display_name: displayName,
         school_code: schoolCode,
         birth_year: birthYear,
+        // 교사 신청자는 학년·반이 없고, 대신 승인 대기 상태로 둔다
+        grade: isTeacherApplication ? null : grade,
+        class_no: isTeacherApplication ? null : classNo,
+        grade_year: isTeacherApplication ? null : currentSchoolYear(),
+        role: "student",
+        teacher_application_status: isTeacherApplication ? "pending" : "none",
+        teacher_application_at: isTeacherApplication
+          ? new Date().toISOString()
+          : null,
         onboarded_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },

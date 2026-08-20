@@ -7,10 +7,15 @@ import { getAdminSupabase } from "@/data/supabase-admin";
 import { TeacherApplicationCard } from "./TeacherApplicationCard";
 import { SignOutButton } from "./SignOutButton";
 import { ChangePasswordCard } from "./ChangePasswordCard";
+import { ClassInfoCard } from "./ClassInfoCard";
 import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
-import { estimateGradeLabel } from "@/lib/grade";
+import {
+  estimateGradeLabel,
+  gradeOptions,
+  currentSchoolYear,
+} from "@/lib/grade";
 import { labelForMBTI } from "@/lib/mbti";
 import { BadgeMedal } from "@/app/works/[slug]/Badge";
 import type { MBTIType } from "@/lib/types";
@@ -242,6 +247,17 @@ export default async function MyPage() {
             </span>
           </div>
         </Card>
+
+        {/* 학년·반 — 학생만 */}
+        {profile.role === "student" &&
+          profile.teacher_application_status !== "pending" && (
+            <ClassInfoCard
+              grade={profile.grade ?? null}
+              classNo={profile.class_no ?? null}
+              gradeOptions={gradeOptions(user.school?.type)}
+              schoolYear={currentSchoolYear()}
+            />
+          )}
 
         {/* MBTI 진단 결과 */}
         <Card as="section" className="px-6 py-6 space-y-3">

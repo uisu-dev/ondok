@@ -10,7 +10,10 @@ export interface StudentRow {
   loginId: string | null;
   schoolName: string | null;
   gradeLabel: string | null;
-  gradeNum: number | null; // 정렬·필터용 (1~12), 없으면 null
+  gradeNum: number | null; // 출생연도 기반 추정 학령 (1~12), 없으면 null
+  /** 학생이 직접 고른 학년·반. 아직 안 골랐으면 null */
+  grade: number | null;
+  classNo: number | null;
   mbti: string | null;
   sago: number;
   sagoG1: number;
@@ -37,13 +40,7 @@ function activityLabel(iso: string | null): { text: string; tone: string } {
   return { text: `${days}일 전`, tone: "text-cat-hum" };
 }
 
-const GRADE_FILTERS: { key: string; label: string; test: (g: number | null) => boolean }[] = [
-  { key: "all", label: "전체", test: () => true },
-  { key: "elem", label: "초등", test: (g) => g != null && g >= 1 && g <= 6 },
-  { key: "mid", label: "중등", test: (g) => g != null && g >= 7 && g <= 9 },
-  { key: "high", label: "고등", test: (g) => g != null && g >= 10 && g <= 12 },
-];
-
+/** 검색·학년·반 필터는 StudentsView 가 맡고, 여기서는 정렬과 표시만 한다. */
 export function StudentsTable({
   students,
   showSchool,
@@ -51,27 +48,22 @@ export function StudentsTable({
   students: StudentRow[];
   showSchool: boolean;
 }) {
-  const [query, setQuery] = useState("");
-  const [gradeKey, setGradeKey] = useState("all");
   const [sortKey, setSortKey] = useState<
-    "name" | "sago" | "books" | "sheets" | "worksDone" | "lastActive"
-  >("name");
+    "name" | "class" | "sago" | "books" | "sheets" | "worksDone" | "lastActive"
+  >("class");
 
   const filtered = useMemo(() => {
-    const q = query.trim();
-    const gf = GRADE_FILTERS.find((f) => f.key === gradeKey) ?? GRADE_FILTERS[0];
-    let arr = students.filter((s) => {
-      if (!gf.test(s.gradeNum)) return false;
-      if (
-        q &&
-        !s.name.includes(q) &&
-        !(s.loginId ?? "").includes(q.toLowerCase()) &&
-        !(s.schoolName ?? "").includes(q)
-      )
-        return false;
-      return true;
-    });
-    arr = arr.slice().sort((a, b) => {
+    const arr = students.slice().sort((a, b) => {
+      if (sortKey === "class") {
+        // 학년 → 반 → 이름. 아직 안 고른 학생은 맨 뒤로
+        const ag = a.grade ?? 99;
+        const bg = b.grade ?? 99;
+        if (ag !== bg) return ag - bg;
+        const ac = a.classNo ?? 99;
+        const bc = b.classNo ?? 99;
+        if (ac !== bc) return ac - bc;
+        return a.name.localeCompare(b.name, "ko");
+      }
       if (sortKey === "name") return a.name.localeCompare(b.name, "ko");
       if (sortKey === "lastActive") {
         const av = a.lastActive ? new Date(a.lastActive).getTime() : 0;
@@ -81,41 +73,15 @@ export function StudentsTable({
       return (b[sortKey] as number) - (a[sortKey] as number);
     });
     return arr;
-  }, [students, query, gradeKey, sortKey]);
+  }, [students, sortKey]);
 
   return (
     <div className="space-y-3">
-      {/* 필터 */}
-      <div className="flex flex-wrap items-center gap-2">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={showSchool ? "이름·아이디·학교 검색" : "이름·아이디 검색"}
-          className="h-10 px-3 rounded-button border border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500 flex-1 min-w-[140px]"
-        />
-        <div className="flex gap-1">
-          {GRADE_FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setGradeKey(f.key)}
-              className={`h-8 px-3 rounded-full text-xs font-semibold transition-colors ${
-                gradeKey === f.key
-                  ? "bg-accent-600 text-white"
-                  : "bg-surface-muted text-fg-muted hover:bg-border"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <p className="text-xs text-fg-subtle px-1">
         {filtered.length}명 표시 · 정렬:{" "}
         {(
           [
+            ["class", "학년·반"],
             ["name", "이름"],
             ["sago", "사고도구어"],
             ["books", "도서"],
@@ -143,7 +109,7 @@ export function StudentsTable({
               {showSchool && (
                 <th className="text-left font-semibold px-3 py-2">학교</th>
               )}
-              <th className="text-left font-semibold px-3 py-2">학년</th>
+              <th className="text-left font-semibold px-3 py-2">학년·반</th>
               <th className="text-center font-semibold px-3 py-2">사고도구어</th>
               <th className="text-center font-semibold px-3 py-2">도서</th>
               <th className="text-center font-semibold px-3 py-2">활동지</th>
@@ -181,8 +147,19 @@ export function StudentsTable({
                       {s.schoolName ?? "—"}
                     </td>
                   )}
-                  <td className="px-3 py-2.5 text-fg-muted text-xs whitespace-nowrap">
-                    {s.gradeLabel ?? "—"}
+                  <td className="px-3 py-2.5 text-xs whitespace-nowrap">
+                    {s.grade != null && s.classNo != null ? (
+                      <span className="font-semibold text-fg-strong">
+                        {s.grade}학년 {s.classNo}반
+                      </span>
+                    ) : (
+                      <span className="text-fg-subtle">
+                        미입력
+                        {s.gradeLabel && (
+                          <span className="ml-1">({s.gradeLabel})</span>
+                        )}
+                      </span>
+                    )}
                   </td>
                   <td className="px-3 py-2.5 text-center font-bold text-accent-600">
                     {s.sago}

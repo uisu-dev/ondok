@@ -1,5 +1,12 @@
 import Link from "next/link";
 import { getSignedInUser } from "@/lib/auth";
+import { ClassGate } from "@/components/ClassGate";
+import {
+  CLASS_OPTIONS,
+  currentSchoolYear,
+  gradeOptions,
+  needsClassInfo,
+} from "@/lib/grade";
 
 export const dynamic = "force-dynamic";
 
@@ -7,10 +14,25 @@ export const dynamic = "force-dynamic";
  * 모든 페이지 상단에 고정으로 표시되는 미니 헤더.
  * 왼쪽: 온독 플러스 로고 → 홈으로 가는 링크
  * 오른쪽: 로그인 여부에 따라 [로그인/회원가입] 또는 [이름 + 마이페이지 배지]
+ *
+ * 모든 페이지에 이미 붙어 있고 프로필도 여기서 한 번 읽으므로,
+ * 학년·반을 묻는 안내창(ClassGate)도 같이 띄운다. (추가 조회 없음)
  */
 export async function SiteHeader() {
   const user = await getSignedInUser();
+  const askClass = needsClassInfo(user?.profile ?? null);
   return (
+    <>
+    {askClass && user?.profile && (
+      <ClassGate
+        name={user.profile.display_name ?? "학생"}
+        schoolName={user.school?.name ?? null}
+        gradeOptions={gradeOptions(user.school?.type)}
+        classOptions={CLASS_OPTIONS}
+        schoolYear={currentSchoolYear()}
+        previousGrade={user.profile.grade ?? null}
+      />
+    )}
     <header className="sticky top-0 z-40 w-full bg-background/85 backdrop-blur border-b border-border print:hidden">
       <div className="mx-auto max-w-[960px] px-4 sm:px-6 h-12 flex items-center justify-between">
         <Link
@@ -59,5 +81,6 @@ export async function SiteHeader() {
         )}
       </div>
     </header>
+    </>
   );
 }
