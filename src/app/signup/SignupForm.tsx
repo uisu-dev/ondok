@@ -10,6 +10,7 @@ import {
   estimateGradeLabel,
   gradeOptions,
   CLASS_OPTIONS,
+  MAX_STUDENT_NO,
 } from "@/lib/grade";
 import type { AccountType } from "./actions";
 
@@ -34,6 +35,7 @@ export function SignupForm({ schools }: { schools: School[] }) {
   const [accountType, setAccountType] = useState<AccountType>("student");
   const [grade, setGrade] = useState<number | null>(null);
   const [classNo, setClassNo] = useState<number | null>(null);
+  const [studentNo, setStudentNo] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -102,6 +104,10 @@ export function SignupForm({ schools }: { schools: School[] }) {
         accountType,
         grade: accountType === "student" ? grade : null,
         classNo: accountType === "student" ? classNo : null,
+        studentNo:
+          accountType === "student" && studentNo.trim()
+            ? Number(studentNo)
+            : null,
       });
       if (!res.ok) {
         setError(res.message);
@@ -358,6 +364,26 @@ export function SignupForm({ schools }: { schools: School[] }) {
                 {c}
               </button>
             ))}
+          </div>
+
+          <div className="space-y-1.5">
+            <label
+              className="text-sm font-semibold text-fg-strong"
+              htmlFor="student_no"
+            >
+              번호 <span className="text-fg-subtle font-normal">(선택)</span>
+            </label>
+            <input
+              id="student_no"
+              type="number"
+              inputMode="numeric"
+              value={studentNo}
+              onChange={(e) => setStudentNo(e.target.value)}
+              min={1}
+              max={MAX_STUDENT_NO}
+              placeholder="출석번호를 알면 적어 주세요"
+              className="w-full h-11 px-3 rounded-button border border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500"
+            />
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { MAX_STUDENT_NO } from "@/lib/grade";
 import { saveClassInfo } from "@/app/mypage/actions";
 
 /**
@@ -33,6 +34,7 @@ export function ClassGate({
   const router = useRouter();
   const [grade, setGrade] = useState<number | null>(null);
   const [classNo, setClassNo] = useState<number | null>(null);
+  const [studentNo, setStudentNo] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +44,12 @@ export function ClassGate({
     if (grade == null || classNo == null) return;
     setError(null);
     startTransition(async () => {
-      const res = await saveClassInfo({ grade, classNo });
+      const sn = studentNo.trim() ? Number(studentNo) : null;
+      if (sn != null && !Number.isFinite(sn)) {
+        setError("번호는 숫자로 적어 주세요.");
+        return;
+      }
+      const res = await saveClassInfo({ grade, classNo, studentNo: sn });
       if (!res.ok) {
         setError(res.message);
         return;
@@ -125,6 +132,26 @@ export function ClassGate({
                 </button>
               ))}
             </div>
+          </fieldset>
+
+
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-bold text-fg-strong mb-2">
+              번호 <span className="text-fg-subtle font-semibold">(선택)</span>
+            </legend>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={studentNo}
+              onChange={(e) => setStudentNo(e.target.value)}
+              min={1}
+              max={MAX_STUDENT_NO}
+              placeholder="출석번호를 알면 적어 주세요"
+              className="w-full h-12 px-3 rounded-button border-2 border-border bg-surface text-sm text-fg-strong focus:outline-none focus:border-accent-500"
+            />
+            <p className="text-[11px] text-fg-subtle">
+              몰라도 괜찮아요. 나중에 선생님이 채워 주실 수 있어요.
+            </p>
           </fieldset>
 
           {error && (

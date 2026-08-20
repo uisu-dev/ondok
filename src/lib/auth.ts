@@ -21,6 +21,7 @@ export interface ProfileRow {
   /** 학생이 직접 고른 학년·반. grade_year 는 그 값이 어느 학년도의 것인지. */
   grade: number | null;
   class_no: number | null;
+  student_no: number | null;
   grade_year: number | null;
   mbti: string | null;
   role: Role;

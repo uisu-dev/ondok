@@ -5,13 +5,15 @@ import { Card } from "@/components/ui/Card";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { canAccessAdmin } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
-import { estimateGradeLabel } from "@/lib/grade";
+import { classLabel, estimateGradeLabel } from "@/lib/grade";
 import sagoData from "@/data/sago-words.json";
 import booksSeed from "@/data/books-seed.json";
 import type { Book } from "@/lib/types";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 import { StudentDetail, type GradeBreakdown } from "./StudentDetail";
 import { RemoveAccountCard } from "./RemoveAccountCard";
+import { StudentEditCard } from "./StudentEditCard";
+import schoolsJson from "@/data/schools.json";
 
 export const dynamic = "force-dynamic";
 
@@ -92,6 +94,9 @@ export default async function StudentDetailPage({
     display_name: string | null;
     school_code: string | null;
     birth_year: number | null;
+    grade: number | null;
+    class_no: number | null;
+    student_no: number | null;
     mbti: string | null;
   } | null = null;
   let schoolName: string | null = null;
@@ -123,7 +128,9 @@ export default async function StudentDetailPage({
     const admin = getAdminSupabase();
     const { data: prof } = await admin
       .from("profiles")
-      .select("login_id, display_name, school_code, birth_year, mbti, role")
+      .select(
+        "login_id, display_name, school_code, birth_year, grade, class_no, student_no, mbti, role"
+      )
       .eq("id", id)
       .maybeSingle();
     if (!prof || prof.role !== "student") notFound();
@@ -303,10 +310,18 @@ export default async function StudentDetailPage({
                 )}
                 <p className="text-sm text-fg-muted">
                   {schoolName ?? "학교 미지정"}
-                  {student?.birth_year && estimateGradeLabel(student.birth_year) && (
+                  {classLabel(student?.grade, student?.class_no, student?.student_no) ? (
                     <span className="text-accent-600 font-semibold">
-                      {" "}· {estimateGradeLabel(student.birth_year)}
+                      {" "}
+                      · {classLabel(student?.grade, student?.class_no, student?.student_no)}
                     </span>
+                  ) : (
+                    student?.birth_year &&
+                    estimateGradeLabel(student.birth_year) && (
+                      <span className="text-fg-subtle">
+                        {" "}· 학년·반 미입력 ({estimateGradeLabel(student.birth_year)} 추정)
+                      </span>
+                    )
                   )}
                   {student?.mbti && (
                     <span className="text-cat-lit font-semibold"> · {student.mbti}</span>
@@ -509,6 +524,28 @@ export default async function StudentDetailPage({
                 급수별로 아는 단어와 더 익혀야 할 단어를 볼 수 있어요.
               </p>
               <StudentDetail breakdown={breakdown} />
+
+              {/* 학적 수정 — 슈퍼관리자·admin 만 */}
+              {isSuper && student && (
+                <StudentEditCard
+                  userId={id}
+                  schools={
+                    (
+                      schoolsJson as {
+                        schools: { code: string; name: string; type: string }[];
+                      }
+                    ).schools
+                  }
+                  initial={{
+                    displayName: student.display_name ?? "",
+                    schoolCode: student.school_code,
+                    birthYear: student.birth_year,
+                    grade: student.grade,
+                    classNo: student.class_no,
+                    studentNo: student.student_no,
+                  }}
+                />
+              )}
 
               {/* 부적절 계정 탈퇴 처리 — 슈퍼관리자·admin 만 */}
               {isSuper && (

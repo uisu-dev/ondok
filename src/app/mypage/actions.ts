@@ -7,6 +7,7 @@ import {
   currentSchoolYear,
   isValidClassNo,
   isValidGrade,
+  isValidStudentNo,
 } from "@/lib/grade";
 
 type ActionResult = { ok: true } | { ok: false; message: string };
@@ -92,6 +93,8 @@ export async function cancelTeacherApplication(): Promise<ActionResult> {
 export async function saveClassInfo(input: {
   grade: number;
   classNo: number;
+  /** 출석번호 — 선택 항목이라 비워 둘 수 있다 */
+  studentNo?: number | null;
 }): Promise<ActionResult> {
   const user = await getUserOrFail();
   if (!user) return { ok: false, message: "로그인이 필요합니다." };
@@ -125,12 +128,17 @@ export async function saveClassInfo(input: {
   if (!isValidClassNo(input.classNo)) {
     return { ok: false, message: "반을 다시 골라 주세요." };
   }
+  const studentNo = input.studentNo ?? null;
+  if (studentNo != null && !isValidStudentNo(studentNo)) {
+    return { ok: false, message: "번호는 1~60 사이로 입력해 주세요." };
+  }
 
   const { error } = await admin
     .from("profiles")
     .update({
       grade: input.grade,
       class_no: input.classNo,
+      student_no: studentNo,
       grade_year: currentSchoolYear(),
       updated_at: new Date().toISOString(),
     })

@@ -73,6 +73,15 @@ export function isValidClassNo(classNo: number): boolean {
   return Number.isInteger(classNo) && classNo >= 1 && classNo <= MAX_CLASS_NO;
 }
 
+export const MAX_STUDENT_NO = 60;
+
+/** 출석번호. 선택 항목이라 비워 둘 수 있다(null). */
+export function isValidStudentNo(studentNo: number): boolean {
+  return (
+    Number.isInteger(studentNo) && studentNo >= 1 && studentNo <= MAX_STUDENT_NO
+  );
+}
+
 /**
  * 학년·반을 (다시) 물어야 하는지.
  * 학생만 대상이며, 값이 없거나 지난 학년도의 값이면 true.
@@ -95,11 +104,13 @@ export function needsClassInfo(
   return profile.grade_year !== currentSchoolYear(now);
 }
 
-/** '2학년 3반' 같은 표시용 라벨. 값이 없으면 null. */
+/** '2학년 3반 15번' 같은 표시용 라벨. 학년·반이 없으면 null. */
 export function classLabel(
   grade: number | null | undefined,
-  classNo: number | null | undefined
+  classNo: number | null | undefined,
+  studentNo?: number | null
 ): string | null {
   if (grade == null || classNo == null) return null;
-  return `${grade}학년 ${classNo}반`;
+  const base = `${grade}학년 ${classNo}반`;
+  return studentNo != null ? `${base} ${studentNo}번` : base;
 }

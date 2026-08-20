@@ -254,6 +254,7 @@ export default async function MyPage() {
             <ClassInfoCard
               grade={profile.grade ?? null}
               classNo={profile.class_no ?? null}
+              studentNo={profile.student_no ?? null}
               gradeOptions={gradeOptions(user.school?.type)}
               schoolYear={currentSchoolYear()}
             />

@@ -14,6 +14,7 @@ export interface StudentRow {
   /** 학생이 직접 고른 학년·반. 아직 안 골랐으면 null */
   grade: number | null;
   classNo: number | null;
+  studentNo: number | null;
   mbti: string | null;
   sago: number;
   sagoG1: number;
@@ -62,6 +63,9 @@ export function StudentsTable({
         const ac = a.classNo ?? 99;
         const bc = b.classNo ?? 99;
         if (ac !== bc) return ac - bc;
+        const an = a.studentNo ?? 999;
+        const bn = b.studentNo ?? 999;
+        if (an !== bn) return an - bn;
         return a.name.localeCompare(b.name, "ko");
       }
       if (sortKey === "name") return a.name.localeCompare(b.name, "ko");
@@ -81,7 +85,7 @@ export function StudentsTable({
         {filtered.length}명 표시 · 정렬:{" "}
         {(
           [
-            ["class", "학년·반"],
+            ["class", "학년·반·번호"],
             ["name", "이름"],
             ["sago", "사고도구어"],
             ["books", "도서"],
@@ -109,7 +113,7 @@ export function StudentsTable({
               {showSchool && (
                 <th className="text-left font-semibold px-3 py-2">학교</th>
               )}
-              <th className="text-left font-semibold px-3 py-2">학년·반</th>
+              <th className="text-left font-semibold px-3 py-2">학년·반·번호</th>
               <th className="text-center font-semibold px-3 py-2">사고도구어</th>
               <th className="text-center font-semibold px-3 py-2">도서</th>
               <th className="text-center font-semibold px-3 py-2">활동지</th>
@@ -151,6 +155,9 @@ export function StudentsTable({
                     {s.grade != null && s.classNo != null ? (
                       <span className="font-semibold text-fg-strong">
                         {s.grade}학년 {s.classNo}반
+                        {s.studentNo != null && (
+                          <span className="text-accent-600"> {s.studentNo}번</span>
+                        )}
                       </span>
                     ) : (
                       <span className="text-fg-subtle">

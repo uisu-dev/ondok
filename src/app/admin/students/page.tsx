@@ -19,6 +19,7 @@ interface DashRow {
   birth_year: number | null;
   grade: number | null;
   class_no: number | null;
+  student_no: number | null;
   grade_year: number | null;
   mbti: string | null;
   sago: number;
@@ -85,6 +86,7 @@ export default async function StudentsPage() {
       gradeNum: estimateGradeNumber(r.birth_year),
       grade: r.grade ?? null,
       classNo: r.class_no ?? null,
+      studentNo: r.student_no ?? null,
       mbti: r.mbti,
       sago: Number(r.sago),
       sagoG1: Number(r.sago_g1 ?? 0),
@@ -142,7 +144,7 @@ export default async function StudentsPage() {
               <p className="text-sm font-bold text-cat-hum">⚠️ 오류</p>
               <p className="text-xs text-fg-muted mt-1">{envError}</p>
               <p className="text-xs text-fg-muted mt-2">
-                scripts/migrations/2026-08-20-grade-class.sql 가 적용되어 있는지 확인해 주세요.
+                scripts/migrations/2026-08-21-student-no.sql 가 적용되어 있는지 확인해 주세요.
               </p>
             </Card>
           )}

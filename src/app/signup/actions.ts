@@ -8,6 +8,7 @@ import {
   isValidBirthYear,
   isValidClassNo,
   isValidGrade,
+  isValidStudentNo,
 } from "@/lib/grade";
 
 type SignupResult = { ok: true } | { ok: false; message: string };
@@ -30,6 +31,7 @@ export async function signUp(input: {
   accountType: AccountType;
   grade?: number | null;
   classNo?: number | null;
+  studentNo?: number | null;
 }): Promise<SignupResult> {
   const loginId = input.loginId.trim().toLowerCase();
   const displayName = input.displayName.trim();
@@ -108,6 +110,11 @@ export async function signUp(input: {
       return { ok: false, message: "반을 선택해 주세요." };
     }
   }
+  // 번호는 선택 항목
+  const studentNo = isTeacherApplication ? null : (input.studentNo ?? null);
+  if (studentNo != null && !isValidStudentNo(studentNo)) {
+    return { ok: false, message: "번호는 1~60 사이로 입력해 주세요." };
+  }
 
   // 3) Supabase Auth 가입 + 로그인 세션 동시 생성
   //    (Supabase Dashboard 의 'Confirm email' 옵션이 OFF 여야 즉시 사용 가능)
@@ -146,6 +153,7 @@ export async function signUp(input: {
         // 교사 신청자는 학년·반이 없고, 대신 승인 대기 상태로 둔다
         grade: isTeacherApplication ? null : grade,
         class_no: isTeacherApplication ? null : classNo,
+        student_no: studentNo,
         grade_year: isTeacherApplication ? null : currentSchoolYear(),
         role: "student",
         teacher_application_status: isTeacherApplication ? "pending" : "none",
