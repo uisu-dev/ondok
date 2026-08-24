@@ -50,6 +50,8 @@ export interface SolvedSheet {
   title: string;
   answeredCount: number;
   updatedAt: string;
+  /** 학생이 실제로 적은 답안 (문항 물음 + 답) */
+  qa: Array<{ prompt: string; answer: string }>;
 }
 
 export interface StudentDetailData {
@@ -196,10 +198,10 @@ export async function loadStudentDetail(id: string): Promise<StudentDetailData> 
       .map((f) => allBooks.find((b) => String(b.id) === String(f.target_id)))
       .filter((b): b is Book => !!b);
 
-    // 활동지 답안
+    // 활동지 답안 — 개수만이 아니라 학생이 적은 내용까지 가져온다
     const { data: resp } = await admin
       .from("worksheet_responses")
-      .select("worksheet_id, answered_count, updated_at")
+      .select("worksheet_id, answers, answered_count, updated_at")
       .eq("user_id", id)
       .order("updated_at", { ascending: false });
     const wsIds = (resp ?? []).map((r) => Number(r.worksheet_id));
@@ -210,16 +212,40 @@ export async function loadStudentDetail(id: string): Promise<StudentDetailData> 
         .in("id", wsIds);
       const wmap = new Map<number, { type: string; title: string }>();
       for (const w of wss ?? []) wmap.set(w.id, { type: w.type, title: w.title });
+
+      // 문항은 worksheet_questions 에 따로 있다 (works 는 JSONB 였던 것과 다름)
+      const { data: qs } = await admin
+        .from("worksheet_questions")
+        .select("worksheet_id, position, prompt")
+        .in("worksheet_id", wsIds)
+        .order("position", { ascending: true });
+      const qmap = new Map<number, Array<{ position: number; prompt: string }>>();
+      for (const q of qs ?? []) {
+        const wid = Number(q.worksheet_id);
+        const arr = qmap.get(wid) ?? [];
+        arr.push({ position: q.position as number, prompt: q.prompt as string });
+        qmap.set(wid, arr);
+      }
+
       out.solvedSheets = (resp ?? [])
         .map((r) => {
-          const w = wmap.get(Number(r.worksheet_id));
+          const wid = Number(r.worksheet_id);
+          const w = wmap.get(wid);
           if (!w) return null;
+          const answers = (r.answers as Record<string, string>) ?? {};
+          const qa = (qmap.get(wid) ?? [])
+            .map((q) => ({
+              prompt: q.prompt,
+              answer: answers[String(q.position)] ?? "",
+            }))
+            .filter((x) => x.answer.trim().length > 0);
           return {
-            id: Number(r.worksheet_id),
+            id: wid,
             type: w.type,
             title: w.title,
             answeredCount: r.answered_count as number,
             updatedAt: r.updated_at as string,
+            qa,
           };
         })
         .filter(Boolean) as SolvedSheet[];

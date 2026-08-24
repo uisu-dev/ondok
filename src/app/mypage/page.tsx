@@ -22,6 +22,9 @@ import type { MBTIType } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+/** 문의처 — 마이페이지 맨 아래 안내에 쓴다. */
+const CONTACT_EMAIL = "uisu@kakao.com";
+
 const ROLE_LABEL: Record<string, { text: string; tone: string }> = {
   student: { text: "학생", tone: "bg-accent-100 text-accent-700" },
   teacher: { text: "교원", tone: "bg-cat-sci/15 text-cat-sci" },
@@ -649,6 +652,24 @@ export default async function MyPage() {
             </div>
           </Card>
         )}
+
+        {/* 문의 안내 — 역할과 무관하게 모두에게 보인다 */}
+        <Card as="section" className="px-6 py-5 space-y-1.5">
+          <p className="text-xs font-semibold text-fg-muted">문의</p>
+          <p className="text-sm text-fg leading-relaxed">
+            궁금한 점이나 불편한 점이 있으면 <b className="text-fg-strong">천안중학교
+            교사 임의수</b>에게 알려 주세요.
+          </p>
+          <p className="text-sm text-fg-muted leading-relaxed">
+            업무 메일 또는{" "}
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="text-accent-600 font-semibold hover:underline"
+            >
+              {CONTACT_EMAIL}
+            </a>
+          </p>
+        </Card>
       </div>
     </main>
   );

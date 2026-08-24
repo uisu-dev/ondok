@@ -10,6 +10,7 @@ import { StudentDetail } from "./StudentDetail";
 import { loadStudentDetail } from "./load";
 import { RemoveAccountCard } from "./RemoveAccountCard";
 import { StudentEditCard } from "./StudentEditCard";
+import { StudentPasswordCard } from "./StudentPasswordCard";
 import schoolsJson from "@/data/schools.json";
 
 export const dynamic = "force-dynamic";
@@ -290,6 +291,15 @@ export default async function StudentDetailPage({
                 급수별로 아는 단어와 더 익혀야 할 단어를 볼 수 있어요.
               </p>
               <StudentDetail breakdown={breakdown} />
+
+              {/* 임시 비밀번호 — 교원도 제 학교 학생에게는 발급할 수 있다 */}
+              {student && (
+                <StudentPasswordCard
+                  userId={id}
+                  displayName={student.display_name ?? ""}
+                  loginId={student.login_id ?? null}
+                />
+              )}
 
               {/* 학적 수정 — 슈퍼관리자·admin 만 */}
               {isSuper && student && (

@@ -40,6 +40,7 @@ export async function GET(
   }
 
   // 급수별 단어 목록 전체는 무겁다. 모달에는 개수와 예시만 보낸다.
+  // 반대로 학생이 적은 답안(qa)은 교사가 보려는 것이므로 그대로 보낸다.
   return NextResponse.json({
     ok: true,
     student: {
@@ -64,7 +65,7 @@ export async function GET(
     },
     advice: data.advice,
     books: data.favBooks.map((b) => ({ id: b.id, title: b.title })),
-    sheets: data.solvedSheets,
+    sheets: data.solvedSheets,   // 학생이 적은 답안(qa) 포함
     works: data.readWorks.map((w) => ({
       slug: w.slug,
       title: w.title,
@@ -74,6 +75,7 @@ export async function GET(
       sectionCount: w.sectionCount,
       answered: w.qa.length,
       updatedAt: w.updatedAt,
+      qa: w.qa,
     })),
     games: data.gameStats,
   });

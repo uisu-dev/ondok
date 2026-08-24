@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { canApproveTeachers, getSignedInUser } from "@/lib/auth";
+import { canAccessAdmin, canApproveTeachers, getSignedInUser } from "@/lib/auth";
 import { getAdminSupabase } from "@/data/supabase-admin";
 import {
   currentSchoolYear,
@@ -165,4 +165,79 @@ export async function updateStudentProfile(input: {
   revalidatePath("/admin/students");
   revalidatePath(`/admin/students/${input.userId}`);
   return { ok: true };
+}
+
+// ── 임시 비밀번호 발급 ────────────────────────────────────────────
+// 혼동되기 쉬운 문자(0/O, 1/l/I)를 뺀 8자.
+function generateTempPassword(): string {
+  const chars = "abcdefghjkmnpqrstuvwxyz23456789";
+  let out = "";
+  for (let i = 0; i < 8; i++) {
+    out += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return out;
+}
+
+type PasswordResult =
+  | { ok: true; password: string }
+  | { ok: false; message: string };
+
+/**
+ * 학생에게 임시 비밀번호를 발급한다.
+ *
+ * /admin/users 의 issueTempPassword 와 달리 교원도 쓸 수 있다.
+ * 다만 교원은 '제 학교 학생' 만이다:
+ *   - 대상이 학생(role='student')이어야 한다 → 교원끼리 서로 못 건드린다
+ *   - 대상의 school_code 가 자기 학교와 같아야 한다
+ * 슈퍼관리자(HMAC)·admin 은 학교 제한 없이 학생 누구나 가능.
+ *
+ * 비밀번호를 잊은 아이가 담임을 찾아오는 일이 잦은데, 그때마다
+ * 슈퍼관리자를 거치면 수업이 멈춘다.
+ */
+export async function issueStudentTempPassword(
+  userId: string
+): Promise<PasswordResult> {
+  const access = await canAccessAdmin();
+  if (!access.ok) return { ok: false, message: "권한이 없습니다." };
+  if (!userId) return { ok: false, message: "사용자 ID 누락" };
+
+  let admin;
+  try {
+    admin = getAdminSupabase();
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : "서버 오류" };
+  }
+
+  const { data: prof, error: pErr } = await admin
+    .from("profiles")
+    .select("role, school_code, display_name")
+    .eq("id", userId)
+    .maybeSingle();
+  if (pErr) return { ok: false, message: pErr.message };
+  if (!prof) return { ok: false, message: "해당 사용자를 찾을 수 없습니다." };
+  if (prof.role !== "student") {
+    return {
+      ok: false,
+      message: "학생 계정만 이 화면에서 재발급할 수 있습니다.",
+    };
+  }
+
+  const isSuper = access.reason === "hmac" || access.reason === "admin";
+  if (!isSuper) {
+    const mySchool = access.user?.profile?.school_code ?? null;
+    if (!mySchool || prof.school_code !== mySchool) {
+      return {
+        ok: false,
+        message: "소속 학교 학생만 재발급할 수 있습니다.",
+      };
+    }
+  }
+
+  const temp = generateTempPassword();
+  const { error } = await admin.auth.admin.updateUserById(userId, {
+    password: temp,
+  });
+  if (error) return { ok: false, message: error.message };
+
+  return { ok: true, password: temp };
 }

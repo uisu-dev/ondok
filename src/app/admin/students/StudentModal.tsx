@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
+import { issueStudentTempPassword } from "./[id]/actions";
 import type { StudentRow } from "./StudentsTable";
 
 /**
@@ -14,6 +15,11 @@ import type { StudentRow } from "./StudentsTable";
  * 표에 이미 있는 값(사고도구어 수·도서·활동지 등)은 즉시 그리고,
  * 지도 방향 분석처럼 따로 계산이 필요한 것만 API 로 받아 채운다.
  */
+
+interface QA {
+  prompt: string;
+  answer: string;
+}
 
 interface Detail {
   student: {
@@ -44,6 +50,7 @@ interface Detail {
     title: string;
     answeredCount: number;
     updatedAt: string;
+    qa: QA[];
   }>;
   works: Array<{
     slug: string;
@@ -54,6 +61,7 @@ interface Detail {
     sectionCount: number;
     answered: number;
     updatedAt: string;
+    qa: QA[];
   }>;
   games: { matchBest: number; chosungBest: number; battleWins: number };
 }
@@ -86,6 +94,13 @@ export function StudentModal({
 }) {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // 작성 내용은 길어서 기본으로 접어 두고, 누른 것만 편다
+  const [openWork, setOpenWork] = useState<string | null>(null);
+  const [openSheet, setOpenSheet] = useState<number | null>(null);
+  // 임시 비밀번호 발급
+  const [pwPending, setPwPending] = useState(false);
+  const [tempPw, setTempPw] = useState<string | null>(null);
+  const [pwError, setPwError] = useState<string | null>(null);
 
   // 학생이 바뀌면 부모가 key 를 갈아 끼워 새로 마운트하므로,
   // 여기서는 초기화 없이 받아 오기만 하면 된다.
@@ -124,6 +139,26 @@ export function StudentModal({
       document.body.style.overflow = prev;
     };
   }, [onClose, onPrev, onNext]);
+
+  async function resetPassword() {
+    if (pwPending) return;
+    if (
+      !window.confirm(
+        `${row.name} 님의 비밀번호를 임시 비밀번호로 재설정할까요?
+기존 비밀번호는 더 이상 쓸 수 없게 됩니다.`
+      )
+    )
+      return;
+    setPwPending(true);
+    setPwError(null);
+    try {
+      const res = await issueStudentTempPassword(row.id);
+      if (!res.ok) setPwError(res.message);
+      else setTempPw(res.password);
+    } finally {
+      setPwPending(false);
+    }
+  }
 
   const classText =
     row.grade != null && row.classNo != null
@@ -270,29 +305,47 @@ export function StudentModal({
                   <p className="text-xs text-fg-subtle">아직 읽은 작품이 없어요.</p>
                 ) : (
                   <ul className="space-y-1">
-                    {detail.works.map((w) => (
-                      <li
-                        key={w.slug}
-                        className="flex items-center gap-2 px-3 py-2 rounded-button bg-surface-muted"
-                      >
-                        <span aria-hidden className="text-base">
-                          {w.coverEmoji}
-                        </span>
-                        <span className="flex-1 min-w-0">
-                          <span className="block text-sm font-semibold text-fg-strong truncate">
-                            {w.title}
-                          </span>
-                          <span className="block text-[10px] text-fg-subtle">
-                            {w.completed
-                              ? "완독"
-                              : `${w.lastSection + 1}/${w.sectionCount} 대목`}
-                            {w.answered > 0 && ` · 점검 문제 ${w.answered}개 작성`}
-                            {" · "}
-                            {dateLabel(w.updatedAt)}
-                          </span>
-                        </span>
-                      </li>
-                    ))}
+                    {detail.works.map((w) => {
+                      const open = openWork === w.slug;
+                      return (
+                        <li key={w.slug} className="rounded-button bg-surface-muted">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setOpenWork(open ? null : w.slug)
+                            }
+                            disabled={w.qa.length === 0}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-left disabled:cursor-default"
+                          >
+                            <span aria-hidden className="text-base">
+                              {w.coverEmoji}
+                            </span>
+                            <span className="flex-1 min-w-0">
+                              <span className="block text-sm font-semibold text-fg-strong truncate">
+                                {w.title}
+                              </span>
+                              <span className="block text-[10px] text-fg-subtle">
+                                {w.completed
+                                  ? "완독"
+                                  : `${w.lastSection + 1}/${w.sectionCount} 대목`}
+                                {w.answered > 0 && ` · 점검 문제 ${w.answered}개 작성`}
+                                {" · "}
+                                {dateLabel(w.updatedAt)}
+                              </span>
+                            </span>
+                            {w.qa.length > 0 && (
+                              <span
+                                aria-hidden
+                                className="text-[10px] font-bold text-accent-600 shrink-0"
+                              >
+                                {open ? "접기" : "답안 보기"}
+                              </span>
+                            )}
+                          </button>
+                          {open && <AnswerList qa={w.qa} />}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </section>
@@ -309,25 +362,42 @@ export function StudentModal({
                   </p>
                 ) : (
                   <ul className="space-y-1">
-                    {detail.sheets.map((s) => (
-                      <li
-                        key={s.id}
-                        className="flex items-center gap-2 px-3 py-2 rounded-button bg-surface-muted"
-                      >
-                        <span aria-hidden className="text-base">
-                          {TYPE_EMOJI[s.type as keyof typeof TYPE_EMOJI] ?? "📄"}
-                        </span>
-                        <span className="flex-1 min-w-0">
-                          <span className="block text-sm font-semibold text-fg-strong truncate">
-                            {s.title}
-                          </span>
-                          <span className="block text-[10px] text-fg-subtle">
-                            {TYPE_LABEL[s.type as keyof typeof TYPE_LABEL] ?? s.type}{" "}
-                            · 답안 {s.answeredCount}개 · {dateLabel(s.updatedAt)}
-                          </span>
-                        </span>
-                      </li>
-                    ))}
+                    {detail.sheets.map((sh) => {
+                      const open = openSheet === sh.id;
+                      return (
+                        <li key={sh.id} className="rounded-button bg-surface-muted">
+                          <button
+                            type="button"
+                            onClick={() => setOpenSheet(open ? null : sh.id)}
+                            disabled={sh.qa.length === 0}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-left disabled:cursor-default"
+                          >
+                            <span aria-hidden className="text-base">
+                              {TYPE_EMOJI[sh.type as keyof typeof TYPE_EMOJI] ?? "📄"}
+                            </span>
+                            <span className="flex-1 min-w-0">
+                              <span className="block text-sm font-semibold text-fg-strong truncate">
+                                {sh.title}
+                              </span>
+                              <span className="block text-[10px] text-fg-subtle">
+                                {TYPE_LABEL[sh.type as keyof typeof TYPE_LABEL] ??
+                                  sh.type}{" "}
+                                · 답안 {sh.answeredCount}개 · {dateLabel(sh.updatedAt)}
+                              </span>
+                            </span>
+                            {sh.qa.length > 0 && (
+                              <span
+                                aria-hidden
+                                className="text-[10px] font-bold text-accent-600 shrink-0"
+                              >
+                                {open ? "접기" : "답안 보기"}
+                              </span>
+                            )}
+                          </button>
+                          {open && <AnswerList qa={sh.qa} />}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </section>
@@ -363,18 +433,69 @@ export function StudentModal({
         </div>
 
         {/* 발 */}
-        <div className="px-6 py-3.5 border-t border-border flex items-center justify-between gap-3">
+        <div className="px-6 py-3.5 border-t border-border space-y-3">
+          {tempPw && (
+            <div className="rounded-button bg-[color-mix(in_oklab,var(--color-cat-sci)_10%,white)] border border-[var(--color-cat-sci)] px-4 py-3 space-y-1">
+              <p className="text-xs font-bold text-cat-sci">
+                임시 비밀번호가 발급됐어요
+              </p>
+              <p
+                className="font-mono font-bold text-fg-strong tracking-widest"
+                style={{ fontSize: 22 }}
+              >
+                {tempPw}
+              </p>
+              <p className="text-[11px] text-fg-muted leading-relaxed">
+                학생에게 직접 알려 주세요. 로그인 후{" "}
+                <b className="text-fg-strong">마이페이지 → 비밀번호 변경</b>에서
+                새 비밀번호로 바꾸도록 안내해 주세요. 이 창을 닫으면 다시 볼 수
+                없어요.
+              </p>
+            </div>
+          )}
+          {pwError && (
+            <p className="text-xs text-cat-hum font-semibold">{pwError}</p>
+          )}
+
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={resetPassword}
+              disabled={pwPending}
+              className="h-9 px-4 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-bold disabled:opacity-50"
+            >
+              {pwPending ? "발급 중…" : "🔑 임시 비밀번호 발급"}
+            </button>
+            <Link
+              href={`/admin/students/${row.id}`}
+              className="h-9 px-4 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-xs font-bold flex items-center"
+            >
+              전체 화면으로 열기
+            </Link>
+          </div>
           <p className="text-[11px] text-fg-subtle">
-            급수별 단어 목록·학적 수정은 전체 화면에서
+            급수별 단어 목록·학적 수정은 전체 화면에서 할 수 있어요.
           </p>
-          <Link
-            href={`/admin/students/${row.id}`}
-            className="shrink-0 h-9 px-4 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-xs font-bold flex items-center"
-          >
-            전체 화면으로 열기
-          </Link>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** 학생이 적은 답안. 물음 아래에 답을 그대로 보여 준다. */
+function AnswerList({ qa }: { qa: QA[] }) {
+  return (
+    <div className="px-3 pb-3 pt-1 space-y-2.5 border-t border-border">
+      {qa.map((x, i) => (
+        <div key={i} className="space-y-1">
+          <p className="text-[11px] font-bold text-fg-muted leading-relaxed">
+            {i + 1}. {x.prompt}
+          </p>
+          <p className="text-sm text-fg-strong leading-relaxed whitespace-pre-wrap bg-surface rounded-button px-3 py-2">
+            {x.answer}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }
