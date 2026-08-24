@@ -48,6 +48,28 @@ export default async function WorksheetSolvePage({
   // 교사용 인쇄(정답 포함)는 교원/관리자/슈퍼관리자만.
   const canPrintTeacher = access.ok;
 
+  // 학생에게는 정답·예시 답안을 아예 내려보내지 않는다.
+  // 화면에서 버튼만 없애면 페이지 소스에 그대로 남아 베껴 쓸 수 있다.
+  // 교원·관리자는 그대로 받으므로 '교사용 인쇄' 에는 전부 나온다.
+  const safeWs = canPrintTeacher
+    ? ws
+    : {
+        ...ws,
+        sampleAnswer: null, // 활동지 전체 모범 답안
+        questions: ws.questions.map((q) => {
+          const { sampleAnswer: _s, rubric: _r, ...rest } = q;
+          return {
+            ...rest,
+            // 보기의 정답 표시도 뺀다 (학생 화면에서는 쓰이지 않는다)
+            options: rest.options?.map((o) => ({
+              label: o.label,
+              text: o.text,
+              correct: false,
+            })),
+          };
+        }),
+      };
+
   // 로그인 사용자면 기존에 저장한 답안을 불러와 채워줌.
   const supabase = await createClient();
   const {
@@ -86,9 +108,10 @@ export default async function WorksheetSolvePage({
           </div>
         )}
         <WorksheetSolver
-          worksheet={ws}
+          worksheet={safeWs}
           book={book}
           canPrintTeacher={canPrintTeacher}
+          canSeeAnswers={canPrintTeacher}
           canSaveAnswers={!!user}
           initialAnswers={initialAnswers}
         />

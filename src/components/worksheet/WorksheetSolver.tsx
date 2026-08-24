@@ -48,6 +48,7 @@ export function WorksheetSolver({
   worksheet,
   book,
   canPrintTeacher = true,
+  canSeeAnswers = true,
   canSaveAnswers = false,
   initialAnswers = {},
 }: {
@@ -55,6 +56,12 @@ export function WorksheetSolver({
   book: Book | null;
   /** 교사용 인쇄 권한. 학생/비로그인이면 false → 버튼 숨김. */
   canPrintTeacher?: boolean;
+  /**
+   * 정답·예시 답안을 볼 수 있는 사람인지 (교원·관리자).
+   * 학생에게는 서버에서 값을 아예 빼고 넘기므로, 여기서는 '정답 보기'
+   * 같은 훔쳐보기 버튼을 감추는 데 쓴다.
+   */
+  canSeeAnswers?: boolean;
   /** 로그인 사용자면 true — 답안 자동 저장 활성화. */
   canSaveAnswers?: boolean;
   /** DB 에 저장돼 있던 기존 답안 (position → 텍스트). */
@@ -352,6 +359,7 @@ export function WorksheetSolver({
             revealed={!!reveal[idx]}
             onToggleReveal={() => toggleReveal(idx)}
             teacherMode={teacherMode}
+            canSeeAnswers={canSeeAnswers}
           />
         ))}
       </div>
@@ -479,6 +487,7 @@ function QuestionCard({
   revealed,
   onToggleReveal,
   teacherMode,
+  canSeeAnswers,
 }: {
   index: number;
   question: Question;
@@ -487,9 +496,10 @@ function QuestionCard({
   revealed: boolean;
   onToggleReveal: () => void;
   teacherMode: boolean;
+  canSeeAnswers: boolean;
 }) {
-  // 교사용 인쇄 모드에서만 정답·예시답안을 자동 노출.
-  const showAnswer = revealed || teacherMode;
+  // 학생은 훔쳐볼 수 없다. 교사용 인쇄 모드에서는 전부 자동 노출.
+  const showAnswer = (canSeeAnswers && revealed) || teacherMode;
   // OX 는 개별 토글이 없어, 교사용 인쇄 모드에서만 정답 강조됨.
   const showOxAnswer = teacherMode;
   return (
@@ -570,14 +580,16 @@ function QuestionCard({
               </label>
             );
           })}
-          <div className="pt-1 print:hidden">
-            <button
-              onClick={onToggleReveal}
-              className="text-xs font-semibold text-accent-600 hover:text-accent-700"
-            >
-              {revealed ? "정답 가리기" : "정답 보기"}
-            </button>
-          </div>
+          {canSeeAnswers && (
+            <div className="pt-1 print:hidden">
+              <button
+                onClick={onToggleReveal}
+                className="text-xs font-semibold text-accent-600 hover:text-accent-700"
+              >
+                {revealed ? "정답 가리기" : "정답 보기 (교원에게만 보여요)"}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -609,14 +621,16 @@ function QuestionCard({
               );
             })}
           </div>
-          <div className="pt-1 print:hidden">
-            <button
-              onClick={onToggleReveal}
-              className="text-xs font-semibold text-accent-600 hover:text-accent-700"
-            >
-              {revealed ? "정답 가리기" : "정답 보기"}
-            </button>
-          </div>
+          {canSeeAnswers && (
+            <div className="pt-1 print:hidden">
+              <button
+                onClick={onToggleReveal}
+                className="text-xs font-semibold text-accent-600 hover:text-accent-700"
+              >
+                {revealed ? "정답 가리기" : "정답 보기 (교원에게만 보여요)"}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -629,14 +643,16 @@ function QuestionCard({
             placeholder="답을 입력해 주세요"
             className="w-full h-11 px-3 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none print:bg-transparent print:border-0 print:border-b-2 print:border-fg-strong print:rounded-none print:h-10"
           />
-          {question.sampleAnswer && (
+          {canSeeAnswers && question.sampleAnswer && (
             <>
               <div className="print:hidden">
                 <button
                   onClick={onToggleReveal}
                   className="text-xs font-semibold text-accent-600 hover:text-accent-700"
                 >
-                  {showAnswer ? "예시 답안 가리기" : "예시 답안 보기"}
+                  {showAnswer
+                    ? "예시 답안 가리기"
+                    : "예시 답안 보기 (교원에게만 보여요)"}
                 </button>
               </div>
               {showAnswer && (
@@ -658,14 +674,16 @@ function QuestionCard({
             placeholder="답안을 자유롭게 작성해 주세요"
             className="w-full px-3 py-2 rounded-button bg-surface border border-border focus:border-accent-500 focus:outline-none leading-relaxed print:bg-transparent print:border print:border-fg-strong print:h-32"
           />
-          {question.rubric && (
+          {canSeeAnswers && question.rubric && (
             <>
               <div className="print:hidden">
                 <button
                   onClick={onToggleReveal}
                   className="text-xs font-semibold text-accent-600 hover:text-accent-700"
                 >
-                  {showAnswer ? "모범 답안 가리기" : "모범 답안 보기"}
+                  {showAnswer
+                    ? "모범 답안 가리기"
+                    : "모범 답안 보기 (교원에게만 보여요)"}
                 </button>
               </div>
               {showAnswer && (
