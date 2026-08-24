@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Card } from "@/components/ui/Card";
+import { StudentModal } from "./StudentModal";
 
 export interface StudentRow {
   id: string;
@@ -52,6 +52,8 @@ export function StudentsTable({
   const [sortKey, setSortKey] = useState<
     "name" | "class" | "sago" | "books" | "sheets" | "worksDone" | "lastActive"
   >("class");
+  // 이름을 누르면 페이지를 옮기지 않고 모달로 띄운다 (여러 명을 견주어 보기 쉽게)
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const arr = students.slice().sort((a, b) => {
@@ -78,6 +80,10 @@ export function StudentsTable({
     });
     return arr;
   }, [students, sortKey]);
+
+  // 필터·정렬된 목록 안에서의 위치 (모달의 이전/다음에 쓴다).
+  // 필터가 바뀌어 열린 학생이 목록에서 빠지면 -1 이 되어 모달이 닫힌다.
+  const openIndex = openId ? filtered.findIndex((s) => s.id === openId) : -1;
 
   return (
     <div className="space-y-3">
@@ -134,12 +140,13 @@ export function StudentsTable({
               filtered.map((s) => (
                 <tr key={s.id} className="border-b border-border last:border-0">
                   <td className="px-3 py-2.5 font-semibold whitespace-nowrap">
-                    <Link
-                      href={`/admin/students/${s.id}`}
+                    <button
+                      type="button"
+                      onClick={() => setOpenId(s.id)}
                       className="text-accent-600 hover:underline"
                     >
                       {s.name}
-                    </Link>
+                    </button>
                     {s.loginId && (
                       <span className="ml-1.5 text-[11px] font-mono font-normal text-fg-subtle">
                         {s.loginId}
@@ -205,6 +212,24 @@ export function StudentsTable({
           </tbody>
         </table>
       </Card>
+
+      {openIndex >= 0 && (
+        <StudentModal
+          key={filtered[openIndex].id}
+          row={filtered[openIndex]}
+          onClose={() => setOpenId(null)}
+          onPrev={
+            openIndex > 0
+              ? () => setOpenId(filtered[openIndex - 1].id)
+              : undefined
+          }
+          onNext={
+            openIndex < filtered.length - 1
+              ? () => setOpenId(filtered[openIndex + 1].id)
+              : undefined
+          }
+        />
+      )}
     </div>
   );
 }
