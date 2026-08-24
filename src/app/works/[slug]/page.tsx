@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPublishedWork, getWorkRecord } from "@/data/works";
 import { parseSections } from "@/lib/work-types";
-import { createClient } from "@/lib/supabase/server";
+import { getSignedInUser, isTeacherOrAdmin } from "@/lib/auth";
 import { WorkReader } from "./WorkReader";
 
 export const dynamic = "force-dynamic";
@@ -18,11 +18,22 @@ export default async function WorkPage({
 
   const sections = parseSections(work.body);
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSignedInUser();
   const record = user ? await getWorkRecord(work.id) : null;
+
+  // 학생에게는 예시 답안·평가 기준을 아예 내려보내지 않는다.
+  // 화면에서 가리기만 하면 페이지 소스에 그대로 남아 베껴 쓸 수 있다.
+  // (교원·관리자는 수업 준비에 필요하므로 그대로 본다)
+  const canSeeAnswers = isTeacherOrAdmin(user?.profile ?? null);
+  const safeWork = canSeeAnswers
+    ? work
+    : {
+        ...work,
+        questions: work.questions.map((q) => {
+          const { sampleAnswer: _s, rubric: _r, ...rest } = q;
+          return rest;
+        }),
+      };
 
   return (
     <main className="flex-1 w-full">
@@ -33,10 +44,11 @@ export default async function WorkPage({
           </Link>
         </div>
         <WorkReader
-          work={work}
+          work={safeWork}
           sections={sections}
           initialRecord={record}
           signedIn={!!user}
+          canSeeAnswers={canSeeAnswers}
         />
       </div>
     </main>

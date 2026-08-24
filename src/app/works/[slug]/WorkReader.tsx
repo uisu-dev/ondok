@@ -93,11 +93,18 @@ export function WorkReader({
   sections,
   initialRecord,
   signedIn,
+  canSeeAnswers = false,
 }: {
   work: Work;
   sections: WorkSection[];
   initialRecord: WorkRecord | null;
   signedIn: boolean;
+  /**
+   * 예시 답안을 볼 수 있는 사람인지 (교원·관리자).
+   * 학생에게는 서버에서 sampleAnswer 를 아예 빼고 넘기므로 여기서는
+   * 라벨을 다르게 붙이는 데만 쓴다.
+   */
+  canSeeAnswers?: boolean;
 }) {
   const [fontSize, setFontSize] = useState<FontSize>("md");
   const [current, setCurrent] = useState(0);
@@ -592,10 +599,10 @@ export function WorkReader({
                         rows={q.type === "essay" ? 5 : 2}
                         className="w-full px-3 py-2 rounded-button border border-border bg-surface text-sm text-fg-strong leading-relaxed focus:outline-none focus:border-accent-500"
                       />
-                      {q.sampleAnswer && (
+                      {canSeeAnswers && q.sampleAnswer && (
                         <details className="text-xs">
                           <summary className="cursor-pointer font-semibold text-accent-600">
-                            예시 답안 보기
+                            예시 답안 보기 (교원에게만 보여요)
                           </summary>
                           <p className="mt-1.5 p-3 rounded-button bg-surface-muted text-fg leading-relaxed">
                             {q.sampleAnswer}
