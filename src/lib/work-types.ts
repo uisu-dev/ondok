@@ -114,11 +114,12 @@ export function groupByEra<T extends { eraOrder: number }>(
 
 /**
  * 배지 조건을 채웠는지.
- * 완독 + 형광펜 문제를 전부 '첫 시도에' 정답 + 점검 문제 전부 작성.
+ * 완독 + 형광펜 문제 전부 정답 + 점검 문제 전부 작성.
  *
- * ok 가 아니라 first 를 보는 이유: ok 는 다시 골라 맞혀도 참이 되므로
- * 보기를 하나씩 눌러 보면 누구나 채울 수 있다. 배지는 읽고 맞힌 사람의
- * 것이어야 하므로 첫 시도만 인정한다. 대신 기록을 지우고 다시 도전할 수 있다.
+ * 첫 시도(first)가 아니라 ok 를 본다. 한 번 틀리면 그 작품을 통째로 다시
+ * 읽어야 배지를 받을 수 있게 했더니 학생들이 지쳐서 포기했다. 못 맞힌
+ * 문제만 다시 풀어 채우는 편이 실제로 더 많이 읽게 만든다.
+ * (first 는 그대로 기록해 두고 '한 번에 맞힌 수' 표시에만 쓴다)
  */
 export function earnsBadge(opts: {
   completed: boolean;
@@ -129,10 +130,26 @@ export function earnsBadge(opts: {
 }): boolean {
   if (!opts.completed) return false;
   if (opts.answeredCount < opts.questionCount) return false;
-  return opts.quizKeys.every((k) => opts.noteAnswers[k]?.first === true);
+  return opts.quizKeys.every((k) => opts.noteAnswers[k]?.ok === true);
 }
 
-/** 첫 시도에 맞힌 형광펜 문제 수 — 배지 진행률 표시용. */
+/** 아직 맞히지 못한 형광펜 문제 키 — '남은 것' 안내에 쓴다. */
+export function unsolvedQuizKeys(
+  quizKeys: string[],
+  noteAnswers: Record<string, NoteAnswer>
+): string[] {
+  return quizKeys.filter((k) => noteAnswers[k]?.ok !== true);
+}
+
+/** 맞힌 형광펜 문제 수 (재시도 포함). */
+export function solvedCount(
+  quizKeys: string[],
+  noteAnswers: Record<string, NoteAnswer>
+): number {
+  return quizKeys.filter((k) => noteAnswers[k]?.ok === true).length;
+}
+
+/** 첫 시도에 맞힌 문제 수 — 배지 조건은 아니고 '얼마나 잘 읽었나' 표시용. */
 export function firstTryCount(
   quizKeys: string[],
   noteAnswers: Record<string, NoteAnswer>

@@ -5,7 +5,12 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import type { Work, WorkRecord, WorkSection, NoteAnswer } from "@/lib/work-types";
-import { firstTryCount, quizKeysOf } from "@/lib/work-types";
+import {
+  firstTryCount,
+  quizKeysOf,
+  solvedCount,
+  unsolvedQuizKeys,
+} from "@/lib/work-types";
 import { QTYPE_LABEL } from "@/lib/worksheet-types";
 import { AnnotationSheet } from "./AnnotationSheet";
 import { BadgeCard, BadgeCelebration, ResetConfirm } from "./Badge";
@@ -122,6 +127,9 @@ export function WorkReader({
   );
 
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  // 배지 카드에서 '안 쓴 점검 문제'를 눌렀을 때 그 칸으로 데려가기 위한 ref
+  const questionRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
+  const afterRef = useRef<HTMLDivElement | null>(null);
   const answersDirty = useRef(false);
   const savedSection = useRef(initialRecord?.lastSection ?? 0);
 
@@ -196,7 +204,25 @@ export function WorkReader({
     setReadNotes((prev) => (prev.has(key) ? prev : new Set(prev).add(key)));
   }, []);
 
-  // 배지는 첫 시도 정답만 인정하므로, 처음부터 다시 도전할 길을 열어 둔다
+  /** 안 쓴 점검 문제로 데려가고 입력칸에 커서를 둔다. */
+  const goToQuestion = useCallback((index: number) => {
+    const el = questionRefs.current[index];
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    // 스크롤이 끝난 뒤 포커스해야 화면이 튀지 않는다
+    setTimeout(() => el.focus({ preventScroll: true }), 400);
+  }, []);
+
+  /** 아직 다 안 읽었을 때 본문 끝(완독 버튼)으로 데려간다. */
+  const goToEnd = useCallback(() => {
+    const last = sectionRefs.current[sectionRefs.current.length - 1];
+    (last ?? afterRef.current)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, []);
+
+  // 기록을 지우고 처음부터 다시 읽고 싶을 때를 위한 길 (배지 조건과는 무관)
   const resetRecord = useCallback(async () => {
     if (!signedIn || resetting) return;
     setResetting(true);
@@ -283,11 +309,20 @@ export function WorkReader({
   const annotations = work.annotations ?? {};
   const noteCount = Object.keys(annotations).length;
   const quizKeys = quizKeysOf(annotations);
-  // 배지는 첫 시도에 맞힌 것만 인정한다
+  const quizSolved = solvedCount(quizKeys, noteAnswers);
+  // 한 번에 맞힌 수는 조건이 아니라 표시용 (배지는 다시 풀어 맞혀도 인정)
   const quizFirstTry = firstTryCount(quizKeys, noteAnswers);
-  const missedFirst = quizKeys.filter(
-    (k) => noteAnswers[k] && noteAnswers[k].first !== true
-  ).length;
+
+  // 아직 남은 것 — 배지 카드에서 눌러 바로 갈 수 있게 넘긴다
+  const unsolvedNotes = unsolvedQuizKeys(quizKeys, noteAnswers).map((k) => ({
+    key: k,
+    title: annotations[k]?.title ?? k,
+    tried: !!noteAnswers[k],
+  }));
+  const unansweredQuestions = work.questions
+    .map((q, i) => ({ index: i, key: String(q.position ?? i), prompt: q.prompt }))
+    .filter(({ key }) => !(answers[key] ?? "").trim())
+    .map(({ index, prompt }) => ({ index, prompt }));
   // 형광펜에 ✓ 를 붙일 대상 — 맞힌 문제 + 읽어 본 배경지식
   const resolved = new Set<string>(readNotes);
   for (const k of quizKeys) if (noteAnswers[k]?.ok) resolved.add(k);
@@ -335,7 +370,7 @@ export function WorkReader({
               {quizKeys.length > 0 && (
                 <>
                   {" "}
-                  배지는 <b className="text-fg-strong">한 번에 맞힌 문제</b>만 세요.
+                  틀려도 <b className="text-fg-strong">다시 풀어 맞히면</b> 인정돼요.
                 </>
               )}
             </p>
@@ -345,12 +380,12 @@ export function WorkReader({
                   <div
                     className="h-full bg-[var(--color-cat-sci)] transition-all duration-500"
                     style={{
-                      width: `${Math.round((quizFirstTry / quizKeys.length) * 100)}%`,
+                      width: `${Math.round((quizSolved / quizKeys.length) * 100)}%`,
                     }}
                   />
                 </div>
                 <span className="text-[11px] font-bold text-fg-muted shrink-0">
-                  한 번에 {quizFirstTry}/{quizKeys.length}
+                  문제 {quizSolved}/{quizKeys.length}
                 </span>
               </div>
             )}
@@ -474,7 +509,7 @@ export function WorkReader({
       </Card>
 
       {/* 완독 후: 해설 + 점검 문제 */}
-      <div id="work-after" className="space-y-5">
+      <div id="work-after" ref={afterRef} className="space-y-5">
         {completed && (
           <>
             <Card as="section" className="px-6 py-5 space-y-2 bg-[color-mix(in_oklab,var(--color-cat-sci)_8%,white)] border border-[var(--color-cat-sci)]">
@@ -491,13 +526,18 @@ export function WorkReader({
               emoji={work.coverEmoji}
               earned={!!badgeAt}
               badgeAt={badgeAt}
+              quizSolved={quizSolved}
               quizFirstTry={quizFirstTry}
               quizTotal={quizKeys.length}
-              missedFirst={missedFirst}
               answered={Object.values(answers).filter((v) => v.trim()).length}
               questionTotal={work.questions.length}
               completed={completed}
               signedIn={signedIn}
+              unsolvedNotes={unsolvedNotes}
+              unansweredQuestions={unansweredQuestions}
+              onGoNote={(k) => setOpenNote(k)}
+              onGoQuestion={goToQuestion}
+              onGoEnd={goToEnd}
               onReset={() => setAskReset(true)}
             />
 
@@ -540,6 +580,9 @@ export function WorkReader({
                         </div>
                       </div>
                       <textarea
+                        ref={(el) => {
+                          questionRefs.current[i] = el;
+                        }}
                         value={answers[key] ?? ""}
                         onChange={(e) => {
                           answersDirty.current = true;

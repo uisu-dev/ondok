@@ -9,8 +9,7 @@ import type { Annotation, NoteAnswer } from "@/lib/work-types";
  *  - info : 배경지식을 설명한다
  *
  * 이미 맞힌 문제를 다시 열면 정답과 해설을 그대로 보여 준다.
- * 틀렸던 문제도 다시 풀 수 있게 열어 두되, 배지는 첫 시도만 인정하므로
- * 그 사실을 분명히 알려 준다. (배지에 다시 도전하려면 기록을 지워야 한다)
+ * 틀렸던 문제는 다시 풀 수 있고, 다시 맞히면 배지에도 인정된다.
  */
 export function AnnotationSheet({
   annotation,
@@ -57,8 +56,8 @@ export function AnnotationSheet({
     picked !== null && typeof annotation.answer === "number"
       ? picked === annotation.answer
       : false;
-  // 배지에 인정되는 것은 이 문제를 처음 풀어서 맞혔을 때뿐이다
-  const firstTry = correct && (prior ? prior.first === true : true);
+  // 한 번에 맞혔는지 — 배지 조건은 아니고 문구를 다르게 보여 주기 위한 것
+  const firstTry = correct && !prior;
 
   function choose(i: number) {
     if (picked !== null) return;
@@ -99,10 +98,10 @@ export function AnnotationSheet({
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           {isQuiz ? (
             <>
-              {prior && prior.first !== true && picked === null && (
+              {prior && prior.ok !== true && picked === null && (
                 <p className="text-xs text-fg-muted bg-surface-muted rounded-button px-3 py-2 leading-relaxed">
-                  지난번에 한 번에 맞히지 못한 문제예요. 다시 풀어 볼 수 있지만
-                  <b className="text-fg-strong"> 배지에는 반영되지 않아요</b>.
+                  지난번에 아쉬웠던 문제예요. <b className="text-fg-strong">이번에 맞히면 인정</b>되니
+                  해설을 떠올리며 다시 골라 보세요.
                 </p>
               )}
               <p className="text-sm text-fg-strong leading-relaxed">
@@ -146,13 +145,13 @@ export function AnnotationSheet({
                     {correct
                       ? firstTry
                         ? "✓ 한 번에 맞았어요!"
-                        : "✓ 맞았어요 (배지에는 반영되지 않아요)"
-                      : "✕ 아쉬워요 — 이 문제는 배지에 반영되지 않아요"}
+                        : "✓ 맞았어요 — 이제 이 문제는 끝났어요"
+                      : "✕ 아쉬워요"}
                   </p>
                   {!correct && (
                     <p className="text-xs text-fg-muted leading-relaxed">
-                      해설을 읽고 넘어가세요. 배지에 다시 도전하려면 글 끝에서
-                      <b className="text-fg-strong"> 처음부터 다시 읽기</b>를 누르면 돼요.
+                      해설을 읽고 <b className="text-fg-strong">닫았다 다시 열면</b> 한 번 더
+                      풀 수 있어요. 맞히면 배지 조건이 채워집니다.
                     </p>
                   )}
                   {annotation.explain && (

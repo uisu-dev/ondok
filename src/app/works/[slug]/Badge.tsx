@@ -5,9 +5,10 @@ import { Card } from "@/components/ui/Card";
 
 /**
  * 작품별 마스터 배지.
- * 조건: 끝까지 읽기 + 형광펜 문제를 전부 '한 번에' 맞히기 + 점검 문제 전부 작성.
+ * 조건: 끝까지 읽기 + 형광펜 문제 전부 맞히기 + 점검 문제 전부 작성.
  *
- * 한 번에 맞힌 것만 인정하는 대신, 기록을 지우고 처음부터 다시 도전할 수 있다.
+ * 틀린 문제는 다시 풀어 맞히면 인정된다. 대신 '아직 남은 것'을 하나씩
+ * 짚어 주고 눌러서 바로 갈 수 있게 해, 본문에서 찾아 헤매지 않게 한다.
  */
 
 /** 배지 도안 — 작품 표지 이모지를 금테로 감싼다. */
@@ -47,39 +48,48 @@ export function BadgeCard({
   emoji,
   earned,
   badgeAt,
+  quizSolved,
   quizFirstTry,
   quizTotal,
-  missedFirst,
   answered,
   questionTotal,
   completed,
   signedIn,
+  unsolvedNotes,
+  unansweredQuestions,
+  onGoNote,
+  onGoQuestion,
+  onGoEnd,
   onReset,
 }: {
   title: string;
   emoji: string;
   earned: boolean;
   badgeAt: string | null;
-  /** 첫 시도에 맞힌 형광펜 문제 수 */
+  /** 맞힌 형광펜 문제 수 (다시 풀어 맞힌 것 포함) */
+  quizSolved: number;
+  /** 그중 한 번에 맞힌 수 — 조건은 아니고 칭찬용 */
   quizFirstTry: number;
   quizTotal: number;
-  /** 첫 시도에 틀린 형광펜 문제 수 — 하나라도 있으면 이번 판은 배지가 불가능 */
-  missedFirst: number;
   answered: number;
   questionTotal: number;
   completed: boolean;
   signedIn: boolean;
+  /** 아직 못 맞힌 형광펜 문제 (키 + 제목) */
+  unsolvedNotes: Array<{ key: string; title: string; tried: boolean }>;
+  /** 아직 안 쓴 점검 문제 (번호 + 물음) */
+  unansweredQuestions: Array<{ index: number; prompt: string }>;
+  onGoNote?: (key: string) => void;
+  onGoQuestion?: (index: number) => void;
+  onGoEnd?: () => void;
   onReset?: () => void;
 }) {
-  // 첫 시도에 틀린 문제가 있으면 이번 판으로는 배지를 받을 수 없다
-  const blocked = !earned && missedFirst > 0;
-
   const steps = [
     { label: "끝까지 읽기", done: completed, detail: completed ? "완독" : "읽는 중" },
     {
-      label: "형광펜 문제 한 번에 맞히기",
-      done: quizTotal === 0 || quizFirstTry >= quizTotal,
-      detail: `${quizFirstTry}/${quizTotal}`,
+      label: "형광펜 문제 모두 맞히기",
+      done: quizTotal === 0 || quizSolved >= quizTotal,
+      detail: `${quizSolved}/${quizTotal}`,
     },
     {
       label: "점검 문제 모두 답하기",
@@ -87,6 +97,10 @@ export function BadgeCard({
       detail: `${answered}/${questionTotal}`,
     },
   ];
+
+  // 남은 일이 있으면 하나씩 짚어 준다. 본문에서 '?' 를 찾아 헤매지 않도록.
+  const todoCount =
+    (completed ? 0 : 1) + unsolvedNotes.length + unansweredQuestions.length;
 
   return (
     <Card
@@ -113,9 +127,15 @@ export function BadgeCard({
                 : "축하해요!"
               : "세 가지를 모두 채우면 배지를 받아요"}
           </p>
-          {!earned && (
+          {!earned && signedIn && todoCount > 0 && (
             <p className="text-[11px] text-fg-subtle mt-0.5 leading-relaxed">
-              형광펜 문제는 <b className="text-fg-muted">한 번에 맞힌 것만</b> 인정돼요.
+              <b className="text-accent-600">{todoCount}가지</b>만 더 하면 받아요.
+            </p>
+          )}
+          {earned && quizTotal > 0 && (
+            <p className="text-[11px] text-fg-subtle mt-0.5">
+              한 번에 맞힌 문제 {quizFirstTry}/{quizTotal}
+              {quizFirstTry === quizTotal && " · 전부 한 번에 맞혔어요!"}
             </p>
           )}
         </div>
@@ -153,33 +173,99 @@ export function BadgeCard({
         </p>
       )}
 
-      {signedIn && blocked && (
-        <div className="rounded-button bg-surface-muted px-4 py-3 space-y-2">
+      {/* 남은 것 — 본문에서 찾아 헤매지 않도록 눌러서 바로 가게 한다 */}
+      {signedIn && !earned && todoCount > 0 && (
+        <div className="rounded-card bg-surface-muted px-4 py-4 space-y-3">
           <p className="text-xs font-bold text-fg-strong">
-            한 번에 못 맞힌 문제가 {missedFirst}개 있어요
+            아직 남은 것 {todoCount}가지
           </p>
-          <p className="text-[11px] text-fg-muted leading-relaxed">
-            이번 판으로는 배지를 받을 수 없어요. 그래도 괜찮아요 — 기록을 지우고
-            처음부터 다시 읽으면 얼마든지 다시 도전할 수 있어요.
+
+          <ul className="space-y-1.5">
+            {!completed && (
+              <li>
+                <button
+                  type="button"
+                  onClick={onGoEnd}
+                  className="w-full text-left px-3 py-2.5 rounded-button bg-surface hover:bg-accent-50 border border-border transition-colors flex items-center gap-2"
+                >
+                  <span aria-hidden className="text-sm">📖</span>
+                  <span className="flex-1 min-w-0 text-sm font-semibold text-fg-strong">
+                    끝까지 읽고 완독 누르기
+                  </span>
+                  <span aria-hidden className="text-fg-subtle text-xs">→</span>
+                </button>
+              </li>
+            )}
+
+            {unsolvedNotes.map((n) => (
+              <li key={n.key}>
+                <button
+                  type="button"
+                  onClick={() => onGoNote?.(n.key)}
+                  className="w-full text-left px-3 py-2.5 rounded-button bg-surface hover:bg-accent-50 border border-border transition-colors flex items-center gap-2"
+                >
+                  <span aria-hidden className="text-sm">
+                    {n.tried ? "🔁" : "❓"}
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-sm font-semibold text-fg-strong truncate">
+                      {n.title}
+                    </span>
+                    <span className="block text-[10px] text-fg-subtle">
+                      {n.tried ? "다시 풀기" : "아직 안 푼 형광펜 문제"}
+                    </span>
+                  </span>
+                  <span aria-hidden className="text-fg-subtle text-xs">→</span>
+                </button>
+              </li>
+            ))}
+
+            {unansweredQuestions.map((q) => (
+              <li key={q.index}>
+                <button
+                  type="button"
+                  onClick={() => onGoQuestion?.(q.index)}
+                  className="w-full text-left px-3 py-2.5 rounded-button bg-surface hover:bg-accent-50 border border-border transition-colors flex items-center gap-2"
+                >
+                  <span aria-hidden className="text-sm">✍️</span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-sm font-semibold text-fg-strong truncate">
+                      점검 문제 {q.index + 1}번
+                    </span>
+                    <span className="block text-[10px] text-fg-subtle truncate">
+                      {q.prompt}
+                    </span>
+                  </span>
+                  <span aria-hidden className="text-fg-subtle text-xs">→</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <p className="text-[11px] text-fg-subtle leading-relaxed">
+            틀렸던 문제도 다시 풀어 맞히면 인정돼요. 남은 것을 다 채우면 그 자리에서
+            배지가 나옵니다.
           </p>
-          {onReset && (
-            <button
-              type="button"
-              onClick={onReset}
-              className="h-10 px-4 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-xs font-bold"
-            >
-              처음부터 다시 읽기
-            </button>
-          )}
         </div>
       )}
 
-      {signedIn && !earned && !blocked && quizTotal > 0 && quizFirstTry < quizTotal && (
-        <p className="text-xs text-fg-muted leading-relaxed">
-          아직 안 푼 형광펜 문제가 있어요. 본문에서 <b>?</b> 가 남아 있는 곳을
-          눌러 풀어 보세요.
+      {signedIn && !earned && todoCount === 0 && (
+        <p className="text-xs text-fg-muted">잠시만요, 배지를 확인하는 중이에요…</p>
+      )}
+
+      {signedIn && onReset && (
+        <p className="text-[11px] text-fg-subtle text-center pt-1">
+          <button
+            type="button"
+            onClick={onReset}
+            className="underline hover:text-fg-muted"
+          >
+            처음부터 다시 읽기
+          </button>
+          {" "}— 기록을 지우고 새로 도전해요
         </p>
       )}
+
     </Card>
   );
 }
