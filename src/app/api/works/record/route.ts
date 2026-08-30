@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getAdminSupabase } from "@/data/supabase-admin";
-import { earnsBadge, firstTryCount, quizKeysOf } from "@/lib/work-types";
+import {
+  checkAnswer,
+  earnsBadge,
+  firstTryCount,
+  quizKeysOf,
+} from "@/lib/work-types";
 import type { Annotation, NoteAnswer, WorkQuestion } from "@/lib/work-types";
 
 export const dynamic = "force-dynamic";
 
 /**
  * POST — 읽기 진도·완독·점검 문제 답안·형광펜 문제 채점을 저장한다.
- * body: { work_id, last_section?, completed?, answers?, note?: { key, picked } }
+ * body: { work_id, last_section?, completed?, answer?: { position, text },
+ *         note?: { key, picked } }
  *
  * 형광펜 문제의 정답은 서버가 works.annotations 를 보고 판정한다.
  * (클라이언트가 보내는 것은 '몇 번을 골랐는지'뿐)
@@ -27,7 +33,8 @@ export async function POST(req: NextRequest) {
     work_id?: number;
     last_section?: number;
     completed?: boolean;
-    answers?: Record<string, string>;
+    /** 점검 문제 1개 제출. 검사를 통과해야 저장된다. */
+    answer?: { position?: number; text?: string };
     note?: { key?: string; picked?: number };
   };
   try {
@@ -81,13 +88,32 @@ export async function POST(req: NextRequest) {
       ? Math.max(prevSection, Math.floor(body.last_section))
       : prevSection;
 
-  let answers = prevAnswers;
-  if (body.answers && typeof body.answers === "object") {
-    const cleaned: Record<string, string> = {};
-    for (const [k, v] of Object.entries(body.answers)) {
-      if (typeof v === "string" && v.trim().length > 0) cleaned[k] = v;
+  const questions = (work.questions ?? []) as WorkQuestion[];
+
+  // 점검 문제 제출 — 기준을 채운 답안만 저장한다.
+  // 화면에서도 같은 함수로 검사하지만, 요청을 직접 만들어 보낼 수 있으므로
+  // 여기서 다시 본다. 통과 못 하면 아무것도 저장하지 않고 이유를 돌려준다.
+  const answers = { ...prevAnswers };
+  let answerRejected: string | null = null;
+  const pos = body.answer?.position;
+  const text = body.answer?.text;
+  if (typeof pos === "number" && typeof text === "string") {
+    const q = questions.find((x, i) => (x.position ?? i) === pos);
+    if (!q) {
+      return NextResponse.json(
+        { ok: false, error: "없는 문항입니다." },
+        { status: 400 }
+      );
     }
-    answers = cleaned;
+    const check = checkAnswer(q, text);
+    if (check.ok) {
+      answers[String(pos)] = text.trim();
+    } else if (text.trim().length === 0) {
+      // 빈 답안을 보내면 제출을 취소한 것으로 본다
+      delete answers[String(pos)];
+    } else {
+      answerRejected = check.reason ?? "답안을 다시 확인해 주세요.";
+    }
   }
 
   // 형광펜 문제 채점 — 정답은 서버가 판정한다
@@ -113,7 +139,6 @@ export async function POST(req: NextRequest) {
   const completedAt =
     prevCompleted ?? (body.completed ? new Date().toISOString() : null);
 
-  const questions = (work.questions ?? []) as WorkQuestion[];
   const quizKeys = quizKeysOf(annotations);
   const noteCorrect = quizKeys.filter((k) => noteAnswers[k]?.ok).length;
   // 배지는 첫 시도 정답만 인정한다
@@ -152,6 +177,9 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     signedIn: true,
+    // 제출이 기준에 못 미쳐 저장되지 않았으면 그 이유
+    answerRejected,
+    answers,
     completedAt,
     noteCorrect,
     noteFirstCorrect,

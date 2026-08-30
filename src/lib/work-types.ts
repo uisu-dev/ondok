@@ -8,6 +8,12 @@ export interface WorkQuestion {
   options?: QuestionOption[];
   sampleAnswer?: string;
   rubric?: string;
+  /**
+   * 답안에 반드시 들어가야 하는 핵심 낱말.
+   * 힌트 버튼으로 학생에게 보여 주고, 제출할 때 포함 여부를 검사한다.
+   * 열린 물음(논술형)에는 두지 않는다 — 답을 한 방향으로 몰기 때문.
+   */
+  keywords?: string[];
 }
 
 /**
@@ -155,6 +161,89 @@ export function firstTryCount(
   noteAnswers: Record<string, NoteAnswer>
 ): number {
   return quizKeys.filter((k) => noteAnswers[k]?.first === true).length;
+}
+
+// ── 점검 문제 답안 검사 ──────────────────────────────────────────
+//
+// 배지를 받으려고 아무 글자나 적어 넣는 학생이 있어 최소 기준을 둔다.
+//  1) 핵심 낱말이 모두 들어갈 것 (힌트로 미리 알려 준다)
+//  2) 그 낱말을 뺀 나머지가 충분할 것 — 힌트만 베껴 쓰면 통과 못 한다
+//  3) 전체 길이도 최소한은 될 것
+//
+// 클라이언트와 서버가 같은 함수를 쓴다. 화면 검사는 안내용일 뿐이고
+// 실제 판정은 서버(api/works/record)에서 다시 한다.
+
+/** 문항 유형별 최소 글자 수 (공백·문장부호 제외). */
+const MIN_CHARS: Record<string, { total: number; extra: number }> = {
+  // 단답형: 두세 문장
+  short_answer: { total: 25, extra: 12 },
+  // 논술형: 생각을 펼쳐야 하므로 더 길게
+  essay: { total: 60, extra: 40 },
+};
+const MIN_CHARS_DEFAULT = { total: 25, extra: 12 };
+
+/** 공백·문장부호를 걷어낸 글자만 센다. */
+function meaningfulLength(text: string): number {
+  return text.replace(/[\s.,!?~·…"'“”‘’()\[\]{}<>·\-—:;]/g, "").length;
+}
+
+export interface AnswerCheck {
+  ok: boolean;
+  /** 아직 안 쓴 핵심 낱말 */
+  missing: string[];
+  /** 통과하지 못한 이유 (사용자에게 그대로 보여 준다) */
+  reason: string | null;
+}
+
+/**
+ * 점검 문제 답안이 제출 기준을 채웠는지 본다.
+ * 빈 답안은 ok:false 이되 reason 은 null — 아직 쓰지 않은 것뿐이므로
+ * 굳이 나무라지 않는다.
+ */
+export function checkAnswer(
+  question: Pick<WorkQuestion, "type" | "keywords">,
+  raw: string
+): AnswerCheck {
+  const text = (raw ?? "").trim();
+  if (text.length === 0) {
+    return { ok: false, missing: question.keywords ?? [], reason: null };
+  }
+
+  const keywords = (question.keywords ?? []).filter((k) => k.trim().length > 0);
+  const missing = keywords.filter((k) => !text.includes(k));
+  if (missing.length > 0) {
+    return {
+      ok: false,
+      missing,
+      reason: `핵심 낱말이 빠졌어요: ${missing.join(", ")}`,
+    };
+  }
+
+  const limits = MIN_CHARS[question.type] ?? MIN_CHARS_DEFAULT;
+
+  // 핵심 낱말을 걷어낸 나머지 — 힌트만 베껴 적었는지 보는 자리
+  let rest = text;
+  for (const k of keywords) rest = rest.split(k).join(" ");
+  const extra = meaningfulLength(rest);
+  const total = meaningfulLength(text);
+
+  if (total < limits.total) {
+    return {
+      ok: false,
+      missing: [],
+      reason: `조금 더 자세히 써 주세요. (${total}자 / ${limits.total}자 이상)`,
+    };
+  }
+  if (keywords.length > 0 && extra < limits.extra) {
+    return {
+      ok: false,
+      missing: [],
+      reason:
+        "핵심 낱말만으로는 안 돼요. 그 말을 넣어 자기 문장으로 설명해 주세요.",
+    };
+  }
+
+  return { ok: true, missing: [], reason: null };
 }
 
 /** 본문에서 형광펜 문제(quiz)로 쓰인 주석 키만 추린다. */

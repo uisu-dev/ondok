@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 import type { Work, WorkRecord, WorkSection, NoteAnswer } from "@/lib/work-types";
 import {
+  checkAnswer,
   firstTryCount,
   quizKeysOf,
   solvedCount,
@@ -18,6 +19,8 @@ import { BadgeCard, BadgeCelebration, ResetConfirm } from "./Badge";
 type FontSize = "sm" | "md" | "lg" | "xl";
 const FONT_PX: Record<FontSize, number> = { sm: 15, md: 17, lg: 20, xl: 24 };
 const FONT_STORAGE = "ondok:work-fontsize";
+/** 제출 전 초안을 담아 두는 곳 (작품별). 서버에는 올라가지 않는다. */
+const draftKey = (workId: number) => `ondok:work-draft:${workId}`;
 
 /** 연속된 '> ' 줄을 하나의 인용 블록으로 묶는다 (예: 양반전의 증서). */
 function groupBlocks(paragraphs: string[]) {
@@ -112,7 +115,12 @@ export function WorkReader({
   const [answers, setAnswers] = useState<Record<string, string>>(
     initialRecord?.answers ?? {}
   );
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  // 제출 전 초안. 서버에는 '제출' 을 눌러야 올라간다.
+  // 실수로 창을 닫아도 잃지 않도록 이 기기에만 따로 담아 둔다.
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [hintOpen, setHintOpen] = useState<Set<string>>(new Set());
+  const [submitting, setSubmitting] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<Record<string, string>>({});
   // 형광펜 주석
   const [openNote, setOpenNote] = useState<string | null>(null);
   const [readNotes, setReadNotes] = useState<Set<string>>(new Set());
@@ -137,7 +145,6 @@ export function WorkReader({
   // 배지 카드에서 '안 쓴 점검 문제'를 눌렀을 때 그 칸으로 데려가기 위한 ref
   const questionRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const afterRef = useRef<HTMLDivElement | null>(null);
-  const answersDirty = useRef(false);
   const savedSection = useRef(initialRecord?.lastSection ?? 0);
 
   useEffect(() => {
@@ -148,6 +155,31 @@ export function WorkReader({
       /* ignore */
     }
   }, []);
+
+  // 쓰던 초안 되살리기 — 제출 전에 창을 닫아도 글이 남아 있어야 한다
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(draftKey(work.id));
+      if (raw) setDrafts(JSON.parse(raw) as Record<string, string>);
+    } catch {
+      /* ignore */
+    }
+  }, [work.id]);
+
+  const setDraft = useCallback(
+    (key: string, text: string) => {
+      setDrafts((prev) => {
+        const next = { ...prev, [key]: text };
+        try {
+          localStorage.setItem(draftKey(work.id), JSON.stringify(next));
+        } catch {
+          /* ignore */
+        }
+        return next;
+      });
+    },
+    [work.id]
+  );
 
   function changeFont(s: FontSize) {
     setFontSize(s);
@@ -211,6 +243,66 @@ export function WorkReader({
     setReadNotes((prev) => (prev.has(key) ? prev : new Set(prev).add(key)));
   }, []);
 
+  /**
+   * 점검 문제 답안 제출.
+   * 화면에서 먼저 검사해 곧바로 알려 주고, 통과하면 서버로 보낸다.
+   * 서버도 같은 검사를 다시 하므로 여기를 우회해도 저장되지 않는다.
+   */
+  const submitAnswer = useCallback(
+    async (key: string, question: (typeof work.questions)[number]) => {
+      if (!signedIn || submitting) return;
+      const text = (drafts[key] ?? "").trim();
+      const check = checkAnswer(question, text);
+      if (!check.ok) {
+        setSubmitError((p) => ({
+          ...p,
+          [key]: check.reason ?? "답을 적어 주세요.",
+        }));
+        return;
+      }
+      setSubmitting(key);
+      setSubmitError((p) => {
+        const n = { ...p };
+        delete n[key];
+        return n;
+      });
+      const res = (await saveRecord({
+        answer: { position: Number(key), text },
+      })) as {
+        answers?: Record<string, string>;
+        answerRejected?: string | null;
+      } | null;
+      setSubmitting(null);
+      if (!res) {
+        setSubmitError((p) => ({
+          ...p,
+          [key]: "저장하지 못했어요. 다시 눌러 주세요.",
+        }));
+        return;
+      }
+      if (res.answerRejected) {
+        const why = res.answerRejected;
+        setSubmitError((p) => ({ ...p, [key]: why }));
+        return;
+      }
+      if (res.answers) setAnswers(res.answers);
+    },
+    [signedIn, submitting, drafts, saveRecord, work.questions]
+  );
+
+  /** 제출한 답안을 다시 고치려고 꺼낸다. */
+  const editAnswer = useCallback(
+    (key: string) => {
+      setDraft(key, answers[key] ?? "");
+      setAnswers((prev) => {
+        const n = { ...prev };
+        delete n[key];
+        return n;
+      });
+    },
+    [answers, setDraft]
+  );
+
   /** 안 쓴 점검 문제로 데려가고 입력칸에 커서를 둔다. */
   const goToQuestion = useCallback((index: number) => {
     const el = questionRefs.current[index];
@@ -243,12 +335,18 @@ export function WorkReader({
       setNoteAnswers({});
       setReadNotes(new Set());
       setAnswers({});
+      setDrafts({});
+      setSubmitError({});
+      setHintOpen(new Set());
+      try {
+        localStorage.removeItem(draftKey(work.id));
+      } catch {
+        /* ignore */
+      }
       setCompleted(false);
       setCurrent(0);
       setResumeTo(null);
       savedSection.current = 0;
-      answersDirty.current = false;
-      setSaveState("idle");
       setAskReset(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
@@ -283,17 +381,6 @@ export function WorkReader({
     }, 1500);
     return () => clearTimeout(t);
   }, [current, signedIn, saveRecord]);
-
-  // 답안 자동 저장
-  useEffect(() => {
-    if (!signedIn || !answersDirty.current) return;
-    setSaveState("saving");
-    const t = setTimeout(async () => {
-      const res = await saveRecord({ answers });
-      setSaveState(res ? "saved" : "idle");
-    }, 1000);
-    return () => clearTimeout(t);
-  }, [answers, signedIn, saveRecord]);
 
   function jumpTo(idx: number) {
     setResumeTo(null);
@@ -565,14 +652,22 @@ export function WorkReader({
                   <p className="text-sm font-bold text-fg-strong">
                     ✍️ 점검 문제 {work.questions.length}개
                   </p>
-                  <p className="text-xs text-fg-muted mt-0.5">
-                    정답을 맞히는 것보다, 읽으며 생각한 것을 적어 보는 게 중요해요.
+                  <p className="text-xs text-fg-muted mt-0.5 leading-relaxed">
+                    적은 뒤 <b className="text-fg-strong">제출</b>을 눌러야 저장돼요.
+                    막히면 <b className="text-fg-strong">힌트</b>를 눌러 핵심 낱말을
+                    확인해 보세요.
                   </p>
                 </div>
                 {work.questions.map((q, i) => {
                   const key = String(q.position ?? i);
+                  const submitted = answers[key];
+                  const draft = drafts[key] ?? "";
+                  const keywords = q.keywords ?? [];
+                  const showHint = hintOpen.has(key);
+                  const live = checkAnswer(q, draft);
+                  const err = submitError[key];
                   return (
-                    <div key={key} className="space-y-2 pt-2 border-t border-border first:border-0 first:pt-0">
+                    <div key={key} className="space-y-2 pt-3 border-t border-border first:border-0 first:pt-0">
                       <div className="flex items-start gap-2">
                         <span className="text-sm font-bold text-accent-600 shrink-0">
                           {i + 1}.
@@ -585,20 +680,117 @@ export function WorkReader({
                             {QTYPE_LABEL[q.type] ?? ""}
                           </span>
                         </div>
+                        {submitted && (
+                          <span className="shrink-0 text-[10px] font-bold text-cat-sci bg-[color-mix(in_oklab,var(--color-cat-sci)_12%,white)] px-2 py-0.5 rounded-chip">
+                            제출함
+                          </span>
+                        )}
                       </div>
+
+                      {submitted ? (
+                        <div className="space-y-1.5">
+                          <p className="text-sm text-fg-strong leading-relaxed whitespace-pre-wrap bg-surface-muted rounded-button px-3 py-2.5">
+                            {submitted}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => editAnswer(key)}
+                            className="text-xs font-semibold text-accent-600 hover:underline"
+                          >
+                            고쳐 쓰기
+                          </button>
+                        </div>
+                      ) : (
+                        <>
                       <textarea
                         ref={(el) => {
                           questionRefs.current[i] = el;
                         }}
-                        value={answers[key] ?? ""}
+                        value={draft}
                         onChange={(e) => {
-                          answersDirty.current = true;
-                          setAnswers((prev) => ({ ...prev, [key]: e.target.value }));
+                          setDraft(key, e.target.value);
+                          if (err) {
+                            setSubmitError((p) => {
+                              const n = { ...p };
+                              delete n[key];
+                              return n;
+                            });
+                          }
                         }}
                         placeholder="여기에 답을 적어 보세요"
-                        rows={q.type === "essay" ? 5 : 2}
+                        rows={q.type === "essay" ? 6 : 3}
                         className="w-full px-3 py-2 rounded-button border border-border bg-surface text-sm text-fg-strong leading-relaxed focus:outline-none focus:border-accent-500"
                       />
+
+                      {showHint && keywords.length > 0 && (
+                        <div className="rounded-button bg-[color-mix(in_oklab,var(--color-accent-500)_7%,white)] border border-accent-200 px-3 py-2.5 space-y-1.5">
+                          <p className="text-[11px] font-bold text-accent-700">
+                            이 낱말이 꼭 들어가야 해요
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {keywords.map((k) => {
+                              const used = draft.includes(k);
+                              return (
+                                <span
+                                  key={k}
+                                  className={`text-xs font-bold px-2 py-1 rounded-chip ${
+                                    used
+                                      ? "bg-[var(--color-cat-sci)] text-white"
+                                      : "bg-surface text-fg-strong border border-border"
+                                  }`}
+                                >
+                                  {used ? "✓ " : ""}
+                                  {k}
+                                </span>
+                              );
+                            })}
+                          </div>
+                          <p className="text-[11px] text-fg-muted leading-relaxed">
+                            낱말만 늘어놓으면 제출되지 않아요. 그 말을 넣어 자기
+                            문장으로 설명해 주세요.
+                          </p>
+                        </div>
+                      )}
+
+                      {err && (
+                        <p className="text-xs font-semibold text-cat-hum leading-relaxed">
+                          {err}
+                        </p>
+                      )}
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => void submitAnswer(key, q)}
+                          disabled={!signedIn || !live.ok || submitting === key}
+                          className="h-10 px-5 rounded-button bg-accent-600 hover:bg-accent-700 text-white text-sm font-bold disabled:opacity-40 transition-colors"
+                        >
+                          {submitting === key ? "제출 중…" : "제출"}
+                        </button>
+                        {keywords.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setHintOpen((prev) => {
+                                const n = new Set(prev);
+                                if (n.has(key)) n.delete(key);
+                                else n.add(key);
+                                return n;
+                              })
+                            }
+                            className="h-10 px-4 rounded-button bg-surface-muted hover:bg-border text-fg-strong text-xs font-bold"
+                          >
+                            {showHint ? "힌트 닫기" : "💡 힌트"}
+                          </button>
+                        )}
+                        {draft.trim() && !live.ok && live.reason && (
+                          <span className="text-[11px] text-fg-subtle leading-relaxed">
+                            {live.reason}
+                          </span>
+                        )}
+                      </div>
+                        </>
+                      )}
                       {canSeeAnswers && q.sampleAnswer && (
                         <details className="text-xs">
                           <summary className="cursor-pointer font-semibold text-accent-600">
@@ -618,14 +810,12 @@ export function WorkReader({
                       <Link href="/login" className="text-accent-600 font-semibold">
                         로그인
                       </Link>
-                      하면 답안이 자동 저장돼요.
+                      해야 답안을 제출할 수 있어요.
                     </span>
-                  ) : saveState === "saving" ? (
-                    <span className="text-fg-muted">💾 저장 중…</span>
-                  ) : saveState === "saved" ? (
-                    <span className="text-cat-sci font-semibold">✓ 답안이 저장됐어요</span>
                   ) : (
-                    <span className="text-fg-subtle">답을 적으면 자동으로 저장돼요.</span>
+                    <span className="text-fg-subtle">
+                      쓰던 글은 이 기기에 남아 있어요. 제출해야 선생님께 전해집니다.
+                    </span>
                   )}
                 </p>
               </Card>
