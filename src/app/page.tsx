@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { OnthinkingBanner } from "@/components/OnthinkingBanner";
 import { getPopularBooks, getPopularWorksheets } from "@/data/popular";
 import { countPublishedWorks } from "@/data/works";
-import { getGameLeaderboard } from "@/data/leaderboard";
+import { getGameLeaderboard, type LeaderboardEntry } from "@/data/leaderboard";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 import { maskName } from "@/lib/mask";
 
@@ -222,14 +222,99 @@ function PillarHeader({
   );
 }
 
+/** 게임 한 종목의 Top 5. 세 개를 나란히 놓아 서로 견주어 보게 한다. */
+function MiniLeaderboard({
+  board,
+}: {
+  board: {
+    href: string;
+    emoji: string;
+    title: string;
+    unit: string;
+    leaders: LeaderboardEntry[];
+  };
+}) {
+  return (
+    <Card as="section" className="h-full px-4 py-4 space-y-2">
+      <div className="flex items-baseline justify-between gap-2">
+        <p className="min-w-0 truncate text-sm font-bold text-fg-strong">
+          <span className="mr-1">{board.emoji}</span>
+          {board.title}
+        </p>
+        <Link
+          href={board.href}
+          className="shrink-0 text-[11px] font-semibold text-accent-600 hover:text-accent-700"
+        >
+          전체 →
+        </Link>
+      </div>
+      <p className="text-[10px] text-fg-subtle">{board.unit} 기준</p>
+      {board.leaders.length === 0 ? (
+        <p className="py-2 text-xs text-fg-muted">
+          아직 기록이 없어요. 첫 도전자가 되어 보세요!
+        </p>
+      ) : (
+        <ol className="space-y-1">
+          {board.leaders.map((e, i) => (
+            <li key={e.userId} className="flex items-center gap-2 text-sm">
+              <span
+                className={`w-4 shrink-0 text-center text-xs font-bold ${
+                  i === 0
+                    ? "text-cat-soc"
+                    : i === 1
+                      ? "text-fg-muted"
+                      : i === 2
+                        ? "text-cat-hum"
+                        : "text-fg-subtle"
+                }`}
+              >
+                {i + 1}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-semibold text-fg-strong">
+                  {maskName(e.displayName)}
+                </span>
+                {e.schoolName && (
+                  <span className="block truncate text-[10px] text-fg-subtle">
+                    {e.schoolName}
+                  </span>
+                )}
+              </span>
+              <span className="shrink-0 font-bold text-accent-600">
+                {e.bestScore}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </Card>
+  );
+}
+
 export default async function HomePage() {
-  const [popularBooks, popularWorksheets, gameLeaders, workCount] =
-    await Promise.all([
-      getPopularBooks(5),
-      getPopularWorksheets(5),
-      getGameLeaderboard("battle", 5),
-      countPublishedWorks(),
-    ]);
+  const [
+    popularBooks,
+    popularWorksheets,
+    matchLeaders,
+    chosungLeaders,
+    battleLeaders,
+    workCount,
+  ] = await Promise.all([
+    getPopularBooks(5),
+    getPopularWorksheets(5),
+    getGameLeaderboard("match", 5),
+    getGameLeaderboard("chosung", 5),
+    getGameLeaderboard("battle", 5),
+    countPublishedWorks(),
+  ]);
+
+  // 게임 타일과 같은 차례로 세워 둔다 (타일 ↔ 랭킹이 세로로 맞도록)
+  const gameBoards = [
+    { href: "/game", emoji: "🃏", title: "짝 맞추기", unit: "점수", leaders: matchLeaders },
+    { href: "/game/chosung", emoji: "🔤", title: "초성 퀴즈", unit: "맞힌 개수", leaders: chosungLeaders },
+    { href: "/game/battle", emoji: "⚔️", title: "배틀", unit: "누적 승수", leaders: battleLeaders },
+  ];
+  const anyGameRecord = gameBoards.some((b) => b.leaders.length > 0);
 
   return (
     <main className="flex-1 w-full">
@@ -405,53 +490,17 @@ export default async function HomePage() {
             ))}
           </PathGrid>
 
-          {gameLeaders.length > 0 && (
-            <Card as="section" className="px-5 py-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-fg-muted">
-                  🏆 배틀 랭킹 Top 5 (누적 승수)
-                </p>
-                <Link
-                  href="/game/battle"
-                  className="text-[11px] font-semibold text-accent-600 hover:text-accent-700"
-                >
-                  전체 보기 →
-                </Link>
-              </div>
-              <ol className="space-y-1">
-                {gameLeaders.map((e, i) => (
-                  <li
-                    key={e.userId}
-                    className="flex items-center gap-2 text-sm"
-                  >
-                    <span
-                      className={`w-5 text-center font-bold ${
-                        i === 0
-                          ? "text-cat-soc"
-                          : i === 1
-                            ? "text-fg-muted"
-                            : i === 2
-                              ? "text-cat-hum"
-                              : "text-fg-subtle"
-                      }`}
-                    >
-                      {i + 1}
-                    </span>
-                    <span className="flex-1 min-w-0">
-                      <span className="block truncate text-fg-strong font-semibold">
-                        {maskName(e.displayName)}
-                      </span>
-                      {e.schoolName && (
-                        <span className="block text-[10px] text-fg-subtle truncate">
-                          {e.schoolName}
-                        </span>
-                      )}
-                    </span>
-                    <span className="font-bold text-accent-600">{e.bestScore}</span>
-                  </li>
+          {anyGameRecord && (
+            <div className="space-y-2 pt-1">
+              <p className="px-1 text-xs font-bold text-fg-muted">
+                🏆 명예의 전당 (Top 5)
+              </p>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 items-stretch">
+                {gameBoards.map((b) => (
+                  <MiniLeaderboard key={b.href} board={b} />
                 ))}
-              </ol>
-            </Card>
+              </div>
+            </div>
           )}
         </section>
 
