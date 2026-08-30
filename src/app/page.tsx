@@ -256,7 +256,12 @@ function MiniLeaderboard({
       ) : (
         <ol className="space-y-1">
           {board.leaders.map((e, i) => (
-            <li key={e.userId} className="flex items-center gap-2 text-sm">
+            <li
+              key={e.userId}
+              className={`items-center gap-2 text-sm ${
+                i < 3 ? "flex" : "hidden sm:flex"
+              }`}
+            >
               <span
                 className={`w-4 shrink-0 text-center text-xs font-bold ${
                   i === 0
@@ -270,12 +275,12 @@ function MiniLeaderboard({
               >
                 {i + 1}
               </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate font-semibold text-fg-strong">
+              <span className="flex min-w-0 flex-1 items-baseline gap-x-1.5 sm:block">
+                <span className="truncate font-semibold text-fg-strong">
                   {maskName(e.displayName)}
                 </span>
                 {e.schoolName && (
-                  <span className="block truncate text-[10px] text-fg-subtle">
+                  <span className="truncate text-[10px] text-fg-subtle sm:block">
                     {e.schoolName}
                   </span>
                 )}
