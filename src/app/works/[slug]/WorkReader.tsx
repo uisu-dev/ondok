@@ -638,7 +638,7 @@ export function WorkReader({
             {work.commentary && (
               <Card as="section" className="px-6 py-6 space-y-3">
                 <p className="text-sm font-bold text-fg-strong">📝 작품 해설</p>
-                {work.commentary.split(/\n\n+/).map((p, i) => (
+                {work.commentary.split(/(?:\r?\n){2,}/).map((p, i) => (
                   <p key={i} className="text-sm text-fg leading-relaxed">
                     {p}
                   </p>

@@ -1,0 +1,4 @@
+# 생성된 SQL 은 그대로 Supabase 편집기에 붙여 넣는다.
+# git 이 CRLF 로 바꾸면 문자열 리터럴 안의 줄바꿈까지 바뀌어 DB 에  이 섞인다.
+*.sql text eol=lf
+content/works/*.md text eol=lf

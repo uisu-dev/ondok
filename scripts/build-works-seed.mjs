@@ -26,8 +26,13 @@ const onlySlugs = arg("only")
   : null;
 const OUT = resolve(root, arg("out") ?? "scripts/works-seed.sql");
 
+// git 이 .sql 을 CRLF 로 바꿔 놓으면 SQL 문자열 리터럴 안의 줄바꿈까지 \r\n 이 된다.
+// 그대로 붙여 넣으면 DB 본문·해설에 \r 이 섞여 들어간다. 여기서 LF 로 못박는다.
+// (.gitattributes 에서도 *.sql 을 eol=lf 로 묶어 두었다)
 const q = (v) =>
-  v == null ? "NULL" : `'${String(v).replace(/'/g, "''")}'`;
+  v == null
+    ? "NULL"
+    : `'${String(v).replace(/\r\n/g, "\n").replace(/'/g, "''")}'`;
 
 /**
  * md 에서 파일 맨 위의 제목·작업 메모만 걷어내고 본문을 남긴다.
