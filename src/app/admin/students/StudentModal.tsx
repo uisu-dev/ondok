@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { DataRefreshBar } from "@/components/admin/DataRefreshBar";
+import { freshGet } from "@/components/admin/fresh-get";
 import { TYPE_EMOJI, TYPE_LABEL } from "@/lib/worksheet-types";
 import { issueStudentTempPassword } from "./[id]/actions";
 import type { StudentRow } from "./StudentsTable";
@@ -82,11 +84,14 @@ function dateLabel(iso: string) {
 
 export function StudentModal({
   row,
+  fetchedAt,
   onClose,
   onPrev,
   onNext,
 }: {
   row: StudentRow;
+  /** 목록을 받은 시각. 이 모달에서 다시 받으면 그 시각으로 바뀐다. */
+  fetchedAt: string;
   onClose: () => void;
   /** 목록에서 이전/다음 학생으로 바로 넘기기 (닫았다 열 필요 없이) */
   onPrev?: () => void;
@@ -94,6 +99,14 @@ export function StudentModal({
 }) {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [localFetchedAt, setLocalFetchedAt] = useState<string | null>(null);
+  const [countOverride, setCountOverride] = useState<{
+    sago: number;
+    books: number;
+    sheets: number;
+    worksDone: number;
+  } | null>(null);
   // 작성 내용은 길어서 기본으로 접어 두고, 누른 것만 편다
   const [openWork, setOpenWork] = useState<string | null>(null);
   const [openSheet, setOpenSheet] = useState<number | null>(null);
@@ -101,28 +114,73 @@ export function StudentModal({
   const [pwPending, setPwPending] = useState(false);
   const [tempPw, setTempPw] = useState<string | null>(null);
   const [pwError, setPwError] = useState<string | null>(null);
+  const requestSeq = useRef(0);
+  const [listStamp, setListStamp] = useState(fetchedAt);
+  // 목록을 다시 받으면 이 모달의 덮어쓴 숫자보다 목록 시각이 새다.
+  if (fetchedAt !== listStamp) {
+    setListStamp(fetchedAt);
+    setLocalFetchedAt(null);
+    setCountOverride(null);
+  }
 
-  // 학생이 바뀌면 부모가 key 를 갈아 끼워 새로 마운트하므로,
-  // 여기서는 초기화 없이 받아 오기만 하면 된다.
+  // 학생이 바뀌면 부모가 key 를 갈아 끼워 새로 마운트한다.
+  // 목록 새로고침(fetchedAt) 때도 상세만 다시 받고, 펼친 답안은 유지한다.
   useEffect(() => {
+    const seq = ++requestSeq.current;
     let alive = true;
-    fetch(`/api/admin/students/${row.id}`)
+    freshGet(`/api/admin/students/${row.id}`)
       .then(async (res) => {
         const json = await res.json();
-        if (!alive) return;
+        if (!alive || seq !== requestSeq.current) return;
         if (!json.ok) {
           setError(json.error ?? "불러오지 못했어요.");
           return;
         }
+        setError(null);
         setDetail(json as Detail);
       })
       .catch(() => {
-        if (alive) setError("불러오지 못했어요.");
+        if (alive && seq === requestSeq.current) setError("불러오지 못했어요.");
       });
     return () => {
       alive = false;
     };
-  }, [row.id]);
+  }, [row.id, fetchedAt]);
+
+  async function refreshDetail() {
+    if (refreshing) return;
+    const seq = ++requestSeq.current;
+    setRefreshing(true);
+    setError(null);
+    try {
+      const res = await freshGet(`/api/admin/students/${row.id}`);
+      const json = (await res.json()) as Detail & {
+        ok?: boolean;
+        error?: string;
+        fetchedAt?: string;
+      };
+      if (seq !== requestSeq.current) return;
+      if (!res.ok || !json.ok || !json.sago || !json.works) {
+        setError("다시 불러오지 못했어요. 지금 화면은 그대로 둡니다.");
+        return;
+      }
+      setDetail(json);
+      setLocalFetchedAt(
+        typeof json.fetchedAt === "string" ? json.fetchedAt : new Date().toISOString()
+      );
+      setCountOverride({
+        sago: json.sago.totalKnown,
+        books: json.books.length,
+        sheets: json.sheets.length,
+        worksDone: json.works.filter((w) => w.completed).length,
+      });
+    } catch {
+      if (seq !== requestSeq.current) return;
+      setError("다시 불러오지 못했어요. 지금 화면은 그대로 둡니다.");
+    } finally {
+      if (seq === requestSeq.current) setRefreshing(false);
+    }
+  }
 
   // ESC 로 닫기, ←/→ 로 학생 이동, 배경 스크롤 잠금
   useEffect(() => {
@@ -233,21 +291,26 @@ export function StudentModal({
               </button>
             </div>
           </div>
+          <div className="mt-3">
+            <DataRefreshBar
+              compact
+              fetchedAt={localFetchedAt ?? fetchedAt}
+              loading={refreshing}
+              error={error}
+              onRefresh={refreshDetail}
+            />
+          </div>
         </div>
 
         {/* 몸통 */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           {/* 표에 이미 있는 값 — 기다리지 않고 바로 보여 준다 */}
           <div className="grid grid-cols-4 gap-2">
-            <Stat label="사고도구어" value={row.sago} tone="accent" />
-            <Stat label="도서" value={row.books} />
-            <Stat label="활동지" value={row.sheets} />
-            <Stat label="고전 완독" value={row.worksDone} />
+            <Stat label="사고도구어" value={countOverride?.sago ?? row.sago} tone="accent" />
+            <Stat label="도서" value={countOverride?.books ?? row.books} />
+            <Stat label="활동지" value={countOverride?.sheets ?? row.sheets} />
+            <Stat label="고전 완독" value={countOverride?.worksDone ?? row.worksDone} />
           </div>
-
-          {error && (
-            <p className="text-sm text-cat-hum font-semibold">{error}</p>
-          )}
 
           {!detail && !error && (
             <p className="text-xs text-fg-subtle">자세한 현황을 불러오는 중…</p>

@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/Card";
+import { DataRefreshBar } from "@/components/admin/DataRefreshBar";
+import { freshGet } from "@/components/admin/fresh-get";
 import { ClassStats } from "./ClassStats";
 import { StudentsTable, type StudentRow } from "./StudentsTable";
 
@@ -13,48 +15,86 @@ import { StudentsTable, type StudentRow } from "./StudentsTable";
 export function StudentsView({
   students,
   showSchool,
+  fetchedAt,
 }: {
   students: StudentRow[];
   showSchool: boolean;
+  fetchedAt: string;
 }) {
+  const [rows, setRows] = useState(students);
+  const [updatedAt, setUpdatedAt] = useState(fetchedAt);
+  const [loading, setLoading] = useState(false);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
+  const requestSeq = useRef(0);
   const [query, setQuery] = useState("");
   const [grade, setGrade] = useState<number | "all">("all");
   const [classNo, setClassNo] = useState<number | "all">("all");
+
+  // 필터·정렬·스크롤은 이 컴포넌트 상태에 있다. 목록만 갈아끼운다.
+  // 주기적으로 다시 받지 않고, 버튼을 눌렀을 때만 받는다.
+  async function refresh() {
+    const seq = ++requestSeq.current;
+    setLoading(true);
+    setRefreshError(null);
+    try {
+      const res = await freshGet("/api/admin/students");
+      const json = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        fetchedAt?: string;
+        students?: StudentRow[];
+      };
+      if (seq !== requestSeq.current) return;
+      if (!res.ok || !json.ok || !Array.isArray(json.students)) {
+        setRefreshError("다시 불러오지 못했어요. 필터와 화면은 그대로 둡니다.");
+        return;
+      }
+      setRows(json.students);
+      setUpdatedAt(
+        typeof json.fetchedAt === "string" ? json.fetchedAt : new Date().toISOString()
+      );
+    } catch {
+      if (seq !== requestSeq.current) return;
+      setRefreshError("다시 불러오지 못했어요. 필터와 화면은 그대로 둡니다.");
+    } finally {
+      if (seq === requestSeq.current) setLoading(false);
+    }
+  }
 
   // 실제로 학생이 들어 있는 학년·반만 선택지로 보여 준다
   const grades = useMemo(
     () =>
       Array.from(
         new Set(
-          students
+          rows
             .map((s) => s.grade)
             .filter((g): g is number => g != null)
         )
       ).sort((a, b) => a - b),
-    [students]
+    [rows]
   );
 
   const classes = useMemo(
     () =>
       Array.from(
         new Set(
-          students
+          rows
             .filter((s) => grade === "all" || s.grade === grade)
             .map((s) => s.classNo)
             .filter((c): c is number => c != null)
         )
       ).sort((a, b) => a - b),
-    [students, grade]
+    [rows, grade]
   );
 
   const noClassInfo = useMemo(
-    () => students.filter((s) => s.grade == null || s.classNo == null).length,
-    [students]
+    () => rows.filter((s) => s.grade == null || s.classNo == null).length,
+    [rows]
   );
 
   const filtered = useMemo(() => {
     const q = query.trim();
-    return students.filter((s) => {
+    return rows.filter((s) => {
       if (grade !== "all" && s.grade !== grade) return false;
       if (classNo !== "all" && s.classNo !== classNo) return false;
       if (
@@ -66,7 +106,7 @@ export function StudentsView({
         return false;
       return true;
     });
-  }, [students, query, grade, classNo]);
+  }, [rows, query, grade, classNo]);
 
   const n = filtered.length;
   const sum = (k: "sago" | "books" | "sheets") =>
@@ -88,6 +128,14 @@ export function StudentsView({
 
   return (
     <div className="space-y-5">
+      <DataRefreshBar
+        sticky
+        fetchedAt={updatedAt}
+        loading={loading}
+        error={refreshError}
+        onRefresh={refresh}
+      />
+
       {/* 필터 */}
       <Card as="section" className="px-5 py-4 space-y-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -192,7 +240,11 @@ export function StudentsView({
       </div>
 
       <ClassStats students={filtered} />
-      <StudentsTable students={filtered} showSchool={showSchool} />
+      <StudentsTable
+        students={filtered}
+        showSchool={showSchool}
+        fetchedAt={updatedAt}
+      />
     </div>
   );
 }
