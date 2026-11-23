@@ -45,9 +45,11 @@ function activityLabel(iso: string | null): { text: string; tone: string } {
 export function StudentsTable({
   students,
   showSchool,
+  fetchedAt,
 }: {
   students: StudentRow[];
   showSchool: boolean;
+  fetchedAt: string;
 }) {
   const [sortKey, setSortKey] = useState<
     "name" | "class" | "sago" | "books" | "sheets" | "worksDone" | "lastActive"
@@ -217,6 +219,7 @@ export function StudentsTable({
         <StudentModal
           key={filtered[openIndex].id}
           row={filtered[openIndex]}
+          fetchedAt={fetchedAt}
           onClose={() => setOpenId(null)}
           onPrev={
             openIndex > 0
